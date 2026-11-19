@@ -31,6 +31,11 @@
   ajustarAlto(); addEventListener("resize", ajustarAlto);
   $("#titulo").textContent = C.titulo;
   $("#subtitulo").textContent = C.subtitulo;
+  if (C.logo) {
+    $("#barra-logo").src = C.logo;
+    $("#titulo").textContent = C.tituloCorto || C.titulo;
+    $("#subtitulo").textContent = C.subtituloCorto || C.subtitulo;
+  } else $("#barra-logo").hidden = true;
 
   function avisar(texto, ms = 3500) {
     const a = $("#aviso");
@@ -270,8 +275,9 @@
     if (nivel === "lejos") {
       const p = predio();
       const c = p ? centro(p) : L.latLng(C.centro);
-      L.marker(c, { icon: L.divIcon({ className: "icono-libre", iconSize: [190, 64], iconAnchor: [95, 64],
-        html: `<div class="pin-inta"><span class="pin-70">70</span><span><b>INTA</b><br>EEA Catamarca</span></div><div class="pin-punta"></div>` }) })
+      L.marker(c, { icon: L.divIcon({ className: "icono-libre", iconSize: [230, 76], iconAnchor: [115, 76],
+        html: C.logoColor ? `<div class="pin-inta pin-logo"><img src="${esc(C.logoColor)}" alt="INTA 70 años"><span>EEA Catamarca</span></div><div class="pin-punta"></div>`
+          : `<div class="pin-inta"><span class="pin-70">70</span><span><b>INTA</b><br>EEA Catamarca</span></div><div class="pin-punta"></div>` }) })
         .on("click", verPredio).addTo(capaParadas);
       return;
     }
@@ -572,13 +578,16 @@
   function bienvenida() {
     if (leer("pa70-bienvenida", false) || EDITOR) return;
     $("#bienvenida").hidden = false;
-    if (C.logo) { $("#bv-logo").src = C.logo; $("#bv-logo").hidden = false; }
-    // el número del sello cuenta de 0 a 70
+    if (C.logo) { $("#bv-logo").src = C.logo; $("#bv-logo").hidden = false; $("#bienvenida").classList.add("con-logo"); }
+    // el sello cuenta: con el logo (que ya dice 70 años), los años de 1956 a hoy; sin logo, de 0 a 70
+    const desde = C.logo ? C.anioInicio || 1956 : 0, hasta = C.logo ? C.anioActual || 2026 : 70;
+    if (C.logo) $("#bv-etiqueta").textContent = "desde " + desde;
+    $("#bv-numero").textContent = hasta;
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const t0 = performance.now(), dur = 1400;
-      const paso = (t) => { const k = Math.min(1, (t - t0) / dur); $("#bv-numero").textContent = Math.round(70 * (1 - Math.pow(1 - k, 3)));
+      const t0 = performance.now(), dur = 1600;
+      const paso = (t) => { const k = Math.min(1, (t - t0) / dur); $("#bv-numero").textContent = Math.round(desde + (hasta - desde) * (1 - Math.pow(1 - k, 3)));
         if (k < 1) requestAnimationFrame(paso); };
-      $("#bv-numero").textContent = "0"; requestAnimationFrame(paso);
+      $("#bv-numero").textContent = desde; requestAnimationFrame(paso);
     }
     $("#bienvenida-empezar").addEventListener("click", () => {
       $("#bienvenida").classList.add("saliendo");
@@ -695,31 +704,39 @@
     img.onload = () => { componer(img); URL.revokeObjectURL(img.src); };
     img.src = URL.createObjectURL(archivo);
   });
-  // Marco provisorio solo con texto; se reemplaza por el marco oficial (PNG con transparencia) cuando llegue.
+  // Marco de la foto: banda blanca con el logo oficial del aniversario (sin modificar) y los datos de la jornada.
+  const logoMarco = new Image();
+  if (C.logoColor) logoMarco.src = C.logoColor;
   function componer(img) {
     const max = 1600, k = Math.min(1, max / Math.max(img.width, img.height));
     const w = Math.round(img.width * k), h = Math.round(img.height * k);
-    const banda = Math.round(Math.max(w, h) * 0.12);
+    const banda = Math.round(Math.max(w, h) * 0.13);
     lienzo.width = w; lienzo.height = h + banda;
     const c = lienzo.getContext("2d");
     c.drawImage(img, 0, 0, w, h);
-    c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--marca").trim() || "#0a5aa8";
-    c.fillRect(0, h, w, banda);
-    c.fillStyle = "#ffffff"; c.textBaseline = "middle";
-    c.font = `700 ${Math.round(banda * 0.38)}px system-ui, sans-serif`;
-    c.fillText("70 años INTA", banda * 0.3, h + banda * 0.36);
-    c.font = `400 ${Math.round(banda * 0.22)}px system-ui, sans-serif`;
-    c.fillText(`EEA Catamarca · Puertas Abiertas · ${C.fecha}`, banda * 0.3, h + banda * 0.74);
-    if (estaciones.length && sellos.length === estaciones.length) {
-      const r = banda * 0.36, x = w - banda * 0.6, y = h + banda / 2;
-      c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fillStyle = "#f2b705"; c.fill();
-      c.fillStyle = "#0a3d73"; c.textAlign = "center";
-      c.font = `800 ${Math.round(r * 0.32)}px system-ui, sans-serif`;
-      c.fillText("RECORRIDO", x, y - r * 0.2); c.fillText("COMPLETO", x, y + r * 0.25);
-      c.textAlign = "start";
+    c.fillStyle = "#ffffff"; c.fillRect(0, h, w, banda);
+    c.fillStyle = "#008bd2"; c.fillRect(0, h, w, Math.max(4, banda * 0.06)); // filete azul INTA
+    const m = banda * 0.18;
+    if (logoMarco.complete && logoMarco.naturalWidth) {
+      const lh = banda * 0.6, lw = lh * logoMarco.naturalWidth / logoMarco.naturalHeight;
+      c.drawImage(logoMarco, m, h + (banda - lh) / 2 + banda * 0.03, lw, lh);
+    } else {
+      c.fillStyle = "#008bd2"; c.font = `800 ${Math.round(banda * 0.36)}px Nunito, system-ui, sans-serif`;
+      c.textBaseline = "middle"; c.fillText("INTA 70 años", m, h + banda / 2);
     }
-    c.strokeStyle = "#ffffff"; c.lineWidth = Math.max(4, w * 0.008);
-    c.strokeRect(c.lineWidth / 2, c.lineWidth / 2, w - c.lineWidth, h + banda - c.lineWidth);
+    c.textBaseline = "middle"; c.textAlign = "right";
+    c.fillStyle = "#3c3c3b"; c.font = `800 ${Math.round(banda * 0.2)}px Nunito, system-ui, sans-serif`;
+    c.fillText("Puertas Abiertas", w - m, h + banda * 0.42);
+    c.fillStyle = "#6b6b6a"; c.font = `600 ${Math.round(banda * 0.15)}px Nunito, system-ui, sans-serif`;
+    c.fillText(`EEA Catamarca · ${C.fecha}`, w - m, h + banda * 0.68);
+    c.textAlign = "start";
+    if (estaciones.length && sellos.length === estaciones.length) { // insignia del recorrido completo, sobre la foto
+      const r = banda * 0.42, cx = w - r - m, cy = h - r - m;
+      c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.fillStyle = "#f2b705"; c.fill();
+      c.lineWidth = r * 0.08; c.strokeStyle = "#ffffff"; c.stroke();
+      c.fillStyle = "#3c3c3b"; c.textAlign = "center"; c.font = `900 ${Math.round(r * 0.3)}px Nunito, system-ui, sans-serif`;
+      c.fillText("RECORRIDO", cx, cy - r * 0.18); c.fillText("COMPLETO", cx, cy + r * 0.22); c.textAlign = "start";
+    }
     lienzo.hidden = false; $("#foto-acciones").hidden = false;
   }
   function aBlob() { return new Promise((ok) => lienzo.toBlob(ok, "image/jpeg", 0.9)); }

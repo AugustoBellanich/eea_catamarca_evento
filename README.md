@@ -72,9 +72,12 @@ En Google Earth, dibujar cada camino como **ruta** (línea) con un nombre que em
 "Camino principal"…). El conversor los toma solos y el modo ilustrado los dibuja como calles. Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
 
-## Logo oficial
+## Logo y colores oficiales
 
-Cuando Comunicación lo envíe: guardarlo en `img/` y poner la ruta en `config.js` (`logo`). Aparece en la bienvenida.
+Logos del aniversario 70 (archivos oficiales, sin modificar) en `img/logo-inta70-*.png`: versión blanca sobre
+azul (bienvenida y encabezado) y versión color sobre blanco (pin de la vista lejana y marco de la foto). Se eligen
+en `config.js` (`logo`, `logoColor`). Colores tomados del logo: azul `#008bd2`, rojo `#e30613`, gris `#3c3c3b`
+(`estilos.css`, `--marca`, `--rojo-inta`, `--gris-inta`).
 
 ## Niveles de detalle del mapa
 

@@ -1,11 +1,15 @@
 // Configuración del sitio. Lo que dice "A COMPLETAR" se reemplaza antes de la jornada.
 window.CONFIG = {
   titulo: "INTA a Puertas Abiertas",
-  // Logo oficial (archivo provisto por Comunicación, ej. "img/logo-inta-70.png"). Vacío: no se muestra.
-  logo: "",
+  tituloCorto: "Puertas Abiertas",          // encabezado, al lado del logo
+  subtituloCorto: "EEA Catamarca · Sumalao",
+  // Logos oficiales del aniversario 70 (archivos de Comunicación, sin modificar): color y blanco (negativo).
+  logo: "img/logo-inta70-blanco-izquierda.png",        // sobre fondo azul: bienvenida y encabezado
+  logoColor: "img/logo-inta70-color-izquierda.png",    // sobre fondo blanco: pin lejano y marco de la foto
   subtitulo: "70 años · EEA Catamarca · Sumalao",
   fecha: "3 de diciembre de 2026",
-  fechaISO: "2026-12-03", // día de la jornada: la agenda marca "Ahora" y "Próximo" solo ese día
+  fechaISO: "2026-12-03",
+  anioInicio: 1956, anioActual: 2026,       // el sello de la bienvenida cuenta los años (INTA se creó en 1956) // día de la jornada: la agenda marca "Ahora" y "Próximo" solo ese día
 
   // Centro del predio (del KML de Augusto, 19/11/2026). Al cargar, el mapa se ajusta al límite del predio.
   centro: [-28.4686, -65.7277],

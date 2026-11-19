@@ -429,3 +429,38 @@ body { background: #eee5c8; }
 .bv-pasos li { background: rgba(5,30,60,.35); border-color: rgba(127,211,255,.25); }
 @media (prefers-reduced-motion: reduce) { .bv-surcos line, .bv-nodos circle, .bv-barrido, .bv-aro circle { animation: none !important; }
   .bv-aro circle { stroke-dashoffset: 0; } }
+
+/* ===== v8: colores y logos oficiales del aniversario 70 (azul #008bd2, rojo #e30613, gris #3c3c3b) ===== */
+:root { --marca: #008bd2; --marca-oscuro: #005d8f; --marca-claro: #e5f3fb; --rojo-inta: #e30613; --gris-inta: #3c3c3b; }
+.barra { background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='80'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.10' stroke-width='1.2'%3E%3Cpath d='M-10 60q60-40 120-10t140-20'/%3E%3Cpath d='M-10 45q60-40 120-10t140-20'/%3E%3Cpath d='M-10 30q60-40 120-10t140-20'/%3E%3Cpath d='M-10 75q60-40 120-10t140-20'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(120deg, #19a3e6 0%, var(--marca) 45%, var(--marca-oscuro) 100%); }
+.barra::after { display: none; } /* el 70 ya está en el logo */
+.barra-logo { flex: none; height: 38px; width: auto; }
+.barra-texto { border-left: 1px solid rgba(255,255,255,.35); padding-left: 10px; }
+.barra h1 { font-size: 1rem; line-height: 1.1; }
+.barra p { font-size: .78rem; }
+@media (max-width: 360px) { .barra-logo { height: 32px; } .barra p { display: none; } }
+.cuenta { background: var(--rojo-inta); border-color: var(--marca); }
+.en-vivo-txt { background: var(--rojo-inta); }
+@keyframes latir-banda { 0%, 100% { box-shadow: 0 0 0 0 rgba(227,6,19,.6), 0 5px 12px rgba(0,0,0,.3); }
+  50% { box-shadow: 0 0 0 8px rgba(227,6,19,0), 0 5px 12px rgba(0,0,0,.3); } }
+.aviso-item.nuevo { box-shadow: inset 4px 0 0 var(--rojo-inta); }
+.pin-logo { flex-direction: column; gap: 2px; background: #fff; color: var(--gris-inta); padding: 8px 12px 6px; border: 0;
+  box-shadow: 0 8px 24px rgba(0,40,70,.4); font-weight: 800; font-size: 12px; }
+.pin-logo img { height: 34px; width: auto; display: block; }
+.pin-logo + .pin-punta { border-top-color: #fff; }
+/* bienvenida: con el logo oficial arriba, el sello queda como contador */
+.bienvenida { background: radial-gradient(120% 80% at 50% 0%, #22aef0, var(--marca) 40%, #003a5c 100%); }
+.bienvenida.con-logo .bv-logo { max-width: 260px; max-height: 64px; margin-bottom: 26px; animation: entrar .7s cubic-bezier(.2,.8,.2,1) both; }
+.bienvenida.con-logo .bv-sello { width: 104px; height: 104px; }
+.bienvenida.con-logo .bv-sello span { font-size: 46px; }
+#bienvenida-empezar { color: var(--gris-inta); }
+.barra h1, .barra p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barra-logo { height: 32px; }
+.bienvenida.con-logo .bv-sello { width: 118px; height: 118px; }
+.bienvenida.con-logo .bv-sello span { font-size: 34px; letter-spacing: -.01em; }
+.bienvenida.con-logo .bv-sello small { font-size: 11px; letter-spacing: .08em; text-transform: none; }
+.barra-logo { height: 28px; }
+.barra h1 { font-size: .95rem; }
+.barra { gap: 9px; padding-left: 12px; }
