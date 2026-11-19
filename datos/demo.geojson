@@ -1,0 +1,406 @@
+{
+ "type": "FeatureCollection",
+ "_nota": "DEMOSTRACI\u00d3N: lotes inventados para ver el estilo. No son las ubicaciones reales.",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "predio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.735306,
+       -28.50473
+      ],
+      [
+       -65.728574,
+       -28.50473
+      ],
+      [
+       -65.728574,
+       -28.50977
+      ],
+      [
+       -65.735306,
+       -28.50977
+      ],
+      [
+       -65.735306,
+       -28.50473
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-1"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.735306,
+      -28.50725
+     ],
+     [
+      -65.728574,
+      -28.50725
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-2"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.732348,
+      -28.50473
+     ],
+     [
+      -65.732348,
+      -28.50977
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e3"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.735102,
+       -28.50491
+      ],
+      [
+       -65.733674,
+       -28.50491
+      ],
+      [
+       -65.733674,
+       -28.50698
+      ],
+      [
+       -65.735102,
+       -28.50698
+      ],
+      [
+       -65.735102,
+       -28.50491
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e10"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.733572,
+       -28.50491
+      ],
+      [
+       -65.732552,
+       -28.50491
+      ],
+      [
+       -65.732552,
+       -28.50698
+      ],
+      [
+       -65.733572,
+       -28.50698
+      ],
+      [
+       -65.733572,
+       -28.50491
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e5"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.732093,
+       -28.50491
+      ],
+      [
+       -65.730257,
+       -28.50491
+      ],
+      [
+       -65.730257,
+       -28.50698
+      ],
+      [
+       -65.732093,
+       -28.50698
+      ],
+      [
+       -65.732093,
+       -28.50491
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e9"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.730053,
+       -28.50491
+      ],
+      [
+       -65.728727,
+       -28.50491
+      ],
+      [
+       -65.728727,
+       -28.5059
+      ],
+      [
+       -65.730053,
+       -28.5059
+      ],
+      [
+       -65.730053,
+       -28.50491
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e8"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.730053,
+       -28.50608
+      ],
+      [
+       -65.728727,
+       -28.50608
+      ],
+      [
+       -65.728727,
+       -28.50707
+      ],
+      [
+       -65.730053,
+       -28.50707
+      ],
+      [
+       -65.730053,
+       -28.50608
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.734592,
+     -28.5077
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.733878,
+     -28.50824
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e4"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.733062,
+     -28.5077
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e6"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.734082,
+     -28.50905
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e11"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.733062,
+     -28.50914
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e7"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.732093,
+       -28.507475
+      ],
+      [
+       -65.731073,
+       -28.507475
+      ],
+      [
+       -65.731073,
+       -28.508374999999997
+      ],
+      [
+       -65.732093,
+       -28.508374999999997
+      ],
+      [
+       -65.732093,
+       -28.507475
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "girasol-romero"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.73092,
+       -28.507475
+      ],
+      [
+       -65.7299,
+       -28.507475
+      ],
+      [
+       -65.7299,
+       -28.509545
+      ],
+      [
+       -65.73092,
+       -28.509545
+      ],
+      [
+       -65.73092,
+       -28.507475
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "e12"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.729747,
+       -28.507475
+      ],
+      [
+       -65.728727,
+       -28.507475
+      ],
+      [
+       -65.728727,
+       -28.509545
+      ],
+      [
+       -65.729747,
+       -28.509545
+      ],
+      [
+       -65.729747,
+       -28.507475
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

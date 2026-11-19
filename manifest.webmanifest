@@ -1,0 +1,10 @@
+{
+  "name": "INTA a Puertas Abiertas · 70 años · EEA Catamarca",
+  "short_name": "INTA 70",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a5aa8",
+  "lang": "es",
+  "icons": [{ "src": "img/icono.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

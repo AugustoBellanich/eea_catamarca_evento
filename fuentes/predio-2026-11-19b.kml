@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ex="http://earth.google.com/kml/ext">
+<Document id="document">
+	<ex:extension>base64;CooBCoEBCn8KAggBEnkKdwokCiAKAwjQDxoHCNLtZRD_ASEAAAAAAADwPykAAAAAAAAAABgAEg8KCAitgO8HEP8BEKAfGAAaGgoHCP___wcQQBIICK2A7wcQ_wEYoB8gACgAIgkIARIFCP___wcqFwgBEggI____BxD_ARkAAAAAAADwPyAAEgQIARAA</ex:extension>
+	<name>Archivo KML sin título</name>
+	<gx:CascadingStyle kml:id="__managed_style_093425A7AD4329F36C90_highlight">
+		<ex:extension>base64;EgIYAQ</ex:extension>
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>6</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_093425A7AD4329F36C90_normal">
+		<ex:extension>base64;EgIYAQ</ex:extension>
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>4</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+				<displayMode>hide</displayMode>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_093425A7AD4329F36C90">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_093425A7AD4329F36C90_normal</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_093425A7AD4329F36C90_highlight</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="0D438B93414329F36C67">
+		<name>EEA Catamarca</name>
+		<visibility>0</visibility>
+		<LookAt>
+			<longitude>-65.73247849704751</longitude>
+			<latitude>-28.46912932583534</latitude>
+			<altitude>512.9355132843502</altitude>
+			<heading>14.90450396908878</heading>
+			<tilt>21.48373389125885</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>2022.811262985051</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72940415136381,-28.47238174792597,0 -65.72923438124504,-28.47257860611896,0 -65.7285814150199,-28.47270343998346,0 -65.72724971160486,-28.47248589521599,0 -65.72683071125236,-28.47065025592018,0 -65.7267356749465,-28.47039964067685,0 -65.72538700752857,-28.47073467828526,0 -65.72528655801628,-28.46887979465656,0 -65.72531591001385,-28.46793326226273,0 -65.72701278087354,-28.46798118727628,0 -65.72704183964005,-28.46703793425865,0 -65.72696985026049,-28.46649996585946,0 -65.72752272807364,-28.46496027328368,0 -65.72821063093357,-28.46488228425071,0 -65.72877150863194,-28.46465159380866,0 -65.72930708501023,-28.46458020043146,0 -65.72915786045226,-28.46537083391528,0 -65.72867077101698,-28.46549625250253,0 -65.72857302753148,-28.46576869476627,0 -65.7291898137119,-28.46743813089847,0 -65.7292065316326,-28.46789413624186,0 -65.73021139504341,-28.47044065332157,0 -65.72940415136381,-28.47238174792597,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="03F9CE2D254329F5964B">
+		<name>Almendros</name>
+		<LookAt>
+			<longitude>-65.72829633413166</longitude>
+			<latitude>-28.46663472985288</latitude>
+			<altitude>515.6061245198621</altitude>
+			<heading>3.427061467038053</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>748.1594643257267</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72890937958682,-28.46682232575799,0 -65.72855464574853,-28.46780217988002,0 -65.7282936111142,-28.46782967103098,0 -65.72828410579979,-28.46761284600208,0 -65.72853247592128,-28.46685597086886,0 -65.72890937958682,-28.46682232575799,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="04426D9C484329F8F2A4">
+		<name>Invernadero</name>
+		<LookAt>
+			<longitude>-65.72865812893843</longitude>
+			<latitude>-28.47198265853199</latitude>
+			<altitude>515.5450068624648</altitude>
+			<heading>3.427061466951859</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>320.8269030514566</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72834597200854,-28.47218791241601,0 -65.72831880575053,-28.47228215099214,0 -65.72804389025964,-28.47221780521303,0 -65.72807780801075,-28.47212304939872,0 -65.72834597200854,-28.47218791241601,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="010107490F4329F95BA9">
+		<name>Edificio: Laboratorio de aceite</name>
+		<LookAt>
+			<longitude>-65.72865812893843</longitude>
+			<latitude>-28.47198265853199</latitude>
+			<altitude>515.5450068624648</altitude>
+			<heading>3.427061466951859</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>320.8269030514566</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72834001341045,-28.47242502287043,0 -65.72830559419958,-28.4725539622434,0 -65.72805901027553,-28.47250798669469,0 -65.72809819805177,-28.47238294996566,0 -65.72834001341045,-28.47242502287043,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0ECC1E96E24329F9F3EC">
+		<name>Vid</name>
+		<LookAt>
+			<longitude>-65.72914764675529</longitude>
+			<latitude>-28.46802123953578</latitude>
+			<altitude>514.1593041536102</altitude>
+			<heading>1.81567043935297</heading>
+			<tilt>10.00033505473903</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>471.3169928880963</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72893373230552,-28.46782374276445,0 -65.7289530136827,-28.46801746660649,0 -65.72896716421471,-28.4682069126023,0 -65.72841007933546,-28.46824178881532,0 -65.72838205695713,-28.46787501637465,0 -65.72893373230552,-28.46782374276445,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0FDD9CCBC64329FA3CB4">
+		<name>Citricos</name>
+		<LookAt>
+			<longitude>-65.72974378717666</longitude>
+			<latitude>-28.46802242464925</latitude>
+			<altitude>512.7364441130916</altitude>
+			<heading>1.815665212210341</heading>
+			<tilt>10.00063930632034</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>666.1669450929912</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72807148499965,-28.46703437422439,0 -65.72801413900058,-28.46792689184404,0 -65.72752435341317,-28.46794498719419,0 -65.72762010972946,-28.46707093464031,0 -65.72807148499965,-28.46703437422439,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0D5AD36B354329FA7FE4">
+		<name>Edificio SUM</name>
+		<LookAt>
+			<longitude>-65.72974716570845</longitude>
+			<latitude>-28.46804997322095</latitude>
+			<altitude>512.6974369786939</altitude>
+			<heading>1.099469578650803</heading>
+			<tilt>9.623374471496675</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>666.0716851596226</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.7280311445088,-28.46822220351458,0 -65.72804199800017,-28.46843106276856,0 -65.72773371953309,-28.46843632982424,0 -65.72773143076536,-28.46823981620996,0 -65.7280311445088,-28.46822220351458,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0402AD3A214329FAF684">
+		<name>Tuna</name>
+		<LookAt>
+			<longitude>-65.72875588173102</longitude>
+			<latitude>-28.46626949687172</latitude>
+			<altitude>515.4971269938969</altitude>
+			<heading>1.09947474776143</heading>
+			<tilt>9.622877739063837</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>335.6057979744219</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72791003171453,-28.46603571482829,0 -65.72797355777162,-28.46658548783003,0 -65.72754091771483,-28.4666214344979,0 -65.72749597242476,-28.46606050014642,0 -65.72791003171453,-28.46603571482829,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0B1471F7984329FB6EC0">
+		<name>Olivos</name>
+		<LookAt>
+			<longitude>-65.72871026727432</longitude>
+			<latitude>-28.47008537623284</latitude>
+			<altitude>514.7758261349973</altitude>
+			<heading>1.09947031226263</heading>
+			<tilt>9.623303912802605</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>619.1307421490638</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.7281390494943,-28.46920627372889,0 -65.72833486918562,-28.47106063301877,0 -65.72730881277511,-28.47113266404764,0 -65.72715103637185,-28.46927676420352,0 -65.7281390494943,-28.46920627372889,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="04AE0288774329FBB597">
+		<name>Olivos</name>
+		<LookAt>
+			<longitude>-65.72899667175582</longitude>
+			<latitude>-28.47102027560038</latitude>
+			<altitude>513.6262240395046</altitude>
+			<heading>1.099470294261892</heading>
+			<tilt>9.623305665655284</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>620.296760817655</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.7283391155886,-28.47110086053975,0 -65.72839322598217,-28.47195724792206,0 -65.72785503628131,-28.47199554080272,0 -65.72775549898937,-28.47116001140163,0 -65.7283391155886,-28.47110086053975,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="028AA084C94329FC1453">
+		<name>Pecanes</name>
+		<LookAt>
+			<longitude>-65.72914075359877</longitude>
+			<latitude>-28.47000077761469</latitude>
+			<altitude>514.1840953943</altitude>
+			<heading>1.099470303022085</heading>
+			<tilt>9.623304815153421</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>619.7309029068856</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72920919841334,-28.47037740411675,0 -65.72924933207935,-28.47111475789023,0 -65.72863662546601,-28.4711463469931,0 -65.72856528242863,-28.47040386764843,0 -65.72920919841334,-28.47037740411675,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0C37EB4C0E4329FC558C">
+		<name>Pecanes jovenes</name>
+		<LookAt>
+			<longitude>-65.72914075359877</longitude>
+			<latitude>-28.47000077761469</latitude>
+			<altitude>514.1840953943</altitude>
+			<heading>1.099470303022097</heading>
+			<tilt>9.623304815153269</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>619.7309029068856</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72971252958099,-28.46956171592701,0 -65.73002626298891,-28.47049546412174,0 -65.72973857607114,-28.47123678263928,0 -65.7293359899095,-28.4712579250757,0 -65.72919815169413,-28.46960545250976,0 -65.72971252958099,-28.46956171592701,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0823F28C08432A03F40B">
+		<name>Estanque</name>
+		<LookAt>
+			<longitude>-65.72939989699819</longitude>
+			<latitude>-28.46578082099257</latitude>
+			<altitude>516.5560336845925</altitude>
+			<heading>-0.5119876577251372</heading>
+			<tilt>8.012245437324662</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>637.1275917895401</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72918281945871,-28.46467509617394,0 -65.7290812244473,-28.46502364516807,0 -65.72888627148608,-28.46510727143853,0 -65.72885461376528,-28.46517582837125,0 -65.7287189535773,-28.46520272763465,0 -65.72845525983308,-28.46508613878165,0 -65.72836680088379,-28.46490917650571,0 -65.72867121410351,-28.4647235451276,0 -65.72889042248072,-28.46467626417197,0 -65.72899090685829,-28.46474781095948,0 -65.72904124394142,-28.46468639806953,0 -65.72918281945871,-28.46467509617394,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="000E208D17432A05719C">
+		<name>Olivos</name>
+		<LookAt>
+			<longitude>-65.72899908198679</longitude>
+			<latitude>-28.46719167773241</latitude>
+			<altitude>514.2074003148449</altitude>
+			<heading>-0.5119883432003488</heading>
+			<tilt>8.012104132833892</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>524.380808676724</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72759510040476,-28.46708344836438,0 -65.72750619376011,-28.46793831443248,0 -65.72707998087289,-28.46796276128416,0 -65.72711441782407,-28.467145705426,0 -65.72759510040476,-28.46708344836438,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0F829AF098432A066E14">
+		<name>Higuera</name>
+		<LookAt>
+			<longitude>-65.72849309695653</longitude>
+			<latitude>-28.46622115330172</latitude>
+			<altitude>516.0961809817393</altitude>
+			<heading>2.537832448269183</heading>
+			<tilt>1.329443571599589</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>427.5310774127865</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72797570783119,-28.46660920373743,0 -65.72800320625051,-28.46695765555313,0 -65.72736996434783,-28.46699937347733,0 -65.72733515494733,-28.46664405885289,0 -65.72797570783119,-28.46660920373743,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="07AF161EC5432A06EBAC">
+		<name>Edificio EEA Catamarca</name>
+		<LookAt>
+			<longitude>-65.72905937198959</longitude>
+			<latitude>-28.46853805624944</latitude>
+			<altitude>514.5480877827604</altitude>
+			<heading>2.5378307111414</heading>
+			<tilt>1.329515768231127</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>773.6339174268505</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72813297113871,-28.4685578305225,0 -65.72816325489678,-28.46900881541664,0 -65.72772189767467,-28.46904011330028,0 -65.72769642102031,-28.46858927366488,0 -65.72813297113871,-28.4685578305225,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0267791ED8432A076044">
+		<name>Edificio Laboratorio Suelo</name>
+		<LookAt>
+			<longitude>-65.72905937208576</longitude>
+			<latitude>-28.46853805616491</latitude>
+			<altitude>514.548087784175</altitude>
+			<heading>2.537830707387349</heading>
+			<tilt>1.329515768311455</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>773.6339174268505</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72762726913561,-28.46871104117201,0 -65.72764967156422,-28.46900013683608,0 -65.72750909761496,-28.46900086233888,0 -65.72747118443475,-28.46872664639119,0 -65.72762726913561,-28.46871104117201,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0EF2E7D9B2432A08AF28">
+		<name>Edificio: Centro Regional Catamarca - La Rioja</name>
+		<LookAt>
+			<longitude>-65.7293685602321</longitude>
+			<latitude>-28.47178651591429</latitude>
+			<altitude>512.7597376372289</altitude>
+			<heading>2.537832395758625</heading>
+			<tilt>1.329445522136142</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>436.9521225797507</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.729119808449,-28.47223780138058,0 -65.72913567355432,-28.47242111582544,0 -65.72905558953417,-28.47251144465628,0 -65.72874555588785,-28.47254914071674,0 -65.72872391979058,-28.47226810006277,0 -65.729119808449,-28.47223780138058,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="01D72197A4432A095E59">
+		<name>Lima</name>
+		<LookAt>
+			<longitude>-65.7293685602321</longitude>
+			<latitude>-28.47178651591429</latitude>
+			<altitude>512.7597376372289</altitude>
+			<heading>2.537832395759349</heading>
+			<tilt>1.329445522135045</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>436.9521225797507</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72912669606337,-28.47155710591017,0 -65.72916269233767,-28.47206755690304,0 -65.72868996512541,-28.47209600148401,0 -65.72863335808316,-28.47158034315158,0 -65.72912669606337,-28.47155710591017,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="08037A22EC432A0992F4">
+		<name>Nogal</name>
+		<LookAt>
+			<longitude>-65.7293685602321</longitude>
+			<latitude>-28.47178651591429</latitude>
+			<altitude>512.7597376372289</altitude>
+			<heading>2.537832395759349</heading>
+			<tilt>1.329445522135045</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>436.9521225797507</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.7292555913898,-28.47113422944801,0 -65.72927928075221,-28.47153999343366,0 -65.72864172942774,-28.47156652813519,0 -65.72862276488908,-28.47117258981859,0 -65.7292555913898,-28.47113422944801,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0E77C012F0432A0BF02F">
+		<name>Olivos</name>
+		<LookAt>
+			<longitude>-65.72675541183305</longitude>
+			<latitude>-28.46848265274127</latitude>
+			<altitude>517.3742740068546</altitude>
+			<heading>-0.3219883619442679</heading>
+			<tilt>0.210974954113695</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1064.350777972432</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72643111857231,-28.46897672898466,0 -65.72655077366296,-28.47007590968472,0 -65.72538624214553,-28.47003616216598,0 -65.72551102142762,-28.46893339217341,0 -65.72643111857231,-28.46897672898466,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="0DAB880CD3432A0C23E8">
+		<name>Olivos</name>
+		<LookAt>
+			<longitude>-65.72676296382018</longitude>
+			<latitude>-28.46846955832565</latitude>
+			<altitude>517.3677268839191</altitude>
+			<heading>-0.3219884043585328</heading>
+			<tilt>0.2109749543883722</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1064.357267700252</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72684063821481,-28.46801321928728,0 -65.72636060958872,-28.4688846435356,0 -65.72539158505235,-28.46885399446047,0 -65.72558480945337,-28.46798722758597,0 -65.72684063821481,-28.46801321928728,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+	<Placemark id="053CACD52A432A0C9C61">
+		<name>Ingreso principal</name>
+		<LookAt>
+			<longitude>-65.72909558263144</longitude>
+			<latitude>-28.47161204817177</latitude>
+			<altitude>513.3731621808739</altitude>
+			<heading>-0.3219883823882011</heading>
+			<tilt>0.2109667200289385</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>815.9643260175653</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Point>
+			<coordinates>-65.72858700091381,-28.47267973571554,516.6352234399135</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E2CCD608F432A0CD0C8">
+		<name>Ingreso secundario</name>
+		<LookAt>
+			<longitude>-65.728771933462</longitude>
+			<latitude>-28.46627478269384</latitude>
+			<altitude>515.7409500398888</altitude>
+			<heading>-0.321988407325533</heading>
+			<tilt>0.210966628740948</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>813.5965951773687</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Point>
+			<coordinates>-65.72796527264251,-28.4649430585664,518.1887278062372</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="013D8BF40E432A0DA0B3">
+		<name>Higueras</name>
+		<LookAt>
+			<longitude>-65.72908560491901</longitude>
+			<latitude>-28.46970215284156</latitude>
+			<altitude>514.2625790406047</altitude>
+			<heading>-0.3219884498927159</heading>
+			<tilt>0.2109521955991693</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>378.5336091886348</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_093425A7AD4329F36C90</styleUrl>
+		<Polygon>
+			<outerBoundaryIs>
+				<LinearRing>
+					<coordinates>
+						-65.72879974627227,-28.46958762066666,0 -65.72883344003537,-28.47012203996013,0 -65.72855534856885,-28.47014804213485,0 -65.72850409795433,-28.46960046902621,0 -65.72879974627227,-28.46958762066666,0 
+					</coordinates>
+				</LinearRing>
+			</outerBoundaryIs>
+		</Polygon>
+	</Placemark>
+</Document>
+</kml>
