@@ -68,10 +68,36 @@
     pts.forEach((p) => { lo += p[0]; la += p[1]; });
     return L.latLng(la / pts.length, lo / pts.length);
   }
+  // Punto de anclaje de una estación: dentro de su lote principal (el de mayor superficie). Si el centro del lote cae
+  // afuera (lotes con forma irregular), se toma el punto interior más cercano a ese centro.
+  const dentroDe = (lng, lat, anillo) => {
+    let ok = false;
+    for (let i = 0, j = anillo.length - 1; i < anillo.length; j = i++) {
+      const [xi, yi] = anillo[i], [xj, yj] = anillo[j];
+      if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) ok = !ok;
+    }
+    return ok;
+  };
+  const superficie = (anillo) => Math.abs(anillo.reduce((a, p, i) => { const q = anillo[(i + 1) % anillo.length]; return a + p[0] * q[1] - q[0] * p[1]; }, 0) / 2);
+  const anillos = (f) => f.geometry.type === "Polygon" ? [f.geometry.coordinates[0]] : f.geometry.type === "MultiPolygon" ? f.geometry.coordinates.map((p) => p[0]) : [];
   function centroEstacion(id) {
-    const cs = lotesDe(id).map(centro);
-    if (!cs.length) return null;
-    return L.latLng(cs.reduce((a, c) => a + c.lat, 0) / cs.length, cs.reduce((a, c) => a + c.lng, 0) / cs.length);
+    const lotes = lotesDe(id);
+    if (!lotes.length) return null;
+    const puntos = lotes.filter((f) => f.geometry.type === "Point");
+    const polis = lotes.flatMap(anillos);
+    if (!polis.length) return centro(puntos[0]);
+    const a = polis.reduce((m, r) => (superficie(r) > superficie(m) ? r : m));
+    const pts = a.slice(0, -1);
+    const c = [pts.reduce((t, p) => t + p[0], 0) / pts.length, pts.reduce((t, p) => t + p[1], 0) / pts.length];
+    if (dentroDe(c[0], c[1], a)) return L.latLng(c[1], c[0]);
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    let mejor = null, d = Infinity;
+    for (let i = 1; i < 20; i++) for (let j = 1; j < 20; j++) {
+      const x = Math.min(...xs) + (Math.max(...xs) - Math.min(...xs)) * i / 20, y = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * j / 20;
+      const dd = (x - c[0]) ** 2 + (y - c[1]) ** 2;
+      if (dd < d && dentroDe(x, y, a)) { d = dd; mejor = [x, y]; }
+    }
+    return mejor ? L.latLng(mejor[1], mejor[0]) : L.latLng(c[1], c[0]);
   }
 
   // Estaciones sin lote en el KML: se muestran en un lugar provisorio (datos/provisorios.js), marcadas como tales.
@@ -335,7 +361,12 @@
       }
       return false;
     };
-    const fin = (pt, r) => ({ x: Math.max(r.x1, Math.min(pt.x, r.x2)), y: Math.max(r.y1, Math.min(pt.y, r.y2)) });
+    const fin = (pt, r) => { // centro del lado del banderín que mira al punto
+      const cx = (r.x1 + r.x2) / 2, cy = (r.y1 + r.y2) / 2;
+      if (pt.y >= r.y2) return { x: Math.max(r.x1 + 10, Math.min(pt.x, r.x2 - 10)), y: r.y2 };
+      if (pt.y <= r.y1) return { x: Math.max(r.x1 + 10, Math.min(pt.x, r.x2 - 10)), y: r.y1 };
+      return { x: pt.x < cx ? r.x1 : r.x2, y: cy };
+    };
     const lineaLibre = (pt, r, propio) => {
       const q = fin(pt, r);
       return !lineas.some((l) => cruza(pt, q, l.a, l.b)) && !ocupados.some((o) => o.de !== propio && o.de !== "serv" && o.x2 - o.x1 > 20 && atraviesa(pt, q, o));
@@ -344,8 +375,9 @@
     const solape = (r, propio) => ocupados.reduce((t, o) => o.de === propio ? t
       : t + Math.max(0, Math.min(r.x2, o.x2) - Math.max(r.x1, o.x1)) * Math.max(0, Math.min(r.y2, o.y2) - Math.max(r.y1, o.y1)), 0);
     // direcciones en orden de preferencia: arriba, diagonales de arriba, costados, diagonales de abajo, abajo
-    const dirs = [-90, -50, -130, -20, -160, 20, 160, 50, 130, 90].map((g) => [Math.cos(g * Math.PI / 180), Math.sin(g * Math.PI / 180)]);
-    const dists = cerca ? [26, 52, 84, 120] : mini ? [10, 26, 44, 66] : [18, 40, 66, 96];
+    // arriba primero (como un mástil), después las diagonales y los costados; distancias cortas primero
+    const dirs = [-90, -70, -110, -45, -135, -20, -160, 0, 180, 30, 150, 60, 120, 90].map((g) => [Math.cos(g * Math.PI / 180), Math.sin(g * Math.PI / 180)]);
+    const dists = cerca ? [18, 30, 44, 60, 80, 104, 130] : mini ? [8, 16, 26, 38, 52, 68] : [12, 22, 34, 48, 64, 84, 106];
     anclas.forEach((a) => {
       const w = mini ? 32 : anchoBandera(a.e, cerca), h = mini ? 32 : 40;
       let mejor = null, menor = Infinity;
@@ -361,7 +393,8 @@
       mejor = mejor || a.alt;
       ocupados.push(mejor);
       lineas.push({ a: a.pt, b: fin(a.pt, mejor) });
-      L.marker(a.ll, { icon: bandera(a.e, mejor.x1 - a.pt.x, mejor.y1 - a.pt.y, w, mini), zIndexOffset: 500 })
+      const q = fin(a.pt, mejor);
+      L.marker(a.ll, { icon: bandera(a.e, mejor.x1 - a.pt.x, mejor.y1 - a.pt.y, w, mini, q.x - a.pt.x, q.y - a.pt.y), zIndexOffset: 500 })
         .on("click", () => abrirFicha(a.e.id)).addTo(capaParadas);
     });
   }
@@ -374,19 +407,19 @@
   }
 
   // Banderín ubicado en (dx, dy) respecto del punto de la estación, con línea guía y punto.
-  function bandera(e, dx, dy, w, mini) {
+  function bandera(e, dx, dy, w, mini, lx, ly) {
     const h = mini ? 32 : 40, c = zona(e).color;
     const visitada = sellos.includes(e.id);
     const ahora = actividades.some((a) => a.estacion === e.id && estadoActividad(a) === "ahora");
     const clases = ["bandera", mini && "mini", visitada && "visitada", esProvisoria(e.id) && "provisoria", ahora && "en-vivo"].filter(Boolean).join(" ");
     // la línea va del punto al borde más cercano del banderín
-    const ex = Math.max(dx, Math.min(0, dx + w)), ey = Math.max(dy, Math.min(0, dy + h));
+    const ex = lx, ey = ly;
     return L.divIcon({
       className: "icono-libre ancla", iconSize: [0, 0], iconAnchor: [0, 0],
-      html: `<svg class="guia" width="1" height="1" aria-hidden="true"><line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-          <line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+      html: `<svg class="guia" width="1" height="1" aria-hidden="true"><line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>
           ${TEMA === "pixel" ? `<rect x="-6" y="-6" width="12" height="12" fill="${c}" stroke="#1b2838" stroke-width="2"/>`
-            : `<circle r="6.5" fill="${c}" stroke="#fff" stroke-width="3"/>`}</svg>
+            : `<circle r="5.5" fill="${c}" stroke="#fff" stroke-width="2.5"/>`}</svg>
         <div class="${clases}" style="--c:${c};left:${dx}px;top:${dy}px;width:${w}px">${ahora ? '<span class="en-vivo-txt">Ahora</span>' : ""}
           <div class="tela">${mini ? `<span class="b-mini">${e.numero ? esc(e.numero) : ICON[e.icono] || ""}</span>`
             : `${e.numero ? `<span class="b-num">${esc(e.numero)}</span>` : ""}<span class="b-ico">${ICON[e.icono] || ""}</span>
