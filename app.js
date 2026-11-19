@@ -608,17 +608,7 @@
   function bienvenida() {
     if (leer("pa70-bienvenida", false) || EDITOR) return;
     $("#bienvenida").hidden = false;
-    if (C.logo) { $("#bv-logo").src = C.logo; $("#bv-logo").hidden = false; $("#bienvenida").classList.add("con-logo"); }
-    // el sello cuenta: con el logo (que ya dice 70 años), los años de 1956 a hoy; sin logo, de 0 a 70
-    const desde = C.logo ? C.anioInicio || 1956 : 0, hasta = C.logo ? C.anioActual || 2026 : 70;
-    if (C.logo) $("#bv-etiqueta").textContent = "desde " + desde;
-    $("#bv-numero").textContent = hasta;
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const t0 = performance.now(), dur = 1600;
-      const paso = (t) => { const k = Math.min(1, (t - t0) / dur); $("#bv-numero").textContent = Math.round(desde + (hasta - desde) * (1 - Math.pow(1 - k, 3)));
-        if (k < 1) requestAnimationFrame(paso); };
-      $("#bv-numero").textContent = desde; requestAnimationFrame(paso);
-    }
+    if (C.logo) $("#bv-logo").src = C.logo; else $("#bv-logo").hidden = true;
     $("#bienvenida-empezar").addEventListener("click", () => {
       $("#bienvenida").classList.add("saliendo");
       setTimeout(() => ($("#bienvenida").hidden = true), 350);
