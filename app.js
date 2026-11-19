@@ -570,8 +570,18 @@
     avisar("Buscando tu ubicación…");
     let primera = true;
     seguimiento = navigator.geolocation.watchPosition((p) => {
-      miPosicion = L.latLng(p.coords.latitude, p.coords.longitude);
+      const pos = L.latLng(p.coords.latitude, p.coords.longitude);
       const r = p.coords.accuracy;
+      // Fuera del predio (por ejemplo, desde la casa antes de la jornada): no se mueve el mapa ni se dibuja el punto.
+      const ss = sectores();
+      if (ss.length) {
+        const caja = L.geoJSON({ type: "FeatureCollection", features: ss }).getBounds();
+        if (mapa.distance(pos, caja.getCenter()) > mapa.distance(caja.getNorthWest(), caja.getCenter()) + 1000) {
+          if (primera) { avisar("Estás fuera del predio: tu ubicación aparece en el mapa al llegar.", 5000); primera = false; }
+          return;
+        }
+      }
+      miPosicion = pos;
       if (!marcaYo) {
         circuloYo = L.circle(miPosicion, { radius: r, color: "#2563eb", weight: 1, fillOpacity: 0.12, interactive: false }).addTo(mapa);
         marcaYo = L.marker(miPosicion, { interactive: false, zIndexOffset: 1000, icon: L.divIcon({ className: "icono-libre", iconSize: [110, 50], iconAnchor: [55, 12],
