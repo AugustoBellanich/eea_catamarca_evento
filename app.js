@@ -19,6 +19,8 @@
   let miPosicion = null, marcaYo = null, circuloYo = null, seguimiento = null;
   let sellos = leer(K.sellos, []);
   let leidos = leer(K.leidos, []);
+  // Capas visibles (se recuerdan en el navegador).
+  const capas = Object.assign({ estaciones: true, lotes: true, servicios: true }, leer("pa70-capas", {}));
 
   function leer(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch (_) { return def; } }
   function escribir(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { /* sin almacenamiento */ } }
@@ -105,17 +107,32 @@
     } catch (_) { /* sin señal o sin permiso: queda el zoom asegurado */ }
   }
 
-  const BotonModo = L.Control.extend({
+  // Control "Capas": vista (ilustrado o satelital) y qué se muestra sobre el mapa.
+  const BotonCapas = L.Control.extend({
     options: { position: "topright" },
     onAdd() {
-      const b = L.DomUtil.create("button", "boton-modo");
-      b.type = "button";
-      L.DomEvent.disableClickPropagation(b);
-      b.onclick = () => ponerModo(modo === "ilustrado" ? "satelital" : "ilustrado");
-      this.b = b; return b;
+      const caja = L.DomUtil.create("div", "capas");
+      caja.innerHTML = `<button type="button" class="boton-modo" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17l9 5 9-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Capas</button>
+        <div class="capas-panel" hidden>
+          <div class="capas-vista"><button type="button" data-modo="ilustrado">Ilustrado</button><button type="button" data-modo="satelital">Satelital</button></div>
+          <label><input type="checkbox" data-capa="estaciones"> Estaciones</label>
+          <label><input type="checkbox" data-capa="lotes"> Lotes y cultivos</label>
+          <label><input type="checkbox" data-capa="servicios"> Ingresos y servicios</label>
+        </div>`;
+      L.DomEvent.disableClickPropagation(caja); L.DomEvent.disableScrollPropagation(caja);
+      const boton = caja.querySelector(".boton-modo"), panel = caja.querySelector(".capas-panel");
+      boton.onclick = () => { panel.hidden = !panel.hidden; boton.setAttribute("aria-expanded", String(!panel.hidden)); };
+      caja.querySelectorAll("[data-modo]").forEach((b) => (b.onclick = () => ponerModo(b.dataset.modo)));
+      caja.querySelectorAll("[data-capa]").forEach((c) => {
+        c.checked = capas[c.dataset.capa];
+        c.onchange = () => { capas[c.dataset.capa] = c.checked; escribir("pa70-capas", capas); dibujarFondo(); actualizarNivel(true); };
+      });
+      this.caja = caja; return caja;
     },
   });
-  const botonModo = new BotonModo().addTo(mapa);
+  const botonCapas = new BotonCapas().addTo(mapa);
+  mapa.on("click", () => { const p = botonCapas.caja.querySelector(".capas-panel"); if (!EDITOR) p.hidden = true; });
 
   function ponerModo(m) {
     modo = m;
@@ -124,7 +141,7 @@
     // En satelital no se deja acercar más allá de donde la imagen se ve bien.
     mapa.setMaxZoom(m === "satelital" ? (C.teselas.zoomTope || 19) : 20);
     if (mapa.getZoom() > mapa.getMaxZoom()) mapa.setZoom(mapa.getMaxZoom());
-    botonModo.b.textContent = m === "ilustrado" ? "Satelital" : "Ilustrado";
+    botonCapas.caja.querySelectorAll("[data-modo]").forEach((b) => b.classList.toggle("activo", b.dataset.modo === m));
     dibujarFondo();
     actualizarNivel(true);
   }
@@ -157,7 +174,7 @@
       : { color: "#ffffff", weight: 2, dashArray: "4 6", fill: false, className: "predio" };
     if (esCamino(f)) return ilu ? { color: "#f8f3e6", weight: 12, lineCap: "round", className: "camino" }
       : { color: "#ffffff", weight: 4, opacity: 0.7, className: "camino" };
-    if (esContexto(f)) return ilu ? { color: "#9c8a63", weight: 1.5, fillOpacity: 1, className: "lote lote-ctx p-" + (p.patron || "pasto") }
+    if (esContexto(f) || (!capas.estaciones && esEstacion(f))) return ilu ? { color: "#9c8a63", weight: 1.5, fillOpacity: 1, className: "lote lote-ctx p-" + (p.patron || "pasto") }
       : { color: "#ffffff", weight: 1.5, opacity: 0.85, fillColor: "#ffffff", fillOpacity: 0.12, className: "lote lote-ctx" };
     const e = estacion(estDe(f));
     if (p.provisorio) return { color: zona(e).color, weight: 3, dashArray: "6 6", fillColor: zona(e).color, fillOpacity: 0.18, className: "lote lote-est lote-prov" };
@@ -176,7 +193,7 @@
         { style: { color: "#cdbb8f", weight: 16, lineCap: "round", className: "camino" }, interactive: false }).addTo(capaFondo);
     }
     // Estaciones provisorias de un solo punto: un círculo punteado de 18 m para que se vea el lugar.
-    geo.features.filter((f) => f.properties.provisorio && f.geometry.type === "Point").forEach((f) => {
+    geo.features.filter((f) => capas.estaciones && f.properties.provisorio && f.geometry.type === "Point").forEach((f) => {
       const e = estacion(estDe(f));
       L.circle(centro(f), { radius: 18, color: zona(e).color, weight: 3, dashArray: "6 6", fillColor: zona(e).color, fillOpacity: 0.18,
         className: "lote lote-est lote-prov" }).on("click", () => abrirFicha(e.id)).addTo(capaFondo);
@@ -184,11 +201,11 @@
     L.geoJSON({ type: "FeatureCollection", features: vect }, {
       style: estilo,
       onEachFeature: (f, capa) => {
-        if (esEstacion(f)) capa.on("click", () => abrirFicha(estDe(f)));
+        if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
         else if (esPredio(f)) capa.on("click", () => { if (nivel === "lejos") verPredio(); });
         if (esPredio(f) && f.properties.nombre && sectores().length > 1)
           capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "center", className: "sector-nombre" });
-        if (esContexto(f) && f.properties.nombre) capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "bottom", offset: [0, 14], className: "ctx-nombre" });
+        if ((esContexto(f) || (!capas.estaciones && esEstacion(f))) && f.properties.nombre && capas.lotes) capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "bottom", offset: [0, 14], className: "ctx-nombre" });
       },
     }).addTo(capaFondo);
     ponerPatrones();
@@ -221,12 +238,13 @@
   function dibujarFrutas() {
     if (capaFrutas) capaFrutas.remove();
     capaFrutas = L.layerGroup();
-    if (nivel !== "cerca") return;
-    geo.features.filter((f) => (f.properties.cultivo || f.properties.provisorio) && f.geometry.type !== "LineString").forEach((f) => {
+    if (nivel !== "cerca" || !capas.lotes) return;
+    geo.features.filter((f) => !(f.properties.provisorio && !capas.estaciones))
+      .filter((f) => (f.properties.cultivo || f.properties.provisorio) && f.geometry.type !== "LineString").forEach((f) => {
       const cultivo = f.properties.cultivo || (estacion(estDe(f)) || {}).icono;
       const m = L.marker(centro(f), { icon: L.divIcon({ className: "icono-libre", iconSize: [40, 40], iconAnchor: [20, 20],
-        html: `<div class="fruta${f.properties.provisorio ? " prov" : ""}">${ICON[cultivo] || ""}</div>` }), interactive: esEstacion(f), keyboard: false });
-      if (esEstacion(f)) m.on("click", () => abrirFicha(estDe(f)));
+        html: `<div class="fruta${f.properties.provisorio ? " prov" : ""}">${ICON[cultivo] || ""}</div>` }), interactive: esEstacion(f) && capas.estaciones, keyboard: false });
+      if (esEstacion(f) && capas.estaciones) m.on("click", () => abrirFicha(estDe(f)));
       m.addTo(capaFrutas);
     });
     capaFrutas.addTo(mapa);
@@ -236,11 +254,11 @@
   function dibujarServicios() {
     if (capaServicios) capaServicios.remove();
     capaServicios = L.layerGroup();
-    if (nivel === "lejos") return;
+    if (nivel === "lejos" || !capas.servicios) return;
     geo.features.filter((f) => esServicio(f) && f.geometry.type === "Point").forEach((f) => {
       const texto = nivel === "cerca" ? f.properties.nombre : f.properties.servicio === "ingreso" ? "Ingreso" : "";
       L.marker(centro(f), { interactive: false, keyboard: false, icon: L.divIcon({ className: "icono-libre", iconSize: [150, 30], iconAnchor: [75, 15],
-        html: `<span class="servicio${texto ? "" : " solo-icono"}">${ICON[f.properties.servicio] || ""}${esc(texto)}</span>` }) }).addTo(capaServicios);
+        html: `<div class="servicio-caja"><span class="servicio${texto ? "" : " solo-icono"}">${ICON[f.properties.servicio] || ""}${esc(texto)}</span></div>` }) }).addTo(capaServicios);
     });
     capaServicios.addTo(mapa);
   }
@@ -257,46 +275,87 @@
         .on("click", verPredio).addTo(capaParadas);
       return;
     }
-    // Agrupación simple en píxeles: dos paradas se juntan si sus banderines se pisarían.
-    const ancho = nivel === "cerca" ? 150 : 50, alto = nivel === "cerca" ? 44 : 34;
-    const grupos = [];
-    ubicadas().slice().sort((a, b) => (parseInt(a.numero, 10) || 99) - (parseInt(b.numero, 10) || 99)).forEach((e) => {
-      const ll = centroEstacion(e.id), pt = mapa.latLngToLayerPoint(ll);
-      const g = grupos.find((x) => Math.abs(x.pt.x - pt.x) < ancho && Math.abs(x.pt.y - pt.y) < alto);
-      if (g) { g.es.push(e); g.lls.push(ll); } else grupos.push({ pt, es: [e], lls: [ll] });
+    if (!capas.estaciones) return;
+    // Ubicación de banderines sin superposición (como las etiquetas de un mapa): cada estación tiene un punto en su
+    // lugar; su banderín se ubica en el primer hueco libre alrededor y se une al punto con una línea guía.
+    const cerca = nivel === "cerca";
+    const mini = !cerca && mapa.getZoom() < C.zoomParadas + 1; // vista inicial: solo el número
+    const es = ubicadas().slice().sort((a, b) => (parseInt(a.numero, 10) || 99) - (parseInt(b.numero, 10) || 99));
+    const anclas = es.map((e) => ({ e, ll: centroEstacion(e.id), pt: mapa.latLngToLayerPoint(centroEstacion(e.id)) }));
+    const ocupados = anclas.map((a) => ({ x1: a.pt.x - 8, y1: a.pt.y - 8, x2: a.pt.x + 8, y2: a.pt.y + 8, de: a.e.id }));
+    // los carteles de ingresos y servicios también son obstáculos
+    if (capas.servicios) geo.features.filter((f) => esServicio(f) && f.geometry.type === "Point").forEach((f) => {
+      const pt = mapa.latLngToLayerPoint(centro(f)), mw = cerca ? 70 : f.properties.servicio === "ingreso" ? 42 : 14;
+      ocupados.push({ x1: pt.x - mw, y1: pt.y - 14, x2: pt.x + mw, y2: pt.y + 14, de: "serv" });
     });
-    grupos.forEach((g) => {
-      const ll = L.latLng(g.lls.reduce((a, c) => a + c.lat, 0) / g.lls.length, g.lls.reduce((a, c) => a + c.lng, 0) / g.lls.length);
-      if (g.es.length === 1) {
-        const e = g.es[0];
-        L.marker(ll, { icon: bandera(e), zIndexOffset: 500, riseOnHover: true }).on("click", () => abrirFicha(e.id)).addTo(capaParadas);
-      } else {
-        L.marker(ll, { icon: racimo(g.es), zIndexOffset: 600 }).on("click", () => {
-          const b = L.latLngBounds(g.lls);
-          const z = Math.min(mapa.getMaxZoom(), Math.max(mapa.getZoom() + 1, mapa.getBoundsZoom(b.pad(1.5))));
-          if (z <= mapa.getZoom()) { armarLista(g.es.map((e) => e.id)); mostrar("#lista"); }
-          else mapa.flyTo(b.getCenter(), z, { duration: 0.5 });
-        }).addTo(capaParadas);
+    const lineas = []; // líneas guía ya trazadas
+    const cruza = (p1, p2, p3, p4) => {
+      const d = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+      return d(p1, p2, p3) * d(p1, p2, p4) < 0 && d(p3, p4, p1) * d(p3, p4, p2) < 0;
+    };
+    const atraviesa = (p1, p2, r) => { // la línea pasa por adentro de un rectángulo
+      for (let t = 0.15; t < 0.95; t += 0.1) {
+        const x = p1.x + (p2.x - p1.x) * t, y = p1.y + (p2.y - p1.y) * t;
+        if (x > r.x1 && x < r.x2 && y > r.y1 && y < r.y2) return true;
       }
+      return false;
+    };
+    const fin = (pt, r) => ({ x: Math.max(r.x1, Math.min(pt.x, r.x2)), y: Math.max(r.y1, Math.min(pt.y, r.y2)) });
+    const lineaLibre = (pt, r, propio) => {
+      const q = fin(pt, r);
+      return !lineas.some((l) => cruza(pt, q, l.a, l.b)) && !ocupados.some((o) => o.de !== propio && o.de !== "serv" && o.x2 - o.x1 > 20 && atraviesa(pt, q, o));
+    };
+    const choca = (r, propio) => ocupados.some((o) => o.de !== propio && r.x1 < o.x2 + 4 && r.x2 > o.x1 - 4 && r.y1 < o.y2 + 4 && r.y2 > o.y1 - 4);
+    const solape = (r, propio) => ocupados.reduce((t, o) => o.de === propio ? t
+      : t + Math.max(0, Math.min(r.x2, o.x2) - Math.max(r.x1, o.x1)) * Math.max(0, Math.min(r.y2, o.y2) - Math.max(r.y1, o.y1)), 0);
+    // direcciones en orden de preferencia: arriba, diagonales de arriba, costados, diagonales de abajo, abajo
+    const dirs = [-90, -50, -130, -20, -160, 20, 160, 50, 130, 90].map((g) => [Math.cos(g * Math.PI / 180), Math.sin(g * Math.PI / 180)]);
+    const dists = cerca ? [26, 52, 84, 120] : mini ? [10, 26, 44, 66] : [18, 40, 66, 96];
+    anclas.forEach((a) => {
+      const w = mini ? 32 : anchoBandera(a.e, cerca), h = mini ? 32 : 40;
+      let mejor = null, menor = Infinity;
+      for (const d of dists) {
+        for (const [cx, cy] of dirs) {
+          const x = a.pt.x + cx * (d + w / 2 * Math.abs(cx)), y = a.pt.y + cy * (d + h / 2 * Math.abs(cy));
+          const r = { x1: x - w / 2, y1: y - h / 2, x2: x + w / 2, y2: y + h / 2, de: a.e.id };
+          if (!choca(r, a.e.id) && lineaLibre(a.pt, r, a.e.id)) { mejor = r; break; }
+          const sv = solape(r, a.e.id); if (sv < menor) { menor = sv; a.alt = r; }
+        }
+        if (mejor) break;
+      }
+      mejor = mejor || a.alt;
+      ocupados.push(mejor);
+      lineas.push({ a: a.pt, b: fin(a.pt, mejor) });
+      L.marker(a.ll, { icon: bandera(a.e, mejor.x1 - a.pt.x, mejor.y1 - a.pt.y, w, mini), zIndexOffset: 500 })
+        .on("click", () => abrirFicha(a.e.id)).addTo(capaParadas);
     });
   }
 
-  function bandera(e) {
+  // Ancho estimado del banderín (número + ícono, y el nombre de cerca).
+  function anchoBandera(e, cerca) {
+    const base = (e.numero ? 34 : 0) + 34 + 12;
+    if (!cerca) return base;
+    return Math.min(190, base + Math.round((e.corto || e.nombre).length * 7.4) + 10);
+  }
+
+  // Banderín ubicado en (dx, dy) respecto del punto de la estación, con línea guía y punto.
+  function bandera(e, dx, dy, w, mini) {
+    const h = mini ? 32 : 40, c = zona(e).color;
     const visitada = sellos.includes(e.id);
     const ahora = actividades.some((a) => a.estacion === e.id && estadoActividad(a) === "ahora");
-    const clases = ["bandera", visitada && "visitada", esProvisoria(e.id) && "provisoria", ahora && "en-vivo"].filter(Boolean).join(" ");
+    const clases = ["bandera", mini && "mini", visitada && "visitada", esProvisoria(e.id) && "provisoria", ahora && "en-vivo"].filter(Boolean).join(" ");
+    // la línea va del punto al borde más cercano del banderín
+    const ex = Math.max(dx, Math.min(0, dx + w)), ey = Math.max(dy, Math.min(0, dy + h));
     return L.divIcon({
-      className: "icono-libre", iconSize: [170, 60], iconAnchor: [85, nivel === "cerca" ? 74 : 56],
-      html: `<div class="${clases}" style="--c:${zona(e).color}">${ahora ? '<span class="en-vivo-txt">Ahora</span>' : ""}
-        <div class="tela">${e.numero ? `<span class="b-num">${esc(e.numero)}</span>` : ""}<span class="b-ico">${ICON[e.icono] || ""}</span>
-          <span class="b-nombre">${esc(e.corto || e.nombre)}</span>${visitada ? '<span class="b-tilde">✓</span>' : ""}</div>
-        <div class="mastil"></div></div>`,
+      className: "icono-libre ancla", iconSize: [0, 0], iconAnchor: [0, 0],
+      html: `<svg class="guia" width="1" height="1" aria-hidden="true"><line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+          <circle r="6.5" fill="${c}" stroke="#fff" stroke-width="3"/></svg>
+        <div class="${clases}" style="--c:${c};left:${dx}px;top:${dy}px;width:${w}px">${ahora ? '<span class="en-vivo-txt">Ahora</span>' : ""}
+          <div class="tela">${mini ? `<span class="b-mini">${e.numero ? esc(e.numero) : ICON[e.icono] || ""}</span>`
+            : `${e.numero ? `<span class="b-num">${esc(e.numero)}</span>` : ""}<span class="b-ico">${ICON[e.icono] || ""}</span>
+          <span class="b-nombre">${esc(e.corto || e.nombre)}</span>`}${visitada ? '<span class="b-tilde">✓</span>' : ""}</div></div>`,
     });
-  }
-  function racimo(es) {
-    const nums = es.length > 3 ? "paradas · tocá para ver" : es.map((e) => esc(e.numero || "•")).join(" · ");
-    return L.divIcon({ className: "icono-libre", iconSize: [170, 60], iconAnchor: [85, 56],
-      html: `<div class="bandera racimo"><div class="tela"><span class="r-cant">${es.length}</span><span class="b-nombre">${nums}</span></div><div class="mastil"></div></div>` });
   }
 
   // ---------- Hojas y pestañas ----------
@@ -513,6 +572,14 @@
   function bienvenida() {
     if (leer("pa70-bienvenida", false) || EDITOR) return;
     $("#bienvenida").hidden = false;
+    if (C.logo) { $("#bv-logo").src = C.logo; $("#bv-logo").hidden = false; }
+    // el número del sello cuenta de 0 a 70
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const t0 = performance.now(), dur = 1400;
+      const paso = (t) => { const k = Math.min(1, (t - t0) / dur); $("#bv-numero").textContent = Math.round(70 * (1 - Math.pow(1 - k, 3)));
+        if (k < 1) requestAnimationFrame(paso); };
+      $("#bv-numero").textContent = "0"; requestAnimationFrame(paso);
+    }
     $("#bienvenida-empezar").addEventListener("click", () => {
       $("#bienvenida").classList.add("saliendo");
       setTimeout(() => ($("#bienvenida").hidden = true), 350);

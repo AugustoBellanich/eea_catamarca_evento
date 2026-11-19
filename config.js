@@ -1,6 +1,8 @@
 // Configuración del sitio. Lo que dice "A COMPLETAR" se reemplaza antes de la jornada.
 window.CONFIG = {
   titulo: "INTA a Puertas Abiertas",
+  // Logo oficial (archivo provisto por Comunicación, ej. "img/logo-inta-70.png"). Vacío: no se muestra.
+  logo: "",
   subtitulo: "70 años · EEA Catamarca · Sumalao",
   fecha: "3 de diciembre de 2026",
   fechaISO: "2026-12-03", // día de la jornada: la agenda marca "Ahora" y "Próximo" solo ese día
@@ -32,7 +34,7 @@ window.CONFIG = {
   // Niveles de detalle del mapa (zoom de Leaflet):
   //   menos de "paradas": solo el pin de INTA · desde "paradas": ingresos y paradas · desde "lotes": frutitas y nombres
   zoomParadas: 15,
-  zoomLotes: 18,
+  zoomLotes: 17,
 
   // Agenda y avisos: enlaces CSV de una planilla de Google publicada en la web (Archivo → Compartir → Publicar en la web,
   // una hoja por enlace, formato CSV). Vacíos: se usa datos/agenda.js. Se consultan cada minuto mientras haya señal.

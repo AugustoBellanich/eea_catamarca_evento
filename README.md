@@ -61,11 +61,27 @@ porque Google demora en actualizar lo publicado.
 estaciones que todavía no están en el KML. Apenas una estación tiene su lote en el KML, la provisoria deja de
 usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese archivo.
 
+## Capas
+
+El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta estaciones, lotes y
+cultivos, e ingresos y servicios. Con las estaciones apagadas queda solo el plano de la EEA con cada lote.
+
+## Caminos
+
+En Google Earth, dibujar cada camino como **ruta** (línea) con un nombre que empiece con "Camino" ("Camino",
+"Camino principal"…). El conversor los toma solos y el modo ilustrado los dibuja como calles. Más adelante, con los
+caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
+
+## Logo oficial
+
+Cuando Comunicación lo envíe: guardarlo en `img/` y poner la ruta en `config.js` (`logo`). Aparece en la bienvenida.
+
 ## Niveles de detalle del mapa
 
-Como en los planos de parques: de lejos, solo el pin de INTA; a media distancia, ingresos y paradas (las que se
-superponen se juntan en un globo con sus números, que al tocarlo acerca el mapa); de cerca, los lotes con su
-textura, su frutita y su nombre. Los cortes se cambian en `config.js` (`zoomParadas`, `zoomLotes`).
+Como en los planos de parques: de lejos, solo el pin de INTA; a media distancia, ingresos y paradas; de cerca, los
+lotes con su textura, su frutita y su nombre. Cada parada tiene un punto en su lugar y su banderín se ubica en el
+primer hueco libre alrededor, unido por una línea guía, para que no se pisen ni se crucen (en la vista inicial
+solo el número; después número e ícono; de cerca, también el nombre). Los cortes se cambian en `config.js` (`zoomParadas`, `zoomLotes`).
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
