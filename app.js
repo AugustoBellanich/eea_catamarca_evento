@@ -914,6 +914,12 @@
     const id = decodeURIComponent(location.hash.slice(1));
     if (recuperarPasaporte(id)) { armarPasaporte(); mostrar("#pasaporte"); }
     else if (id && estacion(id)) { sellar(id, true); abrirFicha(id); } // llegó por el QR de la estación
+    // QR escaneado con el sitio ya abierto: algunos navegadores reutilizan la pestaña y solo cambian el #.
+    addEventListener("hashchange", () => {
+      const h = decodeURIComponent(location.hash.slice(1));
+      if (recuperarPasaporte(h)) { armarPasaporte(); mostrar("#pasaporte"); }
+      else if (h && estacion(h)) { sellar(h); abrirFicha(h); }
+    });
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); // que el navegador no lo borre
   }
   cargar().catch((e) => { console.error(e); avisar("No se pudieron cargar los datos del mapa.", 8000); });
