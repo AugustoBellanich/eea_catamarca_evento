@@ -61,6 +61,12 @@ porque Google demora en actualizar lo publicado.
 estaciones que todavía no están en el KML. Apenas una estación tiene su lote en el KML, la provisoria deja de
 usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese archivo.
 
+## Estilos
+
+Dos estilos visuales: **moderno** (el de siempre) y **pixel** (tipografía pixelada, bordes duros, sombras en
+escalón, texturas en cuadraditos e íconos rasterizados a 20×20 y ampliados sin suavizar; el logo oficial no se
+toca). Se elige en `config.js` (`tema`), en el panel Capas o con `?tema=pixel` en la dirección.
+
 ## Capas
 
 El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta estaciones, lotes y

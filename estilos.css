@@ -464,3 +464,95 @@ body { background: #eee5c8; }
 .barra-logo { height: 28px; }
 .barra h1 { font-size: .95rem; }
 .barra { gap: 9px; padding-left: 12px; }
+
+/* =====================================================================
+   TEMA PIXEL (body.tema-pixel): tipografía pixelada, bordes duros, sombras en escalón,
+   sin desenfoques ni redondeos, texturas en cuadraditos. El logo oficial no se toca.
+   ===================================================================== */
+@font-face { font-family: "Pixelify Sans"; font-weight: 400; font-display: swap; src: url(lib/fuentes/pixelify-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Pixelify Sans"; font-weight: 700; font-display: swap; src: url(lib/fuentes/pixelify-sans-latin-700-normal.woff2) format("woff2"); }
+.tema-pixel { --px-tinta: #1b2838; --px-sombra: 4px 4px 0 rgba(27,40,56,.55); --vidrio: #fffdf5; }
+.tema-pixel, .tema-pixel button, .tema-pixel input, .tema-pixel select { font-family: "Pixelify Sans", "Nunito", monospace; }
+.tema-pixel *:not(.leaflet-tile):not(img[alt^="INTA"]) { border-radius: 0 !important; }
+.tema-pixel * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.tema-pixel img.pix { image-rendering: pixelated; image-rendering: crisp-edges; width: 80%; height: 80%; display: block; }
+.tema-pixel .b-ico img.pix, .tema-pixel .b-mini img.pix { width: 22px; height: 22px; }
+
+/* Encabezado: azul plano con tramado en la base */
+.tema-pixel .barra { background:
+  repeating-conic-gradient(#0079b8 0% 25%, transparent 0% 50%) 0 100% / 4px 4px repeat-x,
+  linear-gradient(#008bd2, #008bd2); border-bottom: 4px solid #005d8f; box-shadow: 0 4px 0 rgba(27,40,56,.35); }
+.tema-pixel .barra h1 { font-weight: 700; letter-spacing: .02em; }
+.tema-pixel .campana { background: #005d8f; box-shadow: inset -3px -3px 0 rgba(0,0,0,.25); }
+.tema-pixel .cuenta { border: 2px solid var(--px-tinta); }
+
+/* Mapa ilustrado: tierra en grilla de píxeles, bordes nítidos */
+.tema-pixel #mapa.ilustrado { background-color: #e9dcb4;
+  background-image: linear-gradient(90deg, rgba(0,0,0,.035) 50%, transparent 50%), linear-gradient(rgba(0,0,0,.035) 50%, transparent 50%);
+  background-size: 8px 8px; }
+.tema-pixel #mapa::after { box-shadow: none; }
+.tema-pixel .leaflet-overlay-pane path { shape-rendering: crispEdges; stroke-linejoin: miter; stroke-linecap: square; }
+.tema-pixel #mapa.ilustrado path.predio { filter: none; }
+.tema-pixel #mapa.ilustrado.nivel-cerca .lote-est { filter: drop-shadow(3px 3px 0 rgba(27,40,56,.35)); }
+
+/* Controles, paneles y pestañas: cajas con borde y sombra en escalón */
+.tema-pixel .leaflet-control-zoom, .tema-pixel .boton-modo, .tema-pixel .capas-panel, .tema-pixel .flotante,
+.tema-pixel .pestanas, .tema-pixel .hoja, .tema-pixel .quitar-ruta {
+  border: 3px solid var(--px-tinta) !important; box-shadow: var(--px-sombra) !important; background: var(--vidrio); }
+.tema-pixel .leaflet-control-zoom a { background: var(--vidrio) !important; border-bottom: 3px solid var(--px-tinta) !important; }
+.tema-pixel .hoja { animation: subir-px .25s steps(4) both; }
+@keyframes subir-px { from { transform: translateY(32px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tema-pixel .hoja::before { height: 4px; background: var(--px-tinta); opacity: .3; }
+.tema-pixel .pestanas button.activa svg { background: var(--marca-claro); box-shadow: inset 0 0 0 2px var(--marca); }
+.tema-pixel .capas-vista { background: #ece6d4; border: 2px solid var(--px-tinta); }
+.tema-pixel .capas-vista button.activo { background: var(--marca); color: #fff; box-shadow: none; }
+.tema-pixel .capas-titulo { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--texto-2); margin: 8px 2px 4px; }
+
+/* Botones: efecto de tecla al apretar */
+.tema-pixel button.destacado, .tema-pixel .boton-ancho, .tema-pixel .boton-grande, .tema-pixel #foto-acciones button,
+.tema-pixel .enlace, .tema-pixel .boton-ig, .tema-pixel #bienvenida-empezar, .tema-pixel .ag-lugar {
+  border: 3px solid var(--px-tinta) !important; box-shadow: 3px 3px 0 var(--px-tinta) !important; }
+.tema-pixel button:active, .tema-pixel .boton-grande:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--px-tinta) !important; }
+
+/* Banderines, frutitas y servicios */
+.tema-pixel .tela { border: 3px solid var(--px-tinta); box-shadow: 3px 3px 0 rgba(27,40,56,.55); background: var(--c); }
+.tema-pixel .b-num, .tema-pixel .b-ico { border: 2px solid var(--px-tinta); }
+.tema-pixel .ancla .bandera.mini .tela { border-width: 2px; }
+
+.tema-pixel .fruta { background: #fffdf5; border: 3px solid var(--px-tinta); box-shadow: 3px 3px 0 rgba(27,40,56,.45); }
+.tema-pixel .servicio { border: 2px solid var(--px-tinta); box-shadow: 2px 2px 0 rgba(27,40,56,.45); }
+.tema-pixel .bandera { animation: aparecer-px .3s steps(3) both; }
+@keyframes aparecer-px { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tema-pixel .bandera.en-vivo .tela { animation: latir-px 1s steps(2) infinite; }
+@keyframes latir-px { 50% { box-shadow: 0 0 0 3px var(--rojo-inta), 3px 3px 0 rgba(27,40,56,.55); } }
+.tema-pixel .yo-punto { border: 3px solid #fff; outline: 2px solid var(--px-tinta); animation: none; }
+.tema-pixel .pin-inta { border: 3px solid var(--px-tinta); box-shadow: var(--px-sombra); }
+.tema-pixel .leaflet-tooltip.ctx-nombre { background: #fffdf5; border: 2px solid var(--px-tinta); padding: 0 4px; }
+.tema-pixel .leaflet-tooltip.sector-nombre { font-family: "Pixelify Sans", monospace; letter-spacing: .12em; }
+
+/* Fichas, listas, pasaporte, agenda */
+.tema-pixel .ficha-cabecera { background: var(--c); border-bottom: 4px solid var(--px-tinta); }
+.tema-pixel .ficha-disco, .tema-pixel .mini-disco { border: 3px solid var(--px-tinta); box-shadow: 2px 2px 0 rgba(27,40,56,.45); }
+.tema-pixel .ficha-agenda, .tema-pixel .pasaporte-guardado, .tema-pixel .ficha-sello, .tema-pixel .ficha-prov,
+.tema-pixel .aviso-item, .tema-pixel .texto-sugerido { border: 2px solid var(--px-tinta); }
+.tema-pixel .sello { border: 3px dashed #9aa3ad; }
+.tema-pixel .sello.ok { border: 3px solid var(--px-tinta); box-shadow: 3px 3px 0 var(--dorado); animation: sellar-px .3s steps(3) both; }
+@keyframes sellar-px { 0% { transform: scale(1.3); } 100% { transform: none; } }
+.tema-pixel .barra-progreso { height: 16px; border: 3px solid var(--px-tinta); background: #ece6d4; }
+.tema-pixel #pasaporte-barra { background: repeating-linear-gradient(90deg, var(--dorado) 0 10px, #d99a00 10px 12px); animation: none; }
+.tema-pixel .instagram { border: 3px solid var(--px-tinta); box-shadow: var(--px-sombra); }
+.tema-pixel .aviso { border: 3px solid #fff; box-shadow: var(--px-sombra); }
+.tema-pixel .papelitos i { width: 8px; height: 8px; animation-timing-function: steps(10); }
+
+/* Bienvenida: cielo en franjas, surcos y nodos cuadrados */
+.tema-pixel .bienvenida { background: linear-gradient(#36b4ef 0 12%, #1fa3e4 12% 24%, #008bd2 24% 40%, #0075b3 40% 55%, #005d8f 55% 62%, #2f6b2a 62% 74%, #24581f 74% 86%, #1b4517 86%); }
+.tema-pixel .bv-fondo { shape-rendering: crispEdges; }
+.tema-pixel .bv-fondo > rect:first-of-type, .tema-pixel .bv-fondo > path { display: none; }
+.tema-pixel .bv-surcos line { stroke: rgba(255,255,255,.18); stroke-width: 3; stroke-dasharray: 6 6; animation: surcos 1.6s steps(4) infinite; }
+.tema-pixel .bv-nodos circle { animation: nodo 1.6s steps(2) infinite; }
+.tema-pixel .bv-barrido { display: none; }
+.tema-pixel .bv-sello { border: 4px solid var(--px-tinta); box-shadow: 0 0 0 6px #fff, 6px 6px 0 6px rgba(0,0,0,.35); }
+.tema-pixel .bv-aro { display: none; }
+.tema-pixel .bv-pasos li { background: rgba(0,40,70,.55); border: 2px solid rgba(255,255,255,.5); }
+.tema-pixel #bienvenida-empezar { background: var(--dorado); }
+.tema-pixel .bienvenida h2 { font-weight: 700; letter-spacing: .02em; }

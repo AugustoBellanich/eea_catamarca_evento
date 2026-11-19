@@ -1,7 +1,7 @@
 // Guarda el sitio, los datos y las teselas vistas para usarlo con poca señal.
-const VERSION = "pa70-v14";
+const VERSION = "pa70-v15";
 const BASE = ["./", "index.html", "estilos.css", "app.js", "config.js", "manifest.webmanifest",
-  "iconos.js", "lib/leaflet.js", "lib/leaflet.css", "img/icono.svg", "img/logo-inta70-blanco-izquierda.png", "img/logo-inta70-color-izquierda.png", "datos/estaciones.js", "datos/mapa.js", "datos/agenda.js", "datos/provisorios.js", "lib/fuentes/nunito-latin-400-normal.woff2", "lib/fuentes/nunito-latin-700-normal.woff2", "lib/fuentes/nunito-latin-800-normal.woff2", "lib/fuentes/nunito-latin-900-normal.woff2"];
+  "iconos.js", "lib/leaflet.js", "lib/leaflet.css", "img/icono.svg", "img/logo-inta70-blanco-izquierda.png", "img/logo-inta70-color-izquierda.png", "datos/estaciones.js", "datos/mapa.js", "datos/agenda.js", "datos/provisorios.js", "lib/fuentes/nunito-latin-400-normal.woff2", "lib/fuentes/nunito-latin-700-normal.woff2", "lib/fuentes/nunito-latin-800-normal.woff2", "lib/fuentes/nunito-latin-900-normal.woff2", "lib/fuentes/pixelify-sans-latin-400-normal.woff2", "lib/fuentes/pixelify-sans-latin-700-normal.woff2"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(BASE)).then(() => self.skipWaiting()));
