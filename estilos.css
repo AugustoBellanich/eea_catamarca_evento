@@ -546,3 +546,62 @@ body { background: #eee5c8; }
 .tema-pixel .pt-evento, .tema-pixel .pt-chips li { border: 2px solid #19c3ff; box-shadow: 3px 3px 0 rgba(0,0,0,.45); background: #0a2a4f; }
 .tema-pixel .portada #bienvenida-empezar { border: 3px solid #1b2838 !important; box-shadow: 4px 4px 0 #1b2838 !important; background: #f2b705; animation: none; }
 .pt-red { height: 40%; mask-image: linear-gradient(#000 35%, transparent 95%); -webkit-mask-image: linear-gradient(#000 35%, transparent 95%); }
+
+/* =====================================================================
+   ESTILO PARQUE (tema moderno, modo ilustrado): lienzo claro y apagado, lotes sin borde con dibujitos
+   botánicos en verde oliva, construcciones en arena con sombra corta, y alto contraste solo en las paradas.
+   ===================================================================== */
+body:not(.tema-pixel) #mapa.ilustrado { background: #E4E9E1; }
+body:not(.tema-pixel) #mapa.ilustrado::after { box-shadow: inset 0 0 50px rgba(60,70,55,.10); }
+body:not(.tema-pixel) #mapa.ilustrado path.predio { filter: none; }
+body:not(.tema-pixel) .lote-pq { cursor: default; }
+body:not(.tema-pixel) .lote-pq.es-est { cursor: pointer; }
+body:not(.tema-pixel) .p-edif { fill: #D5D0C5; filter: drop-shadow(2px 3px 0 rgba(95,85,65,.20)); }
+body:not(.tema-pixel) .lote-pq.p-agua { filter: none; }
+body:not(.tema-pixel) .camino { pointer-events: none; }
+
+/* Paradas: gota blanca con el número */
+.gota { position: relative; width: 40px; height: 50px; cursor: pointer; animation: aparecer .3s ease-out both; }
+.gota > svg { position: absolute; z-index: 0; inset: 0; width: 40px; height: 50px; overflow: visible;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.28)); }
+.gota path { fill: #fff; }
+.gota .g-num, .gota .g-ico { position: absolute; z-index: 1; left: 4px; top: 3px; width: 32px; height: 32px; display: grid; place-items: center; }
+.gota .g-num { color: #1E3A2F; font-family: "Nunito", system-ui, sans-serif; font-weight: 900; font-size: 17px; letter-spacing: -.02em; }
+.gota .g-ico svg { position: static; width: 22px; height: 22px; filter: none; }
+.gota:active { transform: scale(.94); }
+/* sellada: se apaga y lleva un tilde chico */
+.gota.sellada path { fill: #F1F3EF; }
+.gota.sellada svg { filter: drop-shadow(0 1px 2px rgba(0,0,0,.18)); }
+.gota.sellada .g-num { color: #A3ADA5; }
+.gota.sellada .g-ico { opacity: .45; }
+.g-tilde { position: absolute; z-index: 2; right: -3px; top: -3px; width: 17px; height: 17px; border-radius: 50%; background: #2e7d32;
+  color: #fff; font-size: 11px; font-weight: 900; display: grid; place-items: center; box-shadow: 0 0 0 2px #fff; }
+/* provisoria: borde punteado y "?" */
+.gota.provisoria path { stroke: #1E3A2F; stroke-opacity: .55; stroke-width: 1.5; stroke-dasharray: 3 3; }
+.gota.provisoria .g-num::after { content: "?"; font-size: 10px; margin-left: 1px; opacity: .7; }
+/* actividad en curso */
+.g-vivo { position: absolute; z-index: 2; left: -2px; top: -2px; width: 12px; height: 12px; border-radius: 50%; background: var(--rojo-inta);
+  box-shadow: 0 0 0 2px #fff; animation: latir-vivo 1.4s ease-in-out infinite; }
+@keyframes latir-vivo { 50% { box-shadow: 0 0 0 2px #fff, 0 0 0 7px rgba(227,6,19,.0), 0 0 0 4px rgba(227,6,19,.35); } }
+/* varias paradas juntas */
+.racimo-pq { font-family: "Nunito", system-ui, sans-serif; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: #1E3A2F; font-weight: 900; font-size: 18px;
+  display: grid; place-items: center; cursor: pointer; filter: drop-shadow(0 3px 6px rgba(0,0,0,.28));
+  animation: aparecer .3s ease-out both; }
+.racimo-pq.hecho { color: #A3ADA5; }
+/* que no se confunda con una parada: azul INTA y dos discos detrás, como una pila */
+.racimo-pq { color: var(--marca); box-shadow: 4px -4px 0 -1px #fff, 4px -4px 0 0 rgba(0,139,210,.35),
+  8px -8px 0 -1px #fff, 8px -8px 0 0 rgba(0,139,210,.25); border: 2.5px solid var(--marca); }
+.racimo-pq.hecho { border-color: #A3ADA5; box-shadow: 4px -4px 0 -1px #fff, 8px -8px 0 -1px #fff; }
+
+/* Ingresos y servicios: símbolos chicos, sin texto, de bajo contraste */
+.serv-pq { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.75); display: grid; place-items: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12); cursor: pointer; }
+.serv-pq svg { width: 18px; height: 18px; filter: grayscale(1) contrast(.9); opacity: .7; }
+
+/* Cartelito al tocar un lote */
+#cartelito { position: fixed; left: 50%; bottom: calc(var(--alto-acciones, 64px) + 14px); z-index: 1200;
+  transform: translate(-50%, 10px); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+  background: rgba(35,45,40,.82); color: #fff; font-weight: 700; font-size: .9rem; padding: 7px 14px; border-radius: 999px;
+  max-width: 86vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#cartelito.visible { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .g-vivo { animation: none; } }

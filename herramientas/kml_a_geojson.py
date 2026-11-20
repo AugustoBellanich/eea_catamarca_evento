@@ -89,8 +89,12 @@ def main(ruta, salida="datos/estaciones.geojson"):
         if k == "eea catamarca" and re.match(r"(?i)\s*edificio", nombre):
             k = "eea catamarca (edificio)"
         info = NOMBRES.get(k)
-        if info is None and k.startswith("camino"):  # "Camino", "Camino principal", etc.: líneas del mapa
+        if info is None and k.startswith("camino"):  # "Camino", "Camino principal", etc.: caminos de tierra internos
             info = {"tipo": "camino"}
+        if info is None and k.startswith("ruta"):    # "Ruta", "Ruta de acceso": ruta asfaltada de afuera
+            info = {"tipo": "ruta"}
+        if info is None and (k.startswith("paseo") or k.startswith("sendero")):  # paseo peatonal del recorrido
+            info = {"tipo": "paseo"}
         if info is None:
             sin_mapear.append(nombre)
             info = {"revisar": True}
@@ -106,7 +110,7 @@ def main(ruta, salida="datos/estaciones.geojson"):
         else:
             continue
         tipo = info.get("tipo", "lote")
-        props = {"id": {"predio": "predio", "camino": "camino-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
+        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
         props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "revisar", "solo_en") if c in info})
         feats.append({"type": "Feature", "properties": props, "geometry": geom})

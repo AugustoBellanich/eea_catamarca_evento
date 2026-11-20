@@ -63,7 +63,10 @@ usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese arc
 
 ## Estilos
 
-Dos estilos visuales: **moderno** (el de siempre) y **pixel** (tipografía pixelada, bordes duros, sombras en
+Dos estilos visuales: **moderno** (estilo parque: lienzo claro y apagado, lotes sin borde con dibujitos en verde
+oliva según el cultivo, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
+paradas que se tocan en pantalla se juntan en un círculo azul con la cantidad, que al tocarlo acerca; las selladas
+se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo) y **pixel** (tipografía pixelada, bordes duros, sombras en
 escalón, texturas en cuadraditos e íconos rasterizados a 20×20 y ampliados sin suavizar; el logo oficial no se
 toca). Se elige en `config.js` (`tema`), en el panel Capas o con `?tema=pixel` en la dirección.
 
@@ -74,8 +77,15 @@ cultivos, e ingresos y servicios. Con las estaciones apagadas queda solo el plan
 
 ## Caminos
 
-En Google Earth, dibujar cada camino como **ruta** (línea) con un nombre que empiece con "Camino" ("Camino",
-"Camino principal"…). El conversor los toma solos y el modo ilustrado los dibuja como calles. Más adelante, con los
+En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué es, y el conversor lo toma solo:
+
+| Nombre empieza con | Qué es | Cómo se dibuja |
+|---|---|---|
+| "Ruta" | Ruta asfaltada de acceso | Gris con borde blanco |
+| "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
+| "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
+
+Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino. Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
 
 ## Logo y colores oficiales

@@ -22,6 +22,9 @@
   // Estilo visual: moderno o pixel (se recuerda en el navegador; ?tema=pixel lo fuerza).
   const TEMA = params.get("tema") || leer("pa70-tema", null) || C.tema || "moderno";
   document.body.classList.toggle("tema-pixel", TEMA === "pixel");
+  // Estilo "parque" (el moderno): lienzo claro y apagado, lotes sin borde con textura botánica, y alto contraste
+  // reservado a las paradas (gotas blancas con número). El tema pixel conserva su dibujo propio.
+  const PARQUE = TEMA !== "pixel";
   // Capas visibles (se recuerdan en el navegador).
   const capas = Object.assign({ estaciones: true, lotes: true, servicios: true }, leer("pa70-capas", {}));
 
@@ -54,7 +57,8 @@
   const esEstacion = (f) => !!estDe(f);
   const esServicio = (f) => f.properties.tipo === "servicio";
   const esPredio = (f) => f.properties.tipo === "predio" || f.properties.id === "predio";
-  const esCamino = (f) => /^camino/.test(f.properties.id);
+  const esCamino = (f) => /^(camino|ruta|paseo)/.test(f.properties.id);
+  const tipoLinea = (f) => (f.properties.id.match(/^(camino|ruta|paseo)/) || [])[1];
   const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f);
   const lotesDe = (id) => geo.features.filter((f) => estDe(f) === id);
   const ubicadas = () => estaciones.filter((e) => lotesDe(e.id).length);
@@ -220,16 +224,31 @@
       <rect width="12" height="8" fill="#5fb8e8"/><rect x="2" y="3" width="6" height="2" fill="#bfe7fb"/></pattern>
     <pattern id="p-edificio" width="8" height="8" patternUnits="userSpaceOnUse">
       <rect width="8" height="8" fill="#e6dccb"/><rect width="4" height="4" fill="#d3c5aa"/><rect x="4" y="4" width="4" height="4" fill="#d3c5aa"/></pattern>`;
+  // Versión parque: tinte de suelo apenas marcado y dibujitos monocromos en verde oliva, para que el lote se lea como
+  // paisaje y no como botón.
+  const OLIVA = 'fill="#6E7F63" fill-opacity=".42"', TINTE = '<rect width="100%" height="100%" fill="#D3DEC9" fill-opacity=".6"/>';
+  const PATRONES_PARQUE = `
+    <pattern id="p-arboles" width="16" height="14" patternUnits="userSpaceOnUse">${TINTE}
+      <circle cx="4" cy="4" r="3.3" ${OLIVA}/><circle cx="12" cy="11" r="3.3" ${OLIVA}/></pattern>
+    <pattern id="p-hileras" width="9" height="11" patternUnits="userSpaceOnUse">${TINTE}
+      <rect x="3.5" y="1" width="2" height="8" rx="1" ${OLIVA}/></pattern>
+    <pattern id="p-surcos" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(90)">${TINTE}
+      <rect y="3" width="7" height="1.4" fill="#6E7F63" fill-opacity=".3"/></pattern>
+    <pattern id="p-pasto" width="14" height="12" patternUnits="userSpaceOnUse">${TINTE}
+      <path d="M3 8l1.5-3 1.5 3M9 4l1.5-3 1.5 3" stroke="#6E7F63" stroke-opacity=".4" stroke-width="1.1" fill="none"/></pattern>
+    <pattern id="p-agua" width="18" height="10" patternUnits="userSpaceOnUse">
+      <rect width="18" height="10" fill="#CFE1E4"/><path d="M1 6q4-3 8 0t8 0" stroke="#fff" stroke-opacity=".7" stroke-width="1.2" fill="none"/></pattern>`;
   function ponerPatrones() {
     const svg = mapa.getPanes().overlayPane.querySelector("svg");
     if (svg && !svg.querySelector("#p-arboles")) {
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-      defs.innerHTML = TEMA === "pixel" ? PATRONES_PIX : PATRONES; svg.insertBefore(defs, svg.firstChild);
+      defs.innerHTML = TEMA === "pixel" ? PATRONES_PIX : PARQUE ? PATRONES_PARQUE : PATRONES; svg.insertBefore(defs, svg.firstChild);
     }
   }
 
   function estilo(f) {
     const ilu = modo === "ilustrado", p = f.properties;
+    if (PARQUE && ilu) return estiloParque(f);
     if (esPredio(f)) return ilu ? { color: "#a8946a", weight: 2, dashArray: "2 6", fillColor: "#e4ebc8", fillOpacity: 1, className: "predio" }
       : { color: "#ffffff", weight: 2, dashArray: "4 6", fill: false, className: "predio" };
     if (esCamino(f)) return ilu ? { color: "#f8f3e6", weight: 12, lineCap: "round", className: "camino" }
@@ -242,13 +261,43 @@
       : { color: zona(e).color, weight: 3, fillColor: zona(e).color, fillOpacity: 0.35, className: "lote lote-est" };
   }
 
+  // Parque: el predio es tierra clara (lo que queda entre lotes se lee como camino); los lotes no llevan borde.
+  function estiloParque(f) {
+    const p = f.properties;
+    if (esPredio(f)) return { color: "#D8CEBE", weight: 1, fillColor: "#EFE8D8", fillOpacity: 1, className: "predio" };
+    const est = esEstacion(f) && capas.estaciones;
+    if (p.provisorio) return { color: "#1E3A2F", weight: 1.5, opacity: .5, dashArray: "4 5", fillColor: "#1E3A2F", fillOpacity: .06,
+      className: "lote lote-pq lote-prov" + (est ? " es-est" : "") };
+    const patron = p.patron || (estacion(estDe(f)) || {}).patron || "pasto";
+    return { stroke: false, fillOpacity: 1, className: "lote lote-pq " + (patron === "edificio" ? "p-edif" : "p-" + patron) + (est ? " es-est" : "") };
+  }
+  // Rutas, caminos y paseos dibujados en el KML (nombres "Ruta…", "Camino…", "Paseo…").
+  function dibujarLineasParque(lineas) {
+    const capa = (fs, st) => L.geoJSON({ type: "FeatureCollection", features: fs }, { style: st, interactive: false }).addTo(capaFondo);
+    const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
+    capa(de("ruta"), { color: "#FFFFFF", weight: 12, lineCap: "round", lineJoin: "round", className: "camino" });
+    capa(de("ruta"), { color: "#9AA3AB", weight: 8, lineCap: "round", lineJoin: "round", className: "camino" });
+    capa(de("camino"), { color: "#D8CEBE", weight: 11, lineCap: "round", lineJoin: "round", className: "camino" });
+    capa(de("camino"), { color: "#F7F3E8", weight: 9, lineCap: "round", lineJoin: "round", className: "camino" });
+    capa(de("camino"), { color: "#B8A988", weight: 1.2, opacity: .35, dashArray: "2 7", className: "camino" });
+    capa(de("paseo"), { color: "#FAF8F5", weight: 6, lineCap: "round", lineJoin: "round", className: "camino paseo" });
+  }
+  const EMOJI = { arboles: "🌳", hileras: "🍇", surcos: "🌱", pasto: "🌾", agua: "💧", edificio: "🏠" };
+  // Cartelito discreto abajo al tocar un lote que no es parada; se va solo.
+  function cartelito(texto) {
+    let t = $("#cartelito");
+    if (!t) { t = document.createElement("div"); t.id = "cartelito"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    t.textContent = texto; t.classList.add("visible");
+    clearTimeout(cartelito.t); cartelito.t = setTimeout(() => t.classList.remove("visible"), 2600);
+  }
+
   // Fondo: predio, caminos y lotes. Se dibuja una vez por modo; el nivel de detalle lo resuelve el CSS.
   function dibujarFondo() {
     if (capaFondo) capaFondo.remove();
     capaFondo = L.featureGroup().addTo(mapa);
     const orden = (f) => (esPredio(f) ? 0 : esCamino(f) ? 1 : esContexto(f) ? 2 : 3);
     const vect = geo.features.filter((f) => f.geometry.type !== "Point").sort((a, b) => orden(a) - orden(b));
-    if (modo === "ilustrado") {
+    if (modo === "ilustrado" && !PARQUE) {
       L.geoJSON({ type: "FeatureCollection", features: vect.filter(esCamino) },
         { style: { color: "#cdbb8f", weight: 16, lineCap: "round", className: "camino" }, interactive: false }).addTo(capaFondo);
     }
@@ -258,9 +307,16 @@
       L.circle(centro(f), { radius: 18, color: zona(e).color, weight: 3, dashArray: "6 6", fillColor: zona(e).color, fillOpacity: 0.18,
         className: "lote lote-est lote-prov" }).on("click", () => abrirFicha(e.id)).addTo(capaFondo);
     });
-    L.geoJSON({ type: "FeatureCollection", features: vect }, {
+    const parque = PARQUE && modo === "ilustrado";
+    L.geoJSON({ type: "FeatureCollection", features: parque ? vect.filter((f) => !esCamino(f)) : vect }, {
       style: estilo,
       onEachFeature: (f, capa) => {
+        if (parque) { // sin carteles fijos: el nombre del lote aparece al tocarlo
+          if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
+          else if (esPredio(f)) capa.on("click", () => { if (nivel === "lejos") verPredio(); });
+          else if (f.properties.nombre) capa.on("click", (ev) => { L.DomEvent.stop(ev); cartelito(`${EMOJI[f.properties.patron] || "🌿"} ${f.properties.nombre}`); });
+          return;
+        }
         if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
         else if (esPredio(f)) capa.on("click", () => { if (nivel === "lejos") verPredio(); });
         if (esPredio(f) && f.properties.nombre && sectores().length > 1)
@@ -268,6 +324,7 @@
         if ((esContexto(f) || (!capas.estaciones && esEstacion(f))) && f.properties.nombre && capas.lotes) capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "bottom", offset: [0, 14], className: "ctx-nombre" });
       },
     }).addTo(capaFondo);
+    if (parque) dibujarLineasParque(vect.filter(esCamino)); // encima del predio y de los bordes de los lotes
     ponerPatrones();
   }
 
@@ -298,7 +355,7 @@
   function dibujarFrutas() {
     if (capaFrutas) capaFrutas.remove();
     capaFrutas = L.layerGroup();
-    if (nivel !== "cerca" || !capas.lotes) return;
+    if (nivel !== "cerca" || !capas.lotes || (PARQUE && modo === "ilustrado")) return; // en parque el lote ya es la textura
     geo.features.filter((f) => !(f.properties.provisorio && !capas.estaciones))
       .filter((f) => (f.properties.cultivo || f.properties.provisorio) && f.geometry.type !== "LineString").forEach((f) => {
       const cultivo = f.properties.cultivo || (estacion(estDe(f)) || {}).icono;
@@ -315,6 +372,15 @@
     if (capaServicios) capaServicios.remove();
     capaServicios = L.layerGroup();
     if (nivel === "lejos" || !capas.servicios) return;
+    if (PARQUE) { // símbolos chicos y de bajo contraste, sin texto
+      geo.features.filter((f) => esServicio(f) && f.geometry.type === "Point").forEach((f) => {
+        L.marker(centro(f), { keyboard: false, icon: L.divIcon({ className: "icono-libre", iconSize: [26, 26], iconAnchor: [13, 13],
+          html: `<div class="serv-pq" title="${esc(f.properties.nombre)}">${ICON[f.properties.servicio] || ""}</div>` }) })
+          .on("click", () => cartelito(f.properties.nombre)).addTo(capaServicios);
+      });
+      capaServicios.addTo(mapa);
+      return;
+    }
     geo.features.filter((f) => esServicio(f) && f.geometry.type === "Point").forEach((f) => {
       const texto = nivel === "cerca" ? f.properties.nombre : f.properties.servicio === "ingreso" ? "Ingreso" : "";
       L.marker(centro(f), { interactive: false, keyboard: false, icon: L.divIcon({ className: "icono-libre", iconSize: [150, 30], iconAnchor: [75, 15],
@@ -337,6 +403,7 @@
       return;
     }
     if (!capas.estaciones) return;
+    if (PARQUE) return dibujarGotas();
     // Ubicación de banderines sin superposición (como las etiquetas de un mapa): cada estación tiene un punto en su
     // lugar; su banderín se ubica en el primer hueco libre alrededor y se une al punto con una línea guía.
     const cerca = nivel === "cerca";
@@ -399,6 +466,48 @@
     });
   }
 
+  // Parque: gota blanca con el número por estación. Las que se tocan en pantalla se juntan en un círculo con la
+  // cantidad (como los mapas de parques); tocarlo acerca hasta separarlas.
+  function dibujarGotas() {
+    const es = ubicadas().slice().sort((a, b) => (parseInt(a.numero, 10) || 99) - (parseInt(b.numero, 10) || 99));
+    const juntar = mapa.getZoom() < mapa.getMaxZoom() - 0.25;
+    // Se compara dónde se ve cada gota (su cabeza queda ~28 px arriba del punto) y se juntan grupos hasta que
+    // ninguno quede a menos de 50 px de otro.
+    const grupos = es.map((e) => { const ll = centroEstacion(e.id); return { es: [e], lls: [ll], pt: mapa.latLngToLayerPoint(ll).subtract([0, 28]) }; });
+    for (let unido = juntar; unido;) {
+      unido = false;
+      for (let i = 0; i < grupos.length && !unido; i++) for (let j = i + 1; j < grupos.length && !unido; j++) {
+        const a = grupos[i], b = grupos[j];
+        if (a.pt.distanceTo(b.pt) >= 50) continue;
+        grupos[i] = { es: a.es.concat(b.es), lls: a.lls.concat(b.lls),
+          pt: a.pt.multiplyBy(a.es.length).add(b.pt.multiplyBy(b.es.length)).divideBy(a.es.length + b.es.length) };
+        grupos.splice(j, 1); unido = true;
+      }
+    }
+    grupos.forEach((g) => {
+      if (g.es.length === 1) {
+        L.marker(g.lls[0], { icon: gota(g.es[0]), zIndexOffset: 500, title: g.es[0].corto || g.es[0].nombre })
+          .on("click", () => abrirFicha(g.es[0].id)).addTo(capaParadas);
+        return;
+      }
+      const hechas = g.es.every((e) => sellos.includes(e.id));
+      L.marker(mapa.layerPointToLatLng(g.pt), { zIndexOffset: 600, title: g.es.map((e) => e.numero || e.corto).join(", "),
+        icon: L.divIcon({ className: "icono-libre", iconSize: [44, 44], iconAnchor: [22, 22],
+          html: `<div class="racimo-pq${hechas ? " hecho" : ""}">${g.es.length}</div>` }) })
+        .on("click", () => mapa.flyToBounds(L.latLngBounds(g.lls), { padding: [90, 90], maxZoom: mapa.getMaxZoom(), duration: .6 }))
+        .addTo(capaParadas);
+    });
+  }
+  function gota(e) {
+    const visitada = sellos.includes(e.id);
+    const ahora = actividades.some((a) => a.estacion === e.id && estadoActividad(a) === "ahora");
+    const clases = ["gota", visitada && "sellada", esProvisoria(e.id) && "provisoria", ahora && "en-vivo"].filter(Boolean).join(" ");
+    const centro = e.numero ? `<span class="g-num">${esc(e.numero)}</span>` : `<span class="g-ico">${ICON[e.icono] || ""}</span>`;
+    return L.divIcon({ className: "icono-libre", iconSize: [40, 50], iconAnchor: [20, 48],
+      html: `<div class="${clases}"><svg viewBox="0 0 40 50" aria-hidden="true"><path d="M20 48C20 48 4 30.5 4 19a16 16 0 0 1 32 0c0 11.5-16 29-16 29z"/></svg>
+        ${centro}${visitada ? '<span class="g-tilde">✓</span>' : ""}${ahora ? '<span class="g-vivo"></span>' : ""}</div>` });
+  }
+
   // Ancho estimado del banderín (número + ícono, y el nombre de cerca).
   function anchoBandera(e, cerca) {
     const base = (e.numero ? 34 : 0) + 34 + 12;
@@ -429,6 +538,7 @@
 
   // ---------- Hojas y pestañas ----------
   function mostrar(sel) {
+    const ct = $("#cartelito"); if (ct) ct.classList.remove("visible");
     document.querySelectorAll(".hoja").forEach((h) => (h.hidden = true));
     if (sel) $(sel).hidden = false;
     const pest = { "#agenda": "agenda", "#pasaporte": "pasaporte", "#foto": "foto" }[sel] || "mapa";
