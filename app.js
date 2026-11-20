@@ -795,24 +795,122 @@
     if (!$("#agenda").hidden) armarAgenda();
   }
 
-  // ---------- Cómo llegar (en línea recta: no hay caminos internos cargados) ----------
-  let capaRuta = null;
+  // ---------- Cómo llegar ----------
+  // Por la red de caminos del KML (caminos internos, calles y rutas): se camina por los caminos internos y se usan las
+  // calles y rutas solo para cruzar (cuestan más). Cada vez que el recorrido toca o cruza una calle o ruta, se marca
+  // un aviso de precaución. Sin red de caminos, va en línea recta.
+  let capaRuta = null, red = null;
+  const COSTO = { camino: 1, paseo: 1, "calle-tierra": 2.5, "calle-asfalto": 4, ruta: 6 };
+  const peligrosa = (t) => t === "ruta" || /^calle/.test(t);
+  function armarRed() {
+    const lineas = geo.features.filter((f) => esCamino(f) && f.geometry.type === "LineString");
+    if (!lineas.length) return null;
+    const lat0 = C.centro[0], kx = 111320 * Math.cos(lat0 * Math.PI / 180), ky = 110540;
+    const xy = ([lng, lat]) => [lng * kx, lat * ky], ll = ([x, y]) => [y / ky, x / kx];
+    const nodos = [], aristas = [], segPeligro = [];
+    lineas.forEach((f) => {
+      const t = tipoLinea(f), coords = suave(f).geometry.coordinates.map(xy);
+      let previo = null;
+      for (let i = 0; i < coords.length - 1; i++) {
+        const [a, b] = [coords[i], coords[i + 1]], L2 = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(L2 / 5));
+        if (peligrosa(t)) segPeligro.push({ a, b, nombre: f.properties.nombre || (t === "ruta" ? "la ruta" : "la calle") });
+        for (let k = i ? 1 : 0; k <= n; k++) {
+          const id = nodos.length; nodos.push({ p: [a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n], t, nombre: f.properties.nombre, ady: [] });
+          if (previo !== null) aristas.push([previo, id]);
+          previo = id;
+        }
+      }
+    });
+    // empalmes entre líneas distintas: nodos a menos de 9 m
+    for (let i = 0; i < nodos.length; i++) for (let j = i + 1; j < nodos.length; j++) {
+      const a = nodos[i], b = nodos[j];
+      if (Math.abs(a.p[0] - b.p[0]) < 9 && Math.abs(a.p[1] - b.p[1]) < 9 && Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]) < 9 && a.nombre + a.t !== b.nombre + b.t) aristas.push([i, j]);
+    }
+    aristas.forEach(([i, j]) => {
+      const d = Math.hypot(nodos[i].p[0] - nodos[j].p[0], nodos[i].p[1] - nodos[j].p[1]);
+      const c = d * Math.max(COSTO[nodos[i].t] || 1, COSTO[nodos[j].t] || 1);
+      nodos[i].ady.push([j, c]); nodos[j].ady.push([i, c]);
+    });
+    // cruces: de un camino interno a otro enfrentado del otro lado de una calle o ruta, derecho (menos de 45 m)
+    const distSeg = (p, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1e-9)));
+      return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); };
+    const orilla = nodos.map((nd, i) => i).filter((i) => !peligrosa(nodos[i].t) && segPeligro.some((s) => distSeg(nodos[i].p, s.a, s.b) < 28));
+    orilla.forEach((i, x) => orilla.slice(x + 1).forEach((j) => {
+      const a = nodos[i], b = nodos[j], d = Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]);
+      if (d < 9 || d > 45 || !segPeligro.some((s) => cruce(a.p, b.p, s.a, s.b))) return;
+      const c = d * 1.5 + 25; a.ady.push([j, c]); b.ady.push([i, c]);
+    }));
+    return { nodos, segPeligro, xy, ll };
+  }
+  function caminoMasCorto(r, desde, hasta) {
+    const n = r.nodos.length, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1), hecho = new Uint8Array(n);
+    dist[desde] = 0;
+    for (;;) { // Dijkstra simple: la red tiene pocos cientos de nodos
+      let u = -1, m = Infinity;
+      for (let i = 0; i < n; i++) if (!hecho[i] && dist[i] < m) { m = dist[i]; u = i; }
+      if (u < 0 || u === hasta) break;
+      hecho[u] = 1;
+      r.nodos[u].ady.forEach(([v, c]) => { if (dist[u] + c < dist[v]) { dist[v] = dist[u] + c; prev[v] = u; } });
+    }
+    if (!isFinite(dist[hasta])) return null;
+    const camino = []; for (let v = hasta; v >= 0; v = prev[v]) camino.unshift(v);
+    return camino;
+  }
+  function cruce(p1, p2, a, b) { // punto donde [p1,p2] corta a [a,b], o null
+    const d = (p2[0] - p1[0]) * (b[1] - a[1]) - (p2[1] - p1[1]) * (b[0] - a[0]);
+    if (!d) return null;
+    const t = ((a[0] - p1[0]) * (b[1] - a[1]) - (a[1] - p1[1]) * (b[0] - a[0])) / d, u = ((a[0] - p1[0]) * (p2[1] - p1[1]) - (a[1] - p1[1]) * (p2[0] - p1[0])) / d;
+    return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])] : null;
+  }
   function comoLlegar(id) {
     const destino = centroEstacion(id), e = estacion(id);
     const ingreso = geo.features.find((f) => esServicio(f) && /principal/i.test(f.properties.nombre || "")) || geo.features.find(esServicio);
     const origen = miPosicion || (ingreso ? centro(ingreso) : null);
     if (!destino || !origen) { avisar("No hay un punto de partida para trazar el recorrido."); return; }
     if (capaRuta) capaRuta.remove();
-    const m = mapa.distance(origen, destino), min = Math.max(1, Math.round(m / 75)); // ~4,5 km/h
+    red = red || armarRed();
+    let puntos = [origen, destino], avisos = [];
+    if (red) {
+      const o = red.xy([origen.lng, origen.lat]), dd = red.xy([destino.lng, destino.lat]);
+      const cercano = (p) => red.nodos.reduce((m, nd, i) => { const d = Math.hypot(nd.p[0] - p[0], nd.p[1] - p[1]) * (peligrosa(nd.t) ? 3 : 1); return d < m.d ? { i, d } : m; }, { i: -1, d: Infinity }).i;
+      const camino = caminoMasCorto(red, cercano(o), cercano(dd));
+      if (camino) {
+        const xs = [o, ...camino.map((i) => red.nodos[i].p), dd];
+        // avisos: un tramo es peligroso si corta una calle o ruta o va por ella; cada tramo seguido lleva un solo aviso,
+        // puesto donde empieza
+        const tipos = [null, ...camino.map((i) => red.nodos[i]), null];
+        const marcas = []; let enTramo = null;
+        for (let i = 0; i < xs.length - 1; i++) {
+          let nombre = null, q = null;
+          red.segPeligro.forEach((s) => { const c = !nombre && cruce(xs[i], xs[i + 1], s.a, s.b); if (c) { nombre = s.nombre; q = c; } });
+          const nd = [tipos[i], tipos[i + 1]].find((x) => x && peligrosa(x.t));
+          if (!nombre && nd) { nombre = nd.nombre; q = nd.p; }
+          if (nombre && nombre !== enTramo && !marcas.some((m) => m.nombre === nombre && Math.hypot(m.p[0] - q[0], m.p[1] - q[1]) < 40)) marcas.push({ p: q, nombre });
+          enTramo = nombre;
+        }
+        puntos = xs.map(red.ll).map((q) => L.latLng(q));
+        avisos = marcas.map((m) => ({ ll: L.latLng(red.ll(m.p)), nombre: (m.nombre || "la calle").replace(/^RP N° /, "RP ") }));
+      }
+    }
+    const m = puntos.reduce((t, p, i) => (i ? t + mapa.distance(puntos[i - 1], p) : 0), 0), min = Math.max(1, Math.round(m / 75)); // ~4,5 km/h
+    const medio = puntos[Math.floor(puntos.length / 2)];
+    if (!mapa.getPane("recorrido")) mapa.createPane("recorrido").style.zIndex = 430; // encima de árboles y vías
+    const sobre = { pane: "recorrido", renderer: comoLlegar.lienzo || (comoLlegar.lienzo = L.svg({ pane: "recorrido" })) };
     capaRuta = L.layerGroup([
-      L.polyline([origen, destino], { color: "#ffffff", weight: 9, opacity: 0.9, lineCap: "round" }),
-      L.polyline([origen, destino], { color: zona(e).color, weight: 5, dashArray: "2 12", lineCap: "round", className: "ruta" }),
-      L.marker(L.latLngBounds([origen, destino]).getCenter(), { interactive: false, icon: L.divIcon({ className: "icono-libre", iconSize: [190, 34], iconAnchor: [95, 17],
+      L.polyline(puntos, { ...sobre, color: "#ffffff", weight: 9, opacity: 0.9, lineCap: "round", lineJoin: "round", interactive: false }),
+      L.polyline(puntos, { ...sobre, color: zona(e).color, weight: 5, dashArray: "2 12", lineCap: "round", lineJoin: "round", className: "ruta", interactive: false }),
+      L.marker(medio, { interactive: false, icon: L.divIcon({ className: "icono-libre", iconSize: [190, 34], iconAnchor: [95, 40],
         html: `<span class="ruta-etiqueta" style="--c:${zona(e).color}">🚶 ${Math.round(m / 10) * 10} m · ${min} min</span>` }) }),
+      ...avisos.map((a) => L.marker(a.ll, { zIndexOffset: 800, title: "Precaución: " + a.nombre, icon: L.divIcon({ className: "icono-libre", iconSize: [34, 34], iconAnchor: [17, 17],
+        html: `<div class="precaucion" aria-label="Precaución al cruzar ${esc(a.nombre)}">!</div>` }) })
+        .on("click", () => avisar(`⚠ Precaución: ${a.nombre}. Mirá a ambos lados y caminá por la banquina; pueden pasar vehículos y máquinas.`, 5000))),
     ]).addTo(mapa);
     mostrar(null);
-    mapa.flyToBounds(L.latLngBounds([origen, destino]).pad(0.4), { duration: 0.6 });
-    avisar(`${miPosicion ? "Desde tu ubicación" : "Desde el ingreso principal"} hasta ${e.corto || e.nombre}, en línea recta.`, 5000);
+    mapa.flyToBounds(L.latLngBounds(puntos).pad(0.3), { duration: 0.6 });
+    const desde = miPosicion ? "Desde tu ubicación" : "Desde el ingreso principal";
+    const nombres = Array.from(new Set(avisos.map((a) => a.nombre)));
+    avisar(nombres.length ? `${desde} por los caminos internos. ⚠ Precaución: el recorrido cruza o va junto a ${nombres.join(" y ")}; mirá a ambos lados.`
+      : `${desde} hasta ${e.corto || e.nombre}${puntos.length > 2 ? ", por los caminos internos" : ", en línea recta"}.`, 7000);
     $("#btn-quitar-ruta").hidden = false;
   }
   $("#btn-quitar-ruta").addEventListener("click", () => { if (capaRuta) capaRuta.remove(); capaRuta = null; $("#btn-quitar-ruta").hidden = true; });

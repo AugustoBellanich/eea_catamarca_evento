@@ -179,16 +179,58 @@
   const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C" };
 
   // Edificios con volumen: paredes hacia abajo a la derecha y techo claro.
-  function edificio(c, pts, alto) {
+  // techo: "vidrio" (invernadero) o "tejas" (a dos aguas, terracota); sin dato, techo plano claro.
+  function edificio(c, pts, alto, techo) {
+    const vidrio = techo === "vidrio";
+    if (vidrio) alto *= .75;
     const top = pts.map(([x, y]) => [x, y - alto]);
-    c.fillStyle = "rgba(78,84,46,.28)"; c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x + alto * .8, y + alto * .5) : c.moveTo(x + alto * .8, y + alto * .5))); c.fill();
-    c.fillStyle = "#B9A98A";
-    for (let i = 0; i < pts.length; i++) { // cada pared
+    const poli = (q, col, borde) => { c.fillStyle = col; c.beginPath(); q.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath(); c.fill();
+      if (borde) { c.strokeStyle = borde; c.stroke(); } };
+    c.fillStyle = vidrio ? "rgba(78,84,46,.16)" : "rgba(78,84,46,.28)";
+    c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x + alto * .8, y + alto * .5) : c.moveTo(x + alto * .8, y + alto * .5))); c.fill();
+    for (let i = 0; i < pts.length; i++) { // paredes
       const a = pts[i], b = pts[(i + 1) % pts.length];
-      c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.lineTo(b[0], b[1] - alto); c.lineTo(a[0], a[1] - alto); c.fill();
+      poli([a, b, [b[0], b[1] - alto], [a[0], a[1] - alto]], vidrio ? "rgba(196,222,222,.75)" : techo === "tejas" ? "#D8C8A8" : "#B9A98A");
     }
-    c.fillStyle = "#E4D8C0"; c.strokeStyle = "#A99878"; c.lineWidth = 1;
-    c.beginPath(); top.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath(); c.fill(); c.stroke();
+    c.lineWidth = 1;
+    if (pts.length !== 4 || !techo) { poli(top, "#E4D8C0", "#A99878"); return; }
+    // lado largo del techo: las cumbreras y las naves van a lo largo
+    const largo = (i) => Math.hypot(top[(i + 1) % 4][0] - top[i][0], top[(i + 1) % 4][1] - top[i][1]);
+    const s0 = largo(0) >= largo(1) ? 0 : 1;
+    const [a, b, d, e] = [top[s0], top[(s0 + 1) % 4], top[(s0 + 2) % 4], top[(s0 + 3) % 4]]; // a-b y d-e largos
+    const mix = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+    if (vidrio) { // invernadero: naves de vidrio en arco, con estructura blanca
+      poli(top, "rgba(214,236,236,.92)", "#FFFFFF");
+      const naves = Math.max(2, Math.min(6, Math.round(largo((s0 + 1) % 4) / 14)));
+      for (let k = 0; k < naves; k++) {
+        const p0 = mix(a, e, k / naves), p1 = mix(b, d, k / naves), q0 = mix(a, e, (k + 1) / naves), q1 = mix(b, d, (k + 1) / naves);
+        const m0 = mix(p0, q0, .5), m1 = mix(p1, q1, .5);
+        c.fillStyle = "rgba(255,255,255,.55)"; c.beginPath(); c.moveTo(...mix(p0, m0, .35)); c.lineTo(...mix(p1, m1, .35)); c.lineTo(...mix(p1, m1, .6)); c.lineTo(...mix(p0, m0, .6)); c.closePath(); c.fill();
+        c.strokeStyle = "rgba(150,180,180,.8)"; c.beginPath(); c.moveTo(...m0); c.lineTo(...m1); c.stroke(); // cumbrera de la nave
+        if (k) { c.strokeStyle = "#FFFFFF"; c.lineWidth = 1.4; c.beginPath(); c.moveTo(...p0); c.lineTo(...p1); c.stroke(); c.lineWidth = 1; }
+      }
+      const arcos = Math.max(3, Math.round(largo(s0) / 6)); // arcos de la estructura
+      c.strokeStyle = "rgba(255,255,255,.75)";
+      for (let k = 1; k < arcos; k++) { c.beginPath(); c.moveTo(...mix(a, b, k / arcos)); c.lineTo(...mix(e, d, k / arcos)); c.stroke(); }
+      return;
+    }
+    // tejas a dos aguas: cumbrera elevada en el medio, dos faldones y hastiales
+    const sube = alto * .7, r1 = mix(b, d, .5), r2 = mix(e, a, .5);
+    const c1 = [r1[0], r1[1] - sube], c2 = [r2[0], r2[1] - sube];
+    poli([b, c1, d], "#CDBB98"); poli([e, c2, a], "#CDBB98"); // hastiales
+    const faldon1 = [a, b, c1, c2], faldon2 = [d, e, c2, c1];
+    const yMedio = (q) => q.reduce((t, p) => t + p[1], 0) / q.length;
+    const [arriba, abajo] = yMedio(faldon1) < yMedio(faldon2) ? [faldon1, faldon2] : [faldon2, faldon1];
+    poli(arriba, "#C8724A", "#9E4E2C"); poli(abajo, "#AE5835", "#8E4426");
+    [arriba, abajo].forEach(([p, q, r, s2]) => { // hileras de tejas, paralelas a la cumbrera, y juntas cortas
+      c.strokeStyle = "rgba(110,45,20,.45)"; c.lineWidth = .8;
+      const filas = Math.max(3, Math.round(Math.hypot(r[0] - q[0], r[1] - q[1]) / 3));
+      for (let k = 1; k < filas; k++) { c.beginPath(); c.moveTo(...mix(p, s2, k / filas)); c.lineTo(...mix(q, r, k / filas)); c.stroke(); }
+      const cols = Math.max(4, Math.round(Math.hypot(q[0] - p[0], q[1] - p[1]) / 3));
+      c.strokeStyle = "rgba(110,45,20,.25)";
+      for (let j2 = 1; j2 < cols; j2++) { const e0 = mix(p, q, j2 / cols), e1 = mix(s2, r, j2 / cols); c.beginPath(); c.moveTo(...e0); c.lineTo(...mix(e0, e1, .5)); c.stroke(); }
+    });
+    c.strokeStyle = "#7E3A1F"; c.lineWidth = 1.6; c.beginPath(); c.moveTo(...c1); c.lineTo(...c2); c.stroke(); // cumbrera
   }
 
   // Función "este punto está libre": dentro de algún anillo permitido (opcional), fuera de los lotes y a más de d metros
@@ -449,7 +491,7 @@
         if (z >= 16.5) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
       });
       const altoEd = Math.max(2, Math.min(9, 2 ** (z - 16) * 2.2));
-      this.edificios.forEach((f) => edificio(c, f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; }), altoEd));
+      this.edificios.forEach((f) => edificio(c, f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; }), altoEd, f.properties.techo));
     },
   });
 

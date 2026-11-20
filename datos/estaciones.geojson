@@ -159,7 +159,8 @@
     "nombre": "Invernadero",
     "cultivo": "sanidad",
     "patron": "edificio",
-    "estacion": "e2"
+    "estacion": "e2",
+    "techo": "vidrio"
    },
    "geometry": {
     "type": "Polygon",
@@ -681,7 +682,8 @@
     "tipo": "lote",
     "nombre": "Edificio EEA",
     "cultivo": "edificio",
-    "patron": "edificio"
+    "patron": "edificio",
+    "techo": "tejas"
    },
    "geometry": {
     "type": "Polygon",

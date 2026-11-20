@@ -93,7 +93,14 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
 
-Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino. Más adelante, con los
+Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino.
+
+"Cómo llegar" usa estas líneas: arma el recorrido por los caminos internos (desde la ubicación del visitante o, sin GPS,
+desde el ingreso principal), usa calles y rutas solo cuando no queda otra y marca con un "!" amarillo cada lugar donde el
+recorrido cruza o va junto a una calle o ruta, con el aviso de precaución. Sin caminos cargados, va en línea recta.
+
+Techos: en la tabla `NOMBRES` del conversor, `"techo": "vidrio"` dibuja un invernadero (naves de vidrio) y
+`"techo": "tejas"` un techo de tejas terracota a dos aguas. Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
 
 ## Logo y colores oficiales

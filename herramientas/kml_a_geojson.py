@@ -20,7 +20,7 @@ NOMBRES = {
     "eea catamarca 3/3":     {"tipo": "predio", "nombre": "Sector 3", "paisaje": "monte"},  # monte abierto: suelo desnudo, pasto y árboles sueltos
     # Lotes y edificios con estación (estacion = id de la ficha en datos/estaciones.json)
     "almendros":             {"cultivo": "almendra", "patron": "arboles", "estacion": "e10"},
-    "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "estacion": "e2"},
+    "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "estacion": "e2", "techo": "vidrio"},
     "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "estacion": "e1"},
     "vid":                   {"cultivo": "vid", "patron": "hileras", "estacion": "e9"},
     "sum":                   {"cultivo": "charla", "patron": "edificio", "estacion": "e6"},
@@ -53,7 +53,7 @@ NOMBRES = {
     "de frutales":           {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio de frutales"},
     "residuos agroquimicos": {"patron": "liso", "nombre": "Residuos agroquímicos"},
     "centro regional catamarca - la rioja": {"cultivo": "edificio", "patron": "edificio", "nombre": "Centro Regional"},
-    "eea catamarca (edificio)": {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio EEA"},
+    "eea catamarca (edificio)": {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio EEA", "techo": "tejas"},
     # Servicios
     "ingreso 1":             {"tipo": "servicio", "servicio": "ingreso", "nombre": "Ingreso"},
     "ingreso 2":             {"tipo": "servicio", "servicio": "ingreso", "nombre": "Ingreso"},
@@ -118,7 +118,7 @@ def main(ruta, salida="datos/estaciones.geojson"):
         tipo = info.get("tipo", "lote")
         props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
-        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "revisar", "solo_en") if c in info})
+        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "solo_en") if c in info})
         feats.append({"type": "Feature", "properties": props, "geometry": geom})
     # Predio en sectores: id único por sector. Estaciones con "solo_en": se quitan si el lote cae en otro sector.
     sectores = [f for f in feats if f["properties"]["tipo"] == "predio"]
