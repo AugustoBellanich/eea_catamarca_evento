@@ -17,7 +17,7 @@ NOMBRES = {
     "eea catamarca":         {"tipo": "predio"},
     "eea catamarca 1/3":     {"tipo": "predio", "nombre": "Sector 1"},
     "eea catamarca 2/3":     {"tipo": "predio", "nombre": "Sector 2"},
-    "eea catamarca 3/3":     {"tipo": "predio", "nombre": "Sector 3"},
+    "eea catamarca 3/3":     {"tipo": "predio", "nombre": "Sector 3", "cultivo": "olivo"},  # todo el sector es olivar (con poda mecánica)
     # Lotes y edificios con estación (estacion = id de la ficha en datos/estaciones.json)
     "almendros":             {"cultivo": "almendra", "patron": "arboles", "estacion": "e10"},
     "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "estacion": "e2"},

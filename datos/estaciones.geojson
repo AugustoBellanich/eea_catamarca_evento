@@ -1112,7 +1112,8 @@
    "properties": {
     "id": "predio-3",
     "tipo": "predio",
-    "nombre": "Sector 3"
+    "nombre": "Sector 3",
+    "cultivo": "olivo"
    },
    "geometry": {
     "type": "Polygon",
