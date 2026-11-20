@@ -1,6 +1,6 @@
 {
  "type": "FeatureCollection",
- "_fuente": "fuentes/predio-2026-11-19c.kml",
+ "_fuente": "fuentes/predio-2026-11-20.kml",
  "features": [
   {
    "type": "Feature",
@@ -1843,6 +1843,621 @@
     "coordinates": [
      -65.7304229,
      -28.470736
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-47",
+    "tipo": "camino",
+    "nombre": "Camino interno principal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7286095,
+      -28.4726923
+     ],
+     [
+      -65.7279826,
+      -28.4648215
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-48",
+    "tipo": "camino",
+    "nombre": "camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7282685,
+      -28.4684346
+     ],
+     [
+      -65.7269719,
+      -28.4685546
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-49",
+    "tipo": "camino",
+    "nombre": "camino inerno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7283207,
+      -28.4691113
+     ],
+     [
+      -65.7275569,
+      -28.4691628
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k50",
+    "tipo": "lote",
+    "nombre": "Edificio de frutales",
+    "cultivo": "edificio",
+    "patron": "edificio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7285272,
+       -28.4653459
+      ],
+      [
+       -65.7285437,
+       -28.4655051
+      ],
+      [
+       -65.7283969,
+       -28.4655185
+      ],
+      [
+       -65.7283871,
+       -28.4653591
+      ],
+      [
+       -65.7285272,
+       -28.4653459
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-51",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.728598,
+      -28.47255
+     ],
+     [
+      -65.7283038,
+      -28.4725886
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-52",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7296176,
+      -28.4724063
+     ],
+     [
+      -65.7323894,
+      -28.4734357
+     ],
+     [
+      -65.733132,
+      -28.4731585
+     ],
+     [
+      -65.7315774,
+      -28.4697024
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-53",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7317921,
+      -28.4732106
+     ],
+     [
+      -65.7304097,
+      -28.470701
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-54",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7280329,
+      -28.4654486
+     ],
+     [
+      -65.7283173,
+      -28.4654231
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-55",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7327484,
+      -28.4723129
+     ],
+     [
+      -65.7315532,
+      -28.4727567
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-56",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7303064,
+      -28.4726679
+     ],
+     [
+      -65.7318291,
+      -28.4774785
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-57",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.731552,
+      -28.4766131
+     ],
+     [
+      -65.7300209,
+      -28.4769218
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-58",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7296067,
+      -28.4747629
+     ],
+     [
+      -65.7308216,
+      -28.4742943
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-59",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7309822,
+      -28.4747913
+     ],
+     [
+      -65.732979,
+      -28.4739884
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-60",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7329747,
+      -28.4739886
+     ],
+     [
+      -65.732632,
+      -28.4733423
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-61",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.730788,
+      -28.4741954
+     ],
+     [
+      -65.7323802,
+      -28.4734371
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k62",
+    "tipo": "lote",
+    "nombre": "Residuos agroquímicos",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7286238,
+       -28.4742824
+      ],
+      [
+       -65.728656,
+       -28.4744915
+      ],
+      [
+       -65.7284863,
+       -28.4745185
+      ],
+      [
+       -65.7284576,
+       -28.4742965
+      ],
+      [
+       -65.7286238,
+       -28.4742824
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "ruta-63",
+    "tipo": "ruta",
+    "nombre": "RP N° 33"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7334441,
+      -28.4684026
+     ],
+     [
+      -65.7309158,
+      -28.4699208
+     ],
+     [
+      -65.7302805,
+      -28.4705978
+     ],
+     [
+      -65.7295733,
+      -28.4722852
+     ],
+     [
+      -65.7291056,
+      -28.4739521
+     ],
+     [
+      -65.7298205,
+      -28.4774449
+     ],
+     [
+      -65.7298525,
+      -28.4779754
+     ],
+     [
+      -65.729527,
+      -28.4792095
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "calle-64",
+    "tipo": "calle",
+    "nombre": "Calle Manuel Soria",
+    "superficie": "asfalto"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7292945,
+      -28.4726233
+     ],
+     [
+      -65.7286819,
+      -28.472737
+     ],
+     [
+      -65.7272548,
+      -28.4725427
+     ],
+     [
+      -65.7253797,
+      -28.4721388
+     ],
+     [
+      -65.7252102,
+      -28.4721183
+     ],
+     [
+      -65.7230721,
+      -28.472061
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "calle-65",
+    "tipo": "calle",
+    "nombre": "Calle America",
+    "superficie": "tierra"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.730291,
+      -28.470374
+     ],
+     [
+      -65.730144,
+      -28.4702536
+     ],
+     [
+      -65.7296692,
+      -28.4688619
+     ],
+     [
+      -65.7294902,
+      -28.4685446
+     ],
+     [
+      -65.729299,
+      -28.4681105
+     ],
+     [
+      -65.7292392,
+      -28.4677803
+     ],
+     [
+      -65.7292116,
+      -28.4673241
+     ],
+     [
+      -65.728698,
+      -28.4660744
+     ],
+     [
+      -65.7293747,
+      -28.4659464
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "calle-66",
+    "tipo": "calle",
+    "nombre": "Calle Cristobal Colon",
+    "superficie": "asfalto"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7307292,
+      -28.4699486
+     ],
+     [
+      -65.7299059,
+      -28.4678751
+     ],
+     [
+      -65.7298859,
+      -28.4674804
+     ],
+     [
+      -65.7296866,
+      -28.4667575
+     ],
+     [
+      -65.7294699,
+      -28.4661511
+     ],
+     [
+      -65.7294004,
+      -28.4658358
+     ],
+     [
+      -65.7295822,
+      -28.465035
+     ],
+     [
+      -65.7296151,
+      -28.4645513
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "ruta-67",
+    "tipo": "ruta",
+    "nombre": "RP N° 41"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7235604,
+      -28.4649077
+     ],
+     [
+      -65.7283368,
+      -28.4647408
+     ],
+     [
+      -65.7287531,
+      -28.4645738
+     ],
+     [
+      -65.7296212,
+      -28.4645183
+     ],
+     [
+      -65.7298597,
+      -28.4645566
+     ],
+     [
+      -65.7300559,
+      -28.4647136
+     ],
+     [
+      -65.7306987,
+      -28.4654196
+     ],
+     [
+      -65.7309421,
+      -28.4656894
+     ],
+     [
+      -65.7311582,
+      -28.465773
+     ],
+     [
+      -65.7317913,
+      -28.4656436
+     ],
+     [
+      -65.7320763,
+      -28.4656162
+     ],
+     [
+      -65.7322763,
+      -28.4656868
+     ]
     ]
    }
   }
