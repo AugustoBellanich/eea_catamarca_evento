@@ -136,8 +136,14 @@
       lobulos(c, x, y, r, 4, .58, .42, "#6C984C", s * 6 + .4);
       circ(c, x - r * .25, y - r * .25, r * .32, "#8CB765");
     },
-    // cortina rompevientos: copas oscuras y apretadas
-    alamo(c, x, y, r) { sombra(c, x, y, r); circ(c, x, y, r, "#5E7F48"); circ(c, x - r * .3, y - r * .3, r * .45, "#7FA060"); },
+    // árboles del monte y del borde: formas y verdes distintos (copa ancha y despareja, compacta, o alargada y grisácea)
+    nativo(c, x, y, r, s) {
+      sombra(c, x, y, r);
+      if (s < .4) { for (let i = 0; i < 5; i++) { const a = s * 20 + i * 1.26, d = r * (.35 + azar(s, i) * .25); circ(c, x + Math.cos(a) * d, y + Math.sin(a) * d, r * (.42 + azar(i, s) * .2), "#77874C"); }
+        circ(c, x, y, r * .5, "#84935A"); circ(c, x - r * .3, y - r * .3, r * .2, "#A2AF74"); }
+      else if (s < .72) { lobulos(c, x, y, r, 3, .58, .35, "#66794A", s * 9); circ(c, x - r * .25, y - r * .25, r * .3, "#82965F"); }
+      else { c.save(); c.translate(x, y); c.rotate(s * 6); c.scale(1, .62); lobulos(c, 0, 0, r, 4, .5, .5, "#8A977A", s * 3); circ(c, 0, 0, r * .45, "#9DA98C"); c.restore(); }
+    },
     mixto(c, x, y, r, s) { (s < .33 ? DIBUJO.citrico : s < .66 ? DIBUJO.almendro : DIBUJO.higuera)(c, x, y, r, s * 3 % 1); },
     // tuna: paletas ovaladas
     tuna(c, x, y, r, s) {
@@ -265,18 +271,16 @@
       const enPredio = (lng, lat) => predios.some((pr) => dentro(lng, lat, pr.geometry.coordinates[0]));
       const mover = ([lat, lng], este, norte) => [lat + norte / M_LAT, lng + este / k];
       this.maquinas = [];
-      // Sectores enteros con cultivo (por ejemplo, el Sector 3: olivar): se plantan fuera de lotes y caminos,
-      // y llevan dos podadoras trabajando entre hileras.
-      predios.filter((pr) => pr.properties.cultivo).forEach((pr) => {
-        const pl = plantar(pr, ([lat, lng]) => libre(lng, lat, 6));
-        if (!pl || !pl.plantas.length) return;
-        this.lotes.push({ f: pr, pl });
+      // Podadoras: en el lote de la estación de poda mecánica (config.js, podaMecanica), entre hileras.
+      this.lotes.filter(({ f, pl }) => this.opciones.poda && f.properties.estacion === this.opciones.poda && pl.plantas.length && pl.fila).forEach(({ f, pl }) => {
+        const anillo = f.geometry.coordinates[0];
         const cLat = pl.plantas.reduce((t, q) => t + q.ll[0], 0) / pl.plantas.length, cLng = pl.plantas.reduce((t, q) => t + q.ll[1], 0) / pl.plantas.length;
         const base = pl.plantas.reduce((m, q) => (Math.hypot(q.ll[0] - cLat, q.ll[1] - cLng) < Math.hypot(m.ll[0] - cLat, m.ll[1] - cLng) ? q : m));
         const perp = [-Math.sin(pl.ang), Math.cos(pl.ang)], largo = [Math.cos(pl.ang), Math.sin(pl.ang)];
-        [[.5, 0], [3.5, 28]].forEach(([filas, avance]) => {
+        [[.5, -8], [-1.5, 10], [2.5, 4]].forEach(([filas, avance]) => {
+          if (this.maquinas.filter((m) => m.clase === "podadora").length >= 2) return;
           const ll = mover(base.ll, perp[0] * pl.fila * filas + largo[0] * avance, perp[1] * pl.fila * filas + largo[1] * avance);
-          if (enPredio(ll[1], ll[0]) && libre(ll[1], ll[0], 5)) this.maquinas.push({ ll, ang: pl.ang, clase: "podadora" });
+          if (dentro(ll[1], ll[0], anillo)) this.maquinas.push({ ll, ang: pl.ang, clase: "podadora" });
         });
       });
       // Un tractor sobre el camino interno principal.
@@ -285,18 +289,42 @@
         const [a, b] = principal.geometry.coordinates, t = .38;
         this.maquinas.push({ ll: [a[1] + (b[1] - a[1]) * t, a[0] + (b[0] - a[0]) * t], ang: Math.atan2((b[1] - a[1]) * M_LAT, (b[0] - a[0]) * k), clase: "tractor" });
       }
-      // Cortinas de árboles a los costados de las rutas, dentro del predio (se ven en la imagen satelital sobre la RP 33).
-      this.cortina = [];
-      lineas.filter((l) => /^ruta/.test(l.properties.id)).forEach((l) => {
-        const c = l.geometry.coordinates;
-        for (let i = 0; i < c.length - 1; i++) {
-          const ax = c[i][0] * k, ay = c[i][1] * M_LAT, bx = c[i + 1][0] * k, by = c[i + 1][1] * M_LAT, L2 = Math.hypot(bx - ax, by - ay);
+      // Árboles sueltos (no una cortina): en el monte abierto de los sectores con paisaje "monte" y a lo largo del borde
+      // de los tres sectores, con huecos, tamaños y formas distintas, lejos de lotes, caminos e ingresos.
+      this.sueltos = []; this.tierra = []; this.matas = [];
+      const ingresos = this.opciones.ingresos || [];
+      const lejosIngreso = (lng, lat) => ingresos.every((g) => Math.hypot((g[0] - lng) * k, (g[1] - lat) * M_LAT) > 28);
+      const sumar = (lng, lat, sem) => { if (enPredio(lng, lat) && libre(lng, lat, 6) && lejosIngreso(lng, lat))
+        this.sueltos.push({ ll: [lat, lng], r: 1.6 + azar(sem, lat * 7) * 2.6, s: azar(lng * 5, sem) }); };
+      predios.forEach((pr, n) => {
+        const anillo = pr.geometry.coordinates[0];
+        // borde: cada ~7 m, con huecos, metido 2 a 7 m hacia adentro y a veces de a dos
+        for (let i = 0; i < anillo.length - 1; i++) {
+          const ax = anillo[i][0] * k, ay = anillo[i][1] * M_LAT, bx = anillo[i + 1][0] * k, by = anillo[i + 1][1] * M_LAT, L2 = Math.hypot(bx - ax, by - ay);
           const ux = (bx - ax) / L2, uy = (by - ay) / L2;
-          for (let d = 0; d < L2; d += 4.2) for (const lado of [-1, 1]) {
-            const x = ax + ux * d - uy * 11 * lado, y = ay + uy * d + ux * 11 * lado, lng = x / k, lat = y / M_LAT;
-            if (enPredio(lng, lat) && libre(lng, lat, 8)) this.cortina.push({ ll: [lat, lng], r: 2 + azar(x, y) * .7, s: azar(y, x) });
+          for (let d = 2; d < L2; d += 6 + azar(i, d) * 4) {
+            if (azar(d, i + n * 13) < .38) continue;
+            for (const adentro of [3 + azar(d, n) * 4, -3 - azar(n, d) * 4]) { // probar a un lado y al otro (el anillo puede ir en cualquier sentido)
+              const x = ax + ux * d - uy * adentro, y = ay + uy * d + ux * adentro;
+              if (!dentro(x / k, y / M_LAT, anillo)) continue;
+              sumar(x / k, y / M_LAT, d + i);
+              if (azar(x, y) < .25) sumar((x + (azar(y, 1) - .5) * 8) / k, (y + (azar(1, x) - .5) * 8) / M_LAT, d * 3);
+              break;
+            }
           }
         }
+        if (pr.properties.paisaje !== "monte") return;
+        // monte abierto: manchones de suelo desnudo, matas bajas y árboles dispersos
+        const lats = anillo.map((q) => q[1]), lngs = anillo.map((q) => q[0]);
+        const recorrer = (m, fn) => { for (let x = Math.min(...lngs) * k; x < Math.max(...lngs) * k; x += m) for (let y = Math.min(...lats) * M_LAT; y < Math.max(...lats) * M_LAT; y += m) fn(x, y); };
+        recorrer(30, (x, y) => { const px = x + (azar(x, y) - .5) * 26, py = y + (azar(y, x) - .5) * 26;
+          if (azar(px, py) < .6 && dentro(px / k, py / M_LAT, anillo) && libre(px / k, py / M_LAT, 6))
+            this.tierra.push({ ll: [py / M_LAT, px / k], r: 7 + azar(py, px) * 12, a: azar(px * 2, py) * 3.1, s: azar(py * 3, px) }); });
+        recorrer(24, (x, y) => { const px = x + (azar(x * 2, y) - .5) * 22, py = y + (azar(y * 2, x) - .5) * 22;
+          if (azar(px * 3, py) < .42) sumar(px / k, py / M_LAT, px); });
+        recorrer(9, (x, y) => { const px = x + (azar(x * 5, y) - .5) * 8, py = y + (azar(y * 5, x) - .5) * 8;
+          if (azar(px, py * 3) < .22 && dentro(px / k, py / M_LAT, anillo) && libre(px / k, py / M_LAT, 4))
+            this.matas.push({ ll: [py / M_LAT, px / k], r: .7 + azar(py, px * 9) * .7, s: azar(px * 7, py) }); });
       });
     },
     onAdd(map) {
@@ -318,6 +346,11 @@
       const pt = (ll) => map.latLngToContainerPoint(ll);
       // pasto: manchones siempre (muy tenues); matitas, arbustos y flores solo de cerca
       const mppP = 40075016.686 * Math.cos(-28.47 * Math.PI / 180) / 2 ** (z + 8), escP = 1 / mppP;
+      this.tierra.forEach((m) => { // manchones de suelo desnudo del monte, de borde irregular
+        if (!lim.contains(m.ll)) return;
+        const p = pt(m.ll), r = m.r * escP; c.fillStyle = "rgba(196,168,118,.30)";
+        for (let i = 0; i < 3; i++) { c.beginPath(); c.ellipse(p.x + Math.cos(m.s * 6 + i * 2) * r * .4, p.y + Math.sin(m.s * 6 + i * 2) * r * .3, r * (.6 + i * .15), r * .45, m.a + i * .5, 0, 6.2832); c.fill(); }
+      });
       this.pasto.manchas.forEach((m) => {
         if (!lim.contains(m.ll)) return;
         const p = pt(m.ll), r = m.r * escP;
@@ -356,9 +389,12 @@
           dib(c, p.x, p.y, r, t.s);
         });
       });
-      // cortinas de árboles junto a las rutas
-      this.cortina.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = t.r * escP;
-        if (r < 1.6) circ(c, p.x, p.y, Math.max(.9, r), "#5E7F48"); else DIBUJO.alamo(c, p.x, p.y, r, t.s); });
+      // árboles sueltos (borde de los sectores y monte abierto) y matas bajas
+      if (z >= 17) this.matas.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = Math.max(1.6, t.r * escP);
+        c.fillStyle = "rgba(78,84,46,.22)"; c.beginPath(); c.ellipse(p.x + r * .3, p.y + r * .4, r, r * .8, 0, 0, 6.2832); c.fill();
+        lobulos(c, p.x, p.y, r, 3, .6, .35, t.s < .5 ? "#8E9A62" : "#9AA56E", t.s * 6); });
+      this.sueltos.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = t.r * escP;
+        if (r < 1.6) circ(c, p.x, p.y, Math.max(.9, r), "#6F8048"); else DIBUJO.nativo(c, p.x, p.y, r, t.s); });
       // corrales: cerco de madera y animales
       this.lotes.forEach(({ pl }) => {
         if (pl.tipo !== "corral") return;
@@ -374,5 +410,6 @@
     },
   });
 
-  window.Arboleda = { capa: (features, opciones) => new Capa(features, opciones), suelo: (p) => SUELO[claveCultivo(p)] || null };
+  window.Arboleda = { capa: (features, opciones) => new Capa(features, opciones),
+    suelo: (p) => (p.paisaje === "monte" ? "#E2D6B2" : SUELO[claveCultivo(p)] || null) };
 })();

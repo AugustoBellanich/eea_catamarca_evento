@@ -411,8 +411,10 @@
     }).addTo(capaFondo);
     if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
-    if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !f.properties.provisorio),
-      { visible: () => capas.lotes && calcularNivel() !== "lejos", predios: geo.features.filter(esPredio),
+    // (un lote provisorio entra si dice su cultivo: por ejemplo, el de olivos que se tomó para la estación de poda)
+    if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !(f.properties.provisorio && !f.properties.cultivo)),
+      { visible: () => capas.lotes && calcularNivel() !== "lejos", predios: geo.features.filter(esPredio), poda: C.podaMecanica,
+        ingresos: geo.features.filter((f) => esServicio(f) && f.properties.servicio === "ingreso").map((f) => f.geometry.coordinates),
         lineas: geo.features.filter((f) => esCamino(f) && f.geometry.type === "LineString") }).addTo(capaFondo);
     ponerPatrones();
   }

@@ -46,6 +46,9 @@ window.CONFIG = {
   agendaCSV: "",
   avisosCSV: "",
 
+  // Estación donde se dibujan las podadoras trabajando (su ficha: poda mecánica en los lotes del ingreso).
+  podaMecanica: "e3",
+
   // Pasaporte: la estación se sella al abrir su QR o al pasar a menos de esta distancia (m).
   radioSello: 60,
 
