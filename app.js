@@ -225,21 +225,23 @@
       <rect width="12" height="8" fill="#5fb8e8"/><rect x="2" y="3" width="6" height="2" fill="#bfe7fb"/></pattern>
     <pattern id="p-edificio" width="8" height="8" patternUnits="userSpaceOnUse">
       <rect width="8" height="8" fill="#e6dccb"/><rect width="4" height="4" fill="#d3c5aa"/><rect x="4" y="4" width="4" height="4" fill="#d3c5aa"/></pattern>`;
-  // Versión parque: tinte de suelo apenas marcado y dibujitos monocromos en verde oliva, para que el lote se lea como
-  // paisaje y no como botón.
-  const OLIVA = 'fill="#6E7F63" fill-opacity=".42"', TINTE = '<rect width="100%" height="100%" fill="#D3DEC9" fill-opacity=".6"/>';
+  // Versión parque: paleta oliva de mapa ilustrado. Árboles con copa, sombra y brillo, ubicados de forma irregular
+  // en una baldosa grande para que no se vea una grilla.
+  const arbol = (x, y, r) => `<circle cx="${x + r * .3}" cy="${y + r * .35}" r="${r}" fill="#6F8150" fill-opacity=".45"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="#9DB173"/><circle cx="${x - r * .3}" cy="${y - r * .3}" r="${r * .45}" fill="#BCCB92"/>`;
+  const mata = (x, y) => `<circle cx="${x + .6}" cy="${y + .8}" r="2.4" fill="#6F8150" fill-opacity=".4"/><circle cx="${x}" cy="${y}" r="2.4" fill="#93A86A"/>`;
   const PATRONES_PARQUE = `
-    <pattern id="p-arboles" width="16" height="14" patternUnits="userSpaceOnUse">${TINTE}
-      <circle cx="4" cy="4" r="3.3" ${OLIVA}/><circle cx="12" cy="11" r="3.3" ${OLIVA}/></pattern>
-    <pattern id="p-hileras" width="9" height="11" patternUnits="userSpaceOnUse">${TINTE}
-      <rect x="3.5" y="1" width="2" height="8" rx="1" ${OLIVA}/></pattern>
-    <pattern id="p-surcos" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(90)">${TINTE}
-      <rect y="3" width="7" height="1.4" fill="#6E7F63" fill-opacity=".3"/></pattern>
-    <pattern id="p-pasto" width="14" height="12" patternUnits="userSpaceOnUse">${TINTE}
-      <path d="M3 8l1.5-3 1.5 3M9 4l1.5-3 1.5 3" stroke="#6E7F63" stroke-opacity=".4" stroke-width="1.1" fill="none"/></pattern>
-    <pattern id="p-liso" width="10" height="10" patternUnits="userSpaceOnUse">${TINTE}</pattern>
-    <pattern id="p-agua" width="18" height="10" patternUnits="userSpaceOnUse">
-      <rect width="18" height="10" fill="#CFE1E4"/><path d="M1 6q4-3 8 0t8 0" stroke="#fff" stroke-opacity=".7" stroke-width="1.2" fill="none"/></pattern>`;
+    <pattern id="p-arboles" width="46" height="42" patternUnits="userSpaceOnUse"><rect width="46" height="42" fill="#D3D9AC"/>
+      ${arbol(8, 8, 5.2)}${arbol(27, 6, 4.4)}${arbol(40, 17, 5)}${arbol(17, 22, 4.8)}${arbol(33, 33, 5.3)}${arbol(7, 35, 4.2)}${arbol(22, 38, 3.6)}</pattern>
+    <pattern id="p-hileras" width="16" height="11" patternUnits="userSpaceOnUse"><rect width="16" height="11" fill="#DADDB2"/>
+      <rect x="0" y="4.4" width="16" height="2" fill="#B6BE88"/>${mata(4, 5.4)}${mata(12, 5.4)}</pattern>
+    <pattern id="p-surcos" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><rect width="9" height="9" fill="#DEDFB6"/>
+      <rect y="3.5" width="9" height="2" fill="#C2C792"/></pattern>
+    <pattern id="p-pasto" width="18" height="16" patternUnits="userSpaceOnUse"><rect width="18" height="16" fill="#DDE1B5"/>
+      <path d="M3 11l1.6-3.2 1.6 3.2M11 5l1.6-3.2 1.6 3.2M13 14l1.4-2.8 1.4 2.8" stroke="#93A86A" stroke-width="1.2" fill="none" stroke-linecap="round"/></pattern>
+    <pattern id="p-liso" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#DCDDB8"/></pattern>
+    <pattern id="p-agua" width="22" height="12" patternUnits="userSpaceOnUse">
+      <rect width="22" height="12" fill="#AFCFCB"/><path d="M2 7q4.5-3.5 9 0t9 0" stroke="#E4F1EE" stroke-opacity=".8" stroke-width="1.3" fill="none" stroke-linecap="round"/></pattern>`;
   function ponerPatrones() {
     const svg = mapa.getPanes().overlayPane.querySelector("svg");
     if (svg && !svg.querySelector("#p-arboles")) {
@@ -266,29 +268,39 @@
   // Parque: el predio es tierra clara (lo que queda entre lotes se lee como camino); los lotes no llevan borde.
   function estiloParque(f) {
     const p = f.properties;
-    if (esPredio(f)) return { color: "#D8CEBE", weight: 1, fillColor: "#EFE8D8", fillOpacity: 1, className: "predio" };
+    if (esPredio(f)) return { color: "#C9C79E", weight: 2, fillColor: "#E6E4C2", fillOpacity: 1, lineJoin: "round", className: "predio" };
     const est = esEstacion(f) && capas.estaciones;
     if (p.provisorio) return { color: "#1E3A2F", weight: 1.5, opacity: .5, dashArray: "4 5", fillColor: "#1E3A2F", fillOpacity: .06,
       className: "lote lote-pq lote-prov" + (est ? " es-est" : "") };
     const patron = p.patron || (estacion(estDe(f)) || {}).patron || "pasto";
-    return { stroke: false, fillOpacity: 1, className: "lote lote-pq " + (patron === "edificio" ? "p-edif" : "p-" + patron) + (est ? " es-est" : "") };
+    const edif = patron === "edificio";
+    return { color: edif ? "#BBAE94" : "#A9B27E", weight: edif ? 1 : 1.4, opacity: edif ? .9 : .55, lineJoin: "round", fillOpacity: 1,
+      className: "lote lote-pq " + (edif ? "p-edif" : "p-" + patron) + (est ? " es-est" : "") };
   }
+  // Las líneas engordan al acercarse (hasta 2,6 veces), como en un plano dibujado a escala.
+  let lineasPq = [];
+  const anchoZoom = () => Math.max(1, Math.min(2.6, 2 ** ((mapa.getZoom() - 16.5) * .5)));
+  mapa.on("zoomend", () => lineasPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
   // Rutas, caminos y paseos dibujados en el KML (nombres "Ruta…", "Camino…", "Paseo…").
   function dibujarLineasParque(lineas) {
-    const capa = (fs, st) => L.geoJSON({ type: "FeatureCollection", features: fs }, { style: st, interactive: false }).addTo(capaFondo);
+    lineasPq = [];
+    const capa = (fs, st) => { const c = L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false }).addTo(capaFondo);
+      lineasPq.push({ c, w: st.weight }); };
     const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
     const r = { lineCap: "round", lineJoin: "round", className: "camino" };
-    // de afuera hacia adentro: calles del barrio, rutas, caminos internos y paseos
-    capa(de("calle-tierra"), { ...r, color: "#D8CEBE", weight: 7 });
-    capa(de("calle-tierra"), { ...r, color: "#EFE8D8", weight: 5 });
-    capa(de("calle-asfalto"), { ...r, color: "#FFFFFF", weight: 9 });
-    capa(de("calle-asfalto"), { ...r, color: "#B9C0C6", weight: 6 });
-    capa(de("ruta"), { ...r, color: "#FFFFFF", weight: 13 });
-    capa(de("ruta"), { ...r, color: "#9AA3AB", weight: 9 });
-    capa(de("camino"), { color: "#D8CEBE", weight: 11, lineCap: "round", lineJoin: "round", className: "camino" });
-    capa(de("camino"), { color: "#F7F3E8", weight: 9, lineCap: "round", lineJoin: "round", className: "camino" });
-    capa(de("camino"), { color: "#B8A988", weight: 1.2, opacity: .35, dashArray: "2 7", className: "camino" });
-    capa(de("paseo"), { color: "#FAF8F5", weight: 6, lineCap: "round", lineJoin: "round", className: "camino paseo" });
+    // de afuera hacia adentro: calles del barrio, rutas, caminos internos y paseos (primero todos los bordes,
+    // después todos los rellenos, así los cruces se ven como empalmes y no como líneas encimadas)
+    const tierra = de("calle-tierra"), asfalto = de("calle-asfalto"), rutas = de("ruta"), caminos = de("camino"), paseos = de("paseo");
+    capa(tierra, { ...r, color: "#CDB58A", weight: 8 });
+    capa(asfalto, { ...r, color: "#FFFFFF", weight: 10 });
+    capa(rutas, { ...r, color: "#FFFFFF", weight: 14 });
+    capa(caminos, { ...r, color: "#CDB58A", weight: 10 });
+    capa(tierra, { ...r, color: "#E8D5AE", weight: 5.5 });
+    capa(asfalto, { ...r, color: "#A3A8AA", weight: 6.5 });
+    capa(rutas, { ...r, color: "#8C9295", weight: 10 });
+    capa(rutas, { ...r, color: "#F4F1E6", weight: 1.2, opacity: .7, dashArray: "8 10" });
+    capa(caminos, { ...r, color: "#EAD8B0", weight: 7.5 });
+    capa(paseos, { ...r, color: "#FAF8F5", weight: 6, className: "camino paseo" });
   }
   const EMOJI = { arboles: "🌳", hileras: "🍇", surcos: "🌱", pasto: "🌾", agua: "💧", edificio: "🏠" };
   // Cartelito discreto abajo al tocar un lote que no es parada; se va solo.
@@ -299,8 +311,67 @@
     clearTimeout(cartelito.t); cartelito.t = setTimeout(() => t.classList.remove("visible"), 2600);
   }
 
+  // ---------- Dibujo suave (parque) ----------
+  // Solo cambia cómo se dibuja; los datos del KML quedan como están (el GPS, los sellos y los anclajes usan los originales).
+  // 1) Las puntas de rutas, calles y caminos que quedan a menos de 20 m de otra línea se enganchan a ella.
+  // 2) Esquinas redondeadas (Chaikin, 2 pasadas) en lotes, predio y líneas.
+  const M_LAT = 110540, mLng = (lat) => 111320 * Math.cos(lat * Math.PI / 180);
+  function proyectar(p, a, b) { // punto de [a,b] más cercano a p, y su distancia en metros
+    const k = mLng(p[1]);
+    const ax = a[0] * k, ay = a[1] * M_LAT, dx = b[0] * k - ax, dy = b[1] * M_LAT - ay, px = p[0] * k, py = p[1] * M_LAT;
+    const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1e-9)));
+    const x = ax + t * dx, y = ay + t * dy;
+    return { q: [x / k, y / M_LAT], d: Math.hypot(px - x, py - y) };
+  }
+  function chaikin(pts, cerrado, vueltas = 2, q = .25) {
+    for (let v = 0; v < vueltas; v++) {
+      const n = pts.length, out = cerrado ? [] : [pts[0]];
+      const tope = cerrado ? n : n - 1;
+      for (let i = 0; i < tope; i++) {
+        const a = pts[i], b = pts[(i + 1) % n];
+        out.push([a[0] * (1 - q) + b[0] * q, a[1] * (1 - q) + b[1] * q], [a[0] * q + b[0] * (1 - q), a[1] * q + b[1] * (1 - q)]);
+      }
+      if (!cerrado) { out.splice(1, 1); out.splice(out.length - 1, 1); out.push(pts[n - 1]); }
+      pts = out;
+    }
+    return pts;
+  }
+  let suaves = null;
+  function suave(f) {
+    if (!suaves) {
+      suaves = new Map();
+      const lineas = geo.features.filter((g) => esCamino(g) && g.geometry.type === "LineString");
+      const enganchadas = new Map(lineas.map((g) => [g, g.geometry.coordinates.map((p) => p.slice())]));
+      lineas.forEach((g) => {
+        const c = enganchadas.get(g);
+        [0, c.length - 1].forEach((i) => {
+          let mejor = null;
+          lineas.forEach((h) => {
+            if (h === g) return;
+            const hc = h.geometry.coordinates;
+            for (let k = 0; k < hc.length - 1; k++) { const r = proyectar(c[i], hc[k], hc[k + 1]); if (!mejor || r.d < mejor.d) mejor = r; }
+          });
+          if (mejor && mejor.d < 20) c[i] = mejor.q;
+        });
+      });
+      geo.features.forEach((g) => {
+        const t = g.geometry.type;
+        let geom = g.geometry;
+        if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false) };
+        else if (t === "Polygon") { // esquinas suaves: menos en edificios, más en el contorno del predio
+          const q = esPredio(g) ? .2 : g.properties.patron === "edificio" ? .06 : .12;
+          geom = { type: t, coordinates: g.geometry.coordinates.map((anillo) => {
+            const a = chaikin(anillo.slice(0, -1), true, 2, q); return a.concat([a[0]]); }) };
+        }
+        suaves.set(g, { type: "Feature", properties: g.properties, geometry: geom });
+      });
+    }
+    return suaves.get(f) || f;
+  }
+
   // Fondo: predio, caminos y lotes. Se dibuja una vez por modo; el nivel de detalle lo resuelve el CSS.
   function dibujarFondo() {
+    suaves = null; // el editor puede haber cambiado la geometría
     if (capaFondo) capaFondo.remove();
     capaFondo = L.featureGroup().addTo(mapa);
     const orden = (f) => (esPredio(f) ? 0 : esCamino(f) ? 1 : esContexto(f) ? 2 : 3);
@@ -316,7 +387,8 @@
         className: "lote lote-est lote-prov" }).on("click", () => abrirFicha(e.id)).addTo(capaFondo);
     });
     const parque = PARQUE && modo === "ilustrado";
-    L.geoJSON({ type: "FeatureCollection", features: parque ? vect.filter((f) => !esCamino(f)) : vect }, {
+    const dibujo = parque ? vect.map(suave) : vect; // en parque: esquinas redondeadas y caminos empalmados
+    L.geoJSON({ type: "FeatureCollection", features: parque ? dibujo.filter((f) => !esCamino(f)) : dibujo }, {
       style: estilo,
       onEachFeature: (f, capa) => {
         if (parque) { // sin carteles fijos: el nombre del lote aparece al tocarlo
@@ -332,7 +404,7 @@
         if ((esContexto(f) || (!capas.estaciones && esEstacion(f))) && f.properties.nombre && capas.lotes) capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "bottom", offset: [0, 14], className: "ctx-nombre" });
       },
     }).addTo(capaFondo);
-    if (parque) dibujarLineasParque(vect.filter(esCamino)); // encima del predio y de los bordes de los lotes
+    if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
     ponerPatrones();
   }
 
@@ -512,7 +584,7 @@
     const clases = ["gota", visitada && "sellada", esProvisoria(e.id) && "provisoria", ahora && "en-vivo"].filter(Boolean).join(" ");
     const centro = e.numero ? `<span class="g-num">${esc(e.numero)}</span>` : `<span class="g-ico">${ICON[e.icono] || ""}</span>`;
     return L.divIcon({ className: "icono-libre", iconSize: [40, 50], iconAnchor: [20, 48],
-      html: `<div class="${clases}"><svg viewBox="0 0 40 50" aria-hidden="true"><path d="M20 48C20 48 4 30.5 4 19a16 16 0 0 1 32 0c0 11.5-16 29-16 29z"/></svg>
+      html: `<div class="${clases}"><svg viewBox="0 0 40 50" aria-hidden="true"><path d="M20 47l-6-12.1a17 17 0 1 1 12 0z"/></svg>
         ${centro}${visitada ? '<span class="g-tilde">✓</span>' : ""}${ahora ? '<span class="g-vivo"></span>' : ""}</div>` });
   }
 

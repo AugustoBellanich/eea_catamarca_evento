@@ -63,8 +63,8 @@ usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese arc
 
 ## Estilos
 
-Dos estilos visuales: **moderno** (estilo parque: lienzo claro y apagado, lotes sin borde con dibujitos en verde
-oliva según el cultivo, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
+Dos estilos visuales: **moderno** (mapa ilustrado en paleta oliva: esquinas redondeadas, árboles con sombra, caminos
+de tierra que empalman con las rutas y engordan al acercarse —se dibuja así sin tocar el KML—, lotes con dibujitos según el cultivo, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
 paradas que se tocan en pantalla se juntan en un círculo azul con la cantidad, que al tocarlo acerca; las selladas
 se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo) y **pixel** (tipografía pixelada, bordes duros, sombras en
 escalón, texturas en cuadraditos e íconos rasterizados a 20×20 y ampliados sin suavizar; el logo oficial no se
