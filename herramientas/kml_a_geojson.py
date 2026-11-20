@@ -21,7 +21,7 @@ NOMBRES = {
     # Lotes y edificios con estación (estacion = id de la ficha en datos/estaciones.json)
     "almendros":             {"cultivo": "almendra", "patron": "arboles", "estacion": "e10"},
     "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "estacion": "e2", "techo": "vidrio"},
-    "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "estacion": "e1"},
+    "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "estacion": "e1", "techo": "tejas"},
     "vid":                   {"cultivo": "vid", "patron": "hileras", "estacion": "e9"},
     "sum":                   {"cultivo": "charla", "patron": "edificio", "estacion": "e6"},
     "laboratorio suelo":     {"cultivo": "suelo", "patron": "edificio", "estacion": "e4"},
@@ -33,7 +33,7 @@ NOMBRES = {
     "algogon":               {"cultivo": "algodon", "patron": "surcos", "estacion": "e12", "nombre": "Algodón"},
     "girasol perenne":       {"cultivo": "girasol", "patron": "surcos", "estacion": "girasol-romero"},
     "pecanes":               {"cultivo": "pecan", "patron": "arboles", "estacion": "e5"},
-    "pecanes jovenes":       {"cultivo": "pecan", "patron": "arboles", "estacion": "e5", "nombre": "Pecanes jóvenes"},
+    "pecanes jovenes":       {"cultivo": "pecan_joven", "patron": "arboles", "estacion": "e5", "nombre": "Pecanes jóvenes"},  # plantines recién implantados
     # Lotes sin estación (se dibujan con su frutita)
     "citricos":              {"cultivo": "naranja", "patron": "arboles", "nombre": "Cítricos"},
     "lima":                  {"cultivo": "lima", "patron": "arboles"},

@@ -826,6 +826,19 @@
       const a = nodos[i], b = nodos[j];
       if (Math.abs(a.p[0] - b.p[0]) < 9 && Math.abs(a.p[1] - b.p[1]) < 9 && Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]) < 9 && a.nombre + a.t !== b.nombre + b.t) aristas.push([i, j]);
     }
+    // sectores con un solo acceso habilitado (config.js, accesos): no se entra ni se sale salvo cerca de ese ingreso
+    const cerrados = Object.entries(C.accesos || {}).map(([sector, ingreso]) => {
+      const pr = geo.features.find((f) => esPredio(f) && f.properties.nombre === sector);
+      const ing = geo.features.find((f) => esServicio(f) && f.properties.nombre === ingreso);
+      return pr && ing ? { anillo: pr.geometry.coordinates[0].map(xy), puerta: xy(ing.geometry.coordinates) } : null;
+    }).filter(Boolean);
+    const adentro = (p, z) => { let ok = false; const a = z.anillo;
+      for (let i = 0, j = a.length - 1; i < a.length; j = i++) if ((a[i][1] > p[1]) !== (a[j][1] > p[1]) && p[0] < (a[j][0] - a[i][0]) * (p[1] - a[i][1]) / (a[j][1] - a[i][1]) + a[i][0]) ok = !ok;
+      return ok; };
+    const habilitada = (p, q) => cerrados.every((z) => adentro(p, z) === adentro(q, z)
+      || Math.hypot((p[0] + q[0]) / 2 - z.puerta[0], (p[1] + q[1]) / 2 - z.puerta[1]) < 30);
+    const sinCerrar = aristas.filter(([i, j]) => habilitada(nodos[i].p, nodos[j].p));
+    aristas.length = 0; aristas.push(...sinCerrar);
     aristas.forEach(([i, j]) => {
       const d = Math.hypot(nodos[i].p[0] - nodos[j].p[0], nodos[i].p[1] - nodos[j].p[1]);
       const c = d * Math.max(COSTO[nodos[i].t] || 1, COSTO[nodos[j].t] || 1);
@@ -837,7 +850,7 @@
     const orilla = nodos.map((nd, i) => i).filter((i) => !peligrosa(nodos[i].t) && segPeligro.some((s) => distSeg(nodos[i].p, s.a, s.b) < 28));
     orilla.forEach((i, x) => orilla.slice(x + 1).forEach((j) => {
       const a = nodos[i], b = nodos[j], d = Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]);
-      if (d < 9 || d > 45 || !segPeligro.some((s) => cruce(a.p, b.p, s.a, s.b))) return;
+      if (d < 9 || d > 45 || !segPeligro.some((s) => cruce(a.p, b.p, s.a, s.b)) || !habilitada(a.p, b.p)) return;
       const c = d * 1.5 + 25; a.ady.push([j, c]); b.ady.push([i, c]);
     }));
     return { nodos, segPeligro, xy, ll };
@@ -892,7 +905,7 @@
         avisos = marcas.map((m) => ({ ll: L.latLng(red.ll(m.p)), nombre: (m.nombre || "la calle").replace(/^RP N° /, "RP ") }));
       }
     }
-    const m = puntos.reduce((t, p, i) => (i ? t + mapa.distance(puntos[i - 1], p) : 0), 0), min = Math.max(1, Math.round(m / 75)); // ~4,5 km/h
+    const m = puntos.reduce((t, p, i) => (i ? t + mapa.distance(puntos[i - 1], p) : 0), 0);
     const medio = puntos[Math.floor(puntos.length / 2)];
     if (!mapa.getPane("recorrido")) mapa.createPane("recorrido").style.zIndex = 430; // encima de árboles y vías
     const sobre = { pane: "recorrido", renderer: comoLlegar.lienzo || (comoLlegar.lienzo = L.svg({ pane: "recorrido" })) };
@@ -900,7 +913,7 @@
       L.polyline(puntos, { ...sobre, color: "#ffffff", weight: 9, opacity: 0.9, lineCap: "round", lineJoin: "round", interactive: false }),
       L.polyline(puntos, { ...sobre, color: zona(e).color, weight: 5, dashArray: "2 12", lineCap: "round", lineJoin: "round", className: "ruta", interactive: false }),
       L.marker(medio, { interactive: false, icon: L.divIcon({ className: "icono-libre", iconSize: [190, 34], iconAnchor: [95, 40],
-        html: `<span class="ruta-etiqueta" style="--c:${zona(e).color}">🚶 ${Math.round(m / 10) * 10} m · ${min} min</span>` }) }),
+        html: `<span class="ruta-etiqueta" style="--c:${zona(e).color}">🚶 ${Math.round(m / 10) * 10} m</span>` }) }),
       ...avisos.map((a) => L.marker(a.ll, { zIndexOffset: 800, title: "Precaución: " + a.nombre, icon: L.divIcon({ className: "icono-libre", iconSize: [34, 34], iconAnchor: [17, 17],
         html: `<div class="precaucion" aria-label="Precaución al cruzar ${esc(a.nombre)}">!</div>` }) })
         .on("click", () => avisar(`⚠ Precaución: ${a.nombre}. Mirá a ambos lados y caminá por la banquina; pueden pasar vehículos y máquinas.`, 5000))),

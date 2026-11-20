@@ -198,7 +198,8 @@
     "nombre": "Laboratorio de aceite",
     "cultivo": "aceite",
     "patron": "edificio",
-    "estacion": "e1"
+    "estacion": "e1",
+    "techo": "tejas"
    },
    "geometry": {
     "type": "Polygon",
@@ -500,7 +501,7 @@
     "id": "k12",
     "tipo": "lote",
     "nombre": "Pecanes jóvenes",
-    "cultivo": "pecan",
+    "cultivo": "pecan_joven",
     "patron": "arboles",
     "estacion": "e5"
    },

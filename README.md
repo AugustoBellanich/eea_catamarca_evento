@@ -97,10 +97,13 @@ Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya s
 
 "Cómo llegar" usa estas líneas: arma el recorrido por los caminos internos (desde la ubicación del visitante o, sin GPS,
 desde el ingreso principal), usa calles y rutas solo cuando no queda otra y marca con un "!" amarillo cada lugar donde el
-recorrido cruza o va junto a una calle o ruta, con el aviso de precaución. Sin caminos cargados, va en línea recta.
+recorrido cruza o va junto a una calle o ruta, con el aviso de precaución. Muestra solo los metros (se va caminando). Los sectores con un solo ingreso abierto se
+declaran en `config.js` (`accesos`, hoy el Sector 2 por "Ingreso sector 2"): el recorrido entra y sale solo por ahí.
+Sin caminos cargados, va en línea recta.
 
 Techos: en la tabla `NOMBRES` del conversor, `"techo": "vidrio"` dibuja un invernadero (naves de vidrio) y
-`"techo": "tejas"` un techo de tejas terracota a dos aguas. Más adelante, con los
+`"techo": "tejas"` un techo de tejas terracota a dos aguas (hoy el edificio de la EEA y el laboratorio de aceite).
+Los "Pecanes jóvenes" de la estación 5 se dibujan como plantines recién implantados (tazón de riego y tutor). Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
 
 ## Logo y colores oficiales

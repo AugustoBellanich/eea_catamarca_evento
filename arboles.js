@@ -12,6 +12,7 @@
     lima:     { fila: 6,   planta: 4,   copa: 2.0, tipo: "citrico" },
     nogal:    { fila: 10,  planta: 9,   copa: 4.4, tipo: "nogal" },
     pecan:    { fila: 10,  planta: 9,   copa: 4.4, tipo: "nogal" },
+    pecan_joven: { fila: 8, planta: 6,  copa: 1.0, tipo: "plantin_arbol" },
     almendra: { fila: 6,   planta: 5,   copa: 2.4, tipo: "almendro" },
     higo:     { fila: 6,   planta: 5,   copa: 2.6, tipo: "higuera" },
     frutal:   { fila: 6,   planta: 5,   copa: 2.3, tipo: "mixto" },
@@ -25,7 +26,7 @@
   };
   // Color de suelo de cada lote (debajo de las plantas).
   const SUELO = {
-    olivo: "#DCDDBC", naranja: "#E7D9B0", lima: "#E7D9B0", nogal: "#D5DBB5", pecan: "#D5DBB5", almendra: "#E3DBB2",
+    olivo: "#DCDDBC", naranja: "#E7D9B0", lima: "#E7D9B0", nogal: "#D5DBB5", pecan: "#D5DBB5", pecan_joven: "#E3D6AE", almendra: "#E3DBB2",
     higo: "#DADDB8", frutal: "#E1DBB4", tuna: "#E4DAB2", vid: "#E6D8AE", algodon: "#E8DAAC", girasol: "#E6D8AA",
     vivero: "#E5D8AE", pastura: "#C8D49B", ganado: "#E2CFA2",
   };
@@ -143,6 +144,16 @@
         circ(c, x, y, r * .5, "#84935A"); circ(c, x - r * .3, y - r * .3, r * .2, "#A2AF74"); }
       else if (s < .72) { lobulos(c, x, y, r, 3, .58, .35, "#66794A", s * 9); circ(c, x - r * .25, y - r * .25, r * .3, "#82965F"); }
       else { c.save(); c.translate(x, y); c.rotate(s * 6); c.scale(1, .62); lobulos(c, 0, 0, r, 4, .5, .5, "#8A977A", s * 3); circ(c, 0, 0, r * .45, "#9DA98C"); c.restore(); }
+    },
+    // plantín de pecán recién implantado: tazón de riego, tutor y unas pocas hojas tiernas
+    plantin_arbol(c, x, y, r, s) {
+      c.fillStyle = "rgba(150,120,80,.35)"; c.beginPath(); c.ellipse(x, y, r * 1.6, r * 1.35, 0, 0, 6.2832); c.fill();
+      c.strokeStyle = "rgba(120,95,60,.45)"; c.lineWidth = Math.max(.6, r * .12); c.stroke();
+      c.fillStyle = "rgba(78,84,46,.25)"; c.beginPath(); c.ellipse(x + r * .35, y + r * .4, r * .7, r * .55, 0, 0, 6.2832); c.fill();
+      for (let i = 0; i < 5; i++) { const a = s * 6 + i * 1.257;
+        c.fillStyle = i % 2 ? "#8DB25F" : "#A3C470"; c.beginPath();
+        c.ellipse(x + Math.cos(a) * r * .45, y + Math.sin(a) * r * .45, r * .42, r * .2, a, 0, 6.2832); c.fill(); }
+      circ(c, x, y, Math.max(.8, r * .16), "#8C6B46"); // tutor
     },
     mixto(c, x, y, r, s) { (s < .33 ? DIBUJO.citrico : s < .66 ? DIBUJO.almendro : DIBUJO.higuera)(c, x, y, r, s * 3 % 1); },
     // tuna: paletas ovaladas

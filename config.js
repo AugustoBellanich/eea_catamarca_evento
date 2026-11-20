@@ -45,6 +45,9 @@ window.CONFIG = {
   agendaCSV: "",
   avisosCSV: "",
 
+  // Sectores con un solo ingreso abierto el día del evento: "Cómo llegar" entra y sale solo por ahí.
+  accesos: { "Sector 2": "Ingreso sector 2" },
+
   // Estación donde se dibujan las podadoras trabajando (su ficha: poda mecánica en los lotes del ingreso).
   podaMecanica: "e3",
 
