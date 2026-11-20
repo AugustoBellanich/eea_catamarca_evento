@@ -1113,7 +1113,7 @@
     "id": "predio-3",
     "tipo": "predio",
     "nombre": "Sector 3",
-    "cultivo": "olivo"
+    "paisaje": "monte"
    },
    "geometry": {
     "type": "Polygon",
