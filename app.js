@@ -227,6 +227,7 @@
   function estilo(f) {
     const ilu = modo === "ilustrado", p = f.properties;
     if (PARQUE && ilu) return estiloParque(f);
+    if (!ilu) return estiloSatelital(f);
     if (esPredio(f)) return ilu ? { color: "#a8946a", weight: 2, dashArray: "2 6", fillColor: "#e4ebc8", fillOpacity: 1, className: "predio" }
       : { color: "#ffffff", weight: 2, dashArray: "4 6", fill: false, className: "predio" };
     if (esCamino(f)) return ilu ? { color: "#f8f3e6", weight: 12, lineCap: "round", className: "camino" }
@@ -259,6 +260,15 @@
   let lineasPq = [];
   const anchoZoom = () => Math.max(1, Math.min(2.6, 2 ** ((mapa.getZoom() - 16.5) * .5)));
   mapa.on("zoomend", () => lineasPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
+  // Satelital: la foto manda. Solo contornos blancos finos (sin colores de zona ni vías dibujadas) para ubicar cada
+  // lote en la imagen real; las paradas se tocan igual.
+  function estiloSatelital(f) {
+    const p = f.properties, est = esEstacion(f) && capas.estaciones;
+    if (esPredio(f)) return { color: "#ffffff", weight: 1.5, opacity: .75, dashArray: "6 6", fill: false, className: "predio" };
+    if (p.provisorio) return { color: "#ffffff", weight: 1.2, opacity: .8, dashArray: "3 4", fillColor: "#ffffff", fillOpacity: .06, className: "lote" + (est ? " es-est" : "") };
+    return est ? { color: "#ffffff", weight: 1.6, opacity: .95, fillColor: "#ffffff", fillOpacity: .1, className: "lote es-est" }
+      : { color: "#ffffff", weight: 1, opacity: .55, fillColor: "#ffffff", fillOpacity: 0, className: "lote" };
+  }
   // Rutas, caminos y paseos dibujados en el KML (nombres "Ruta…", "Camino…", "Paseo…").
   function dibujarLineasParque(lineas) {
     lineasPq = [];
@@ -366,11 +376,19 @@
       L.circle(centro(f), { radius: 18, color: zona(e).color, weight: 3, dashArray: "6 6", fillColor: zona(e).color, fillOpacity: 0.18,
         className: "lote lote-est lote-prov" }).on("click", () => abrirFicha(e.id)).addTo(capaFondo);
     });
-    const parque = PARQUE && modo === "ilustrado";
+    const parque = PARQUE && modo === "ilustrado", sat = modo === "satelital";
     const dibujo = parque ? vect.map(suave) : vect; // en parque: esquinas redondeadas y caminos empalmados
-    L.geoJSON({ type: "FeatureCollection", features: parque ? dibujo.filter((f) => !esCamino(f)) : dibujo }, {
+    L.geoJSON({ type: "FeatureCollection", features: parque || sat ? dibujo.filter((f) => !esCamino(f)) : dibujo }, {
       style: estilo,
       onEachFeature: (f, capa) => {
+        if (sat) { // nombre chico de cada lote (de cerca) para reconocerlo en la foto
+          if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
+          else if (esPredio(f)) capa.on("click", () => { if (nivel === "lejos") verPredio(); });
+          else if (f.properties.nombre) capa.on("click", (ev) => { L.DomEvent.stop(ev); cartelito(f.properties.nombre); });
+          if (!esPredio(f) && f.properties.nombre && f.geometry.type !== "Point")
+            capa.bindTooltip(f.properties.nombre, { permanent: true, direction: "center", className: "sat-nombre" });
+          return;
+        }
         if (parque) { // sin carteles fijos: el nombre del lote aparece al tocarlo
           if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
           else if (esPredio(f)) capa.on("click", () => { if (nivel === "lejos") verPredio(); });
@@ -422,7 +440,7 @@
   function dibujarFrutas() {
     if (capaFrutas) capaFrutas.remove();
     capaFrutas = L.layerGroup();
-    if (PARQUE && modo === "ilustrado") return dibujarSimbolos();
+    if (PARQUE) return dibujarSimbolos();
     if (nivel !== "cerca" || !capas.lotes || (PARQUE && modo === "ilustrado")) return; // en parque el lote ya es la textura
     geo.features.filter((f) => !(f.properties.provisorio && !capas.estaciones))
       .filter((f) => (f.properties.cultivo || f.properties.provisorio) && f.geometry.type !== "LineString").forEach((f) => {
@@ -808,23 +826,33 @@
     const lat0 = C.centro[0], kx = 111320 * Math.cos(lat0 * Math.PI / 180), ky = 110540;
     const xy = ([lng, lat]) => [lng * kx, lat * ky], ll = ([x, y]) => [y / ky, x / kx];
     const nodos = [], aristas = [], segPeligro = [];
+    const puntas = [];
     lineas.forEach((f) => {
       const t = tipoLinea(f), coords = suave(f).geometry.coordinates.map(xy);
-      let previo = null;
+      let previo = null; puntas.push(nodos.length);
       for (let i = 0; i < coords.length - 1; i++) {
         const [a, b] = [coords[i], coords[i + 1]], L2 = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(L2 / 5));
         if (peligrosa(t)) segPeligro.push({ a, b, nombre: f.properties.nombre || (t === "ruta" ? "la ruta" : "la calle") });
         for (let k = i ? 1 : 0; k <= n; k++) {
-          const id = nodos.length; nodos.push({ p: [a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n], t, nombre: f.properties.nombre, ady: [] });
+          const id = nodos.length; nodos.push({ p: [a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n], t, nombre: f.properties.nombre, linea: f.properties.id, ady: [] });
           if (previo !== null) aristas.push([previo, id]);
           previo = id;
         }
       }
+      puntas.push(previo);
+    });
+    // puntas sueltas (al suavizar, un camino que terminaba sobre otro puede quedar a unos metros): se unen al nodo más
+    // cercano de otra línea si está a menos de 20 m
+    puntas.forEach((i) => {
+      let mejor = -1, md = 20;
+      nodos.forEach((n, j) => { if (n.linea === nodos[i].linea) return;
+        const d = Math.hypot(n.p[0] - nodos[i].p[0], n.p[1] - nodos[i].p[1]); if (d < md && d >= 0.01) { md = d; mejor = j; } });
+      if (mejor >= 0) aristas.push([i, mejor]);
     });
     // empalmes entre líneas distintas: nodos a menos de 9 m
     for (let i = 0; i < nodos.length; i++) for (let j = i + 1; j < nodos.length; j++) {
       const a = nodos[i], b = nodos[j];
-      if (Math.abs(a.p[0] - b.p[0]) < 9 && Math.abs(a.p[1] - b.p[1]) < 9 && Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]) < 9 && a.nombre + a.t !== b.nombre + b.t) aristas.push([i, j]);
+      if (Math.abs(a.p[0] - b.p[0]) < 9 && Math.abs(a.p[1] - b.p[1]) < 9 && Math.hypot(a.p[0] - b.p[0], a.p[1] - b.p[1]) < 9 && a.linea !== b.linea) aristas.push([i, j]);
     }
     // sectores con un solo acceso habilitado (config.js, accesos): no se entra ni se sale salvo cerca de ese ingreso
     const cerrados = Object.entries(C.accesos || {}).map(([sector, ingreso]) => {

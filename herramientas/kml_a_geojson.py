@@ -63,6 +63,13 @@ NOMBRES = {
     "estacion meteorologica inta": {"tipo": "servicio", "servicio": "clima", "nombre": "Estación meteorológica"},
 }
 
+# Correcciones de ubicación indicadas por Augusto sobre el mapa (se aplican después de leer el KML).
+# 20/11/2026: el ingreso habilitado del Sector 2 es el que queda frente al cruce de la RP 33 con Manuel Soria
+# (punta del camino interno que va hacia el algodón), no el del norte.
+CORRECCIONES = {
+    "ingreso zona 2": [-65.7296176, -28.4724063],
+}
+
 def clave(s):
     s = unicodedata.normalize("NFD", s or "").encode("ascii", "ignore").decode()
     s = re.sub(r"\s+", " ", s.strip().lower())
@@ -115,6 +122,8 @@ def main(ruta, salida="datos/estaciones.geojson"):
             geom = {"type": "LineString", "coordinates": coords(lin.text)}
         else:
             continue
+        if k in CORRECCIONES and geom["type"] == "Point":
+            geom = {"type": "Point", "coordinates": CORRECCIONES[k]}
         tipo = info.get("tipo", "lote")
         props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))

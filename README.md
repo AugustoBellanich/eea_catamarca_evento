@@ -75,6 +75,10 @@ sin tocar el KML—, construcciones en arena con sombra corta y paradas como got
 paradas que se tocan en pantalla se juntan en un círculo oliva oscuro con la cantidad, que al tocarlo acerca; las selladas
 se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo.
 
+**Satelital** (para ubicarse con la imagen real; después, con el ortomosaico del dron): sin colores de zona ni vías
+dibujadas, solo contornos blancos finos de los lotes y del predio, el nombre chico de cada lote de cerca, y las paradas
+y los servicios más chicos. Los recorridos y los avisos de cruce se ven igual.
+
 ## Capas
 
 El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta las estaciones, los ingresos
@@ -98,7 +102,8 @@ Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya s
 "Cómo llegar" usa estas líneas: arma el recorrido por los caminos internos (desde la ubicación del visitante o, sin GPS,
 desde el ingreso principal), usa calles y rutas solo cuando no queda otra y marca con un "!" amarillo cada lugar donde el
 recorrido cruza o va junto a una calle o ruta, con el aviso de precaución. Muestra solo los metros (se va caminando). Los sectores con un solo ingreso abierto se
-declaran en `config.js` (`accesos`, hoy el Sector 2 por "Ingreso sector 2"): el recorrido entra y sale solo por ahí.
+declaran en `config.js` (`accesos`, hoy el Sector 2 por "Ingreso sector 2", ubicado frente al cruce de la RP 33 con
+Manuel Soria por corrección en `CORRECCIONES` del conversor): el recorrido entra y sale solo por ahí.
 Sin caminos cargados, va en línea recta.
 
 Techos: en la tabla `NOMBRES` del conversor, `"techo": "vidrio"` dibuja un invernadero (naves de vidrio) y
