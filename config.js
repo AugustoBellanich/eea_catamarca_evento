@@ -1,7 +1,6 @@
 // Configuración del sitio. Lo que dice "A COMPLETAR" se reemplaza antes de la jornada.
 window.CONFIG = {
   titulo: "INTA a Puertas Abiertas",
-  tema: "moderno",   // "moderno" o "pixel" (también se elige en Capas o con ?tema=pixel)
   tituloCorto: "Puertas Abiertas",          // encabezado, al lado del logo
   subtituloCorto: "EEA Catamarca · Sumalao",
   // Logos oficiales del aniversario 70 (archivos de Comunicación, sin modificar): color y blanco (negativo).

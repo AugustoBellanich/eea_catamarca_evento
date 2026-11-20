@@ -62,9 +62,9 @@ porque Google demora en actualizar lo publicado.
 estaciones que todavía no están en el KML. Apenas una estación tiene su lote en el KML, la provisoria deja de
 usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese archivo.
 
-## Estilos
+## Estilo
 
-Dos estilos visuales: **moderno** (mapa ilustrado en paleta oliva: cada lote con su cultivo visto desde arriba —olivos, cítricos con frutitos,
+Estilo visual: mapa ilustrado en paleta oliva: cada lote con su cultivo visto desde arriba —olivos, cítricos con frutitos,
 nogales y pecanes, almendros, higueras, tuna, vid en hileras, surcos— plantado en hileras a lo largo del lado más largo
 del polígono con un marco típico de cada especie (`arboles.js`, tabla `MARCO`; es ilustrativo, no el marco real del
 ensayo), edificios con volumen, el Sector 3 como monte abierto (suelo desnudo, matas y árboles sueltos, como en la satelital),
@@ -72,15 +72,14 @@ podadoras moviéndose por la hilera en el lote de la estación de poda (`config.
 teléfono pide reducir movimiento), el corral
 con cabras y ovejas, árboles sueltos y variados en el borde de los tres sectores (sin tapar los ingresos), caminos de tierra que empalman con las rutas y engordan al acercarse —todo se dibuja
 sin tocar el KML—, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
-paradas que se tocan en pantalla se juntan en un círculo azul con la cantidad, que al tocarlo acerca; las selladas
-se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo) y **pixel** (tipografía pixelada, bordes duros, sombras en
-escalón, texturas en cuadraditos e íconos rasterizados a 20×20 y ampliados sin suavizar; el logo oficial no se
-toca). Se elige en `config.js` (`tema`), en el panel Capas o con `?tema=pixel` en la dirección.
+paradas que se tocan en pantalla se juntan en un círculo oliva oscuro con la cantidad, que al tocarlo acerca; las selladas
+se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo.
 
 ## Capas
 
-El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta estaciones, lotes y
-cultivos, e ingresos y servicios. Con las estaciones apagadas queda solo el plano de la EEA con cada lote.
+El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta las estaciones, los ingresos
+y servicios, y los **símbolos de cultivos**: un disco blanco con el dibujo del cultivo sobre cada lote que no es parada
+(apagado de entrada; las plantas se ven siempre). Tocar un símbolo muestra el nombre del lote.
 
 ## Caminos
 

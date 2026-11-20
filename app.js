@@ -19,14 +19,13 @@
   let miPosicion = null, marcaYo = null, circuloYo = null, seguimiento = null;
   let sellos = leer(K.sellos, []);
   let leidos = leer(K.leidos, []);
-  // Estilo visual: moderno o pixel (se recuerda en el navegador; ?tema=pixel lo fuerza).
-  const TEMA = params.get("tema") || leer("pa70-tema", null) || C.tema || "moderno";
-  document.body.classList.toggle("tema-pixel", TEMA === "pixel");
   // Estilo "parque" (el moderno): lienzo claro y apagado, lotes sin borde con textura botánica, y alto contraste
-  // reservado a las paradas (gotas blancas con número). El tema pixel conserva su dibujo propio.
-  const PARQUE = TEMA !== "pixel";
+  // reservado a las paradas (gotas blancas con número).
+  const PARQUE = true;
   // Capas visibles (se recuerdan en el navegador).
-  const capas = Object.assign({ estaciones: true, lotes: true, servicios: true }, leer("pa70-capas", {}));
+  // "cultivos": símbolo de cada cultivo sobre su lote (apagado de entrada; las plantas se ven siempre).
+  const capas = Object.assign({ estaciones: true, servicios: true }, leer("pa70-capas", {}), { lotes: true });
+  if (capas.cultivos === undefined) capas.cultivos = false;
 
   function leer(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch (_) { return def; } }
   function escribir(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { /* sin almacenamiento */ } }
@@ -155,26 +154,15 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17l9 5 9-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Capas</button>
         <div class="capas-panel" hidden>
           <div class="capas-vista"><button type="button" data-modo="ilustrado">Ilustrado</button><button type="button" data-modo="satelital">Satelital</button></div>
-          <div class="capas-titulo">Estilo</div>
-          <div class="capas-vista capas-tema"><button type="button" data-tema="moderno">Moderno</button><button type="button" data-tema="pixel">Pixel</button></div>
           <div class="capas-titulo">Mostrar</div>
           <label><input type="checkbox" data-capa="estaciones"> Estaciones</label>
-          <label><input type="checkbox" data-capa="lotes"> Lotes y cultivos</label>
+          <label><input type="checkbox" data-capa="cultivos"> Símbolos de cultivos</label>
           <label><input type="checkbox" data-capa="servicios"> Ingresos y servicios</label>
         </div>`;
       L.DomEvent.disableClickPropagation(caja); L.DomEvent.disableScrollPropagation(caja);
       const boton = caja.querySelector(".boton-modo"), panel = caja.querySelector(".capas-panel");
       boton.onclick = () => { panel.hidden = !panel.hidden; boton.setAttribute("aria-expanded", String(!panel.hidden)); };
       caja.querySelectorAll("[data-modo]").forEach((b) => (b.onclick = () => ponerModo(b.dataset.modo)));
-      caja.querySelectorAll("[data-tema]").forEach((b) => {
-        b.classList.toggle("activo", b.dataset.tema === TEMA);
-        b.onclick = () => { // cambiar de estilo recarga la página (los íconos se preparan al abrir)
-          if (b.dataset.tema === TEMA) return;
-          escribir("pa70-tema", b.dataset.tema);
-          params.delete("tema"); const q = params.toString();
-          location.replace(location.pathname + (q ? "?" + q : "") + location.hash);
-        };
-      });
       caja.querySelectorAll("[data-capa]").forEach((c) => {
         c.checked = capas[c.dataset.capa];
         c.onchange = () => { capas[c.dataset.capa] = c.checked; escribir("pa70-capas", capas); dibujarFondo(); actualizarNivel(true); };
@@ -211,20 +199,6 @@
       <rect width="16" height="10" fill="#8fd0f0"/><path d="M0 6q4-4 8 0t8 0" stroke="#e3f5fd" stroke-width="1.6" fill="none"/></pattern>
     <pattern id="p-edificio" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect width="8" height="8" fill="#e9e1d1"/><rect width="2" height="8" fill="#d6cab2"/></pattern>`;
-  // Versión pixel: todo en cuadraditos.
-  const PATRONES_PIX = `
-    <pattern id="p-arboles" width="16" height="16" patternUnits="userSpaceOnUse">
-      <rect width="16" height="16" fill="#c9de9c"/><rect x="2" y="2" width="10" height="10" fill="#3d7a2a"/><rect x="4" y="4" width="4" height="4" fill="#6fb04a"/><rect x="6" y="12" width="2" height="2" fill="#7a5230"/></pattern>
-    <pattern id="p-hileras" width="10" height="10" patternUnits="userSpaceOnUse">
-      <rect width="10" height="10" fill="#e2d8ae"/><rect x="2" width="6" height="10" fill="#6f9a37"/><rect x="4" y="4" width="2" height="2" fill="#6b2f6e"/></pattern>
-    <pattern id="p-surcos" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill="#e8d398"/><rect y="2" width="8" height="4" fill="#97b34a"/></pattern>
-    <pattern id="p-pasto" width="12" height="12" patternUnits="userSpaceOnUse">
-      <rect width="12" height="12" fill="#d6e5a6"/><rect x="2" y="6" width="2" height="4" fill="#8fae4a"/><rect x="8" y="2" width="2" height="4" fill="#8fae4a"/></pattern>
-    <pattern id="p-agua" width="12" height="8" patternUnits="userSpaceOnUse">
-      <rect width="12" height="8" fill="#5fb8e8"/><rect x="2" y="3" width="6" height="2" fill="#bfe7fb"/></pattern>
-    <pattern id="p-edificio" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill="#e6dccb"/><rect width="4" height="4" fill="#d3c5aa"/><rect x="4" y="4" width="4" height="4" fill="#d3c5aa"/></pattern>`;
   // Versión parque: paleta oliva de mapa ilustrado. Árboles con copa, sombra y brillo, ubicados de forma irregular
   // en una baldosa grande para que no se vea una grilla.
   const arbol = (x, y, r) => `<circle cx="${x + r * .3}" cy="${y + r * .35}" r="${r}" fill="#6F8150" fill-opacity=".45"/>
@@ -246,7 +220,7 @@
     const svg = mapa.getPanes().overlayPane.querySelector("svg");
     if (svg && !svg.querySelector("#p-arboles")) {
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-      defs.innerHTML = TEMA === "pixel" ? PATRONES_PIX : PARQUE ? PATRONES_PARQUE : PATRONES; svg.insertBefore(defs, svg.firstChild);
+      defs.innerHTML = PARQUE ? PATRONES_PARQUE : PATRONES; svg.insertBefore(defs, svg.firstChild);
     }
   }
 
@@ -414,7 +388,7 @@
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
     // (un lote provisorio entra si dice su cultivo: por ejemplo, el de olivos que se tomó para la estación de poda)
     if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !(f.properties.provisorio && !f.properties.cultivo)),
-      { visible: () => capas.lotes && calcularNivel() !== "lejos", predios: geo.features.filter(esPredio), poda: C.podaMecanica,
+      { visible: () => calcularNivel() !== "lejos", predios: geo.features.filter(esPredio), poda: C.podaMecanica,
         ingresos: geo.features.filter((f) => esServicio(f) && f.properties.servicio === "ingreso").map((f) => f.geometry.coordinates),
         lineas: geo.features.filter((f) => esCamino(f) && f.geometry.type === "LineString") }).addTo(capaFondo);
     ponerPatrones();
@@ -438,7 +412,8 @@
     const cambio = n !== nivel;
     nivel = n;
     ["lejos", "medio", "cerca"].forEach((x) => $("#mapa").classList.toggle("nivel-" + x, x === nivel));
-    if (cambio || forzar) { dibujarFrutas(); dibujarServicios(); }
+    if (cambio || forzar) dibujarServicios();
+    dibujarFrutas(); // los símbolos de cultivos se reacomodan con cada zoom
     dibujarParadas(); // las agrupaciones cambian con cada zoom
   }
   mapa.on("zoomend", () => actualizarNivel(false));
@@ -447,6 +422,7 @@
   function dibujarFrutas() {
     if (capaFrutas) capaFrutas.remove();
     capaFrutas = L.layerGroup();
+    if (PARQUE && modo === "ilustrado") return dibujarSimbolos();
     if (nivel !== "cerca" || !capas.lotes || (PARQUE && modo === "ilustrado")) return; // en parque el lote ya es la textura
     geo.features.filter((f) => !(f.properties.provisorio && !capas.estaciones))
       .filter((f) => (f.properties.cultivo || f.properties.provisorio) && f.geometry.type !== "LineString").forEach((f) => {
@@ -456,6 +432,23 @@
       if (esEstacion(f) && capas.estaciones) m.on("click", () => abrirFicha(estDe(f)));
       m.addTo(capaFrutas);
     });
+    capaFrutas.addTo(mapa);
+  }
+
+  // Símbolos de cultivos (Capas → "Símbolos de cultivos"): un disco blanco con el dibujo del cultivo sobre cada lote
+  // que no es parada (las paradas ya tienen su gota). Si dos se tocan en pantalla, queda uno solo.
+  function dibujarSimbolos() {
+    if (nivel === "lejos" || !capas.cultivos) return;
+    const puestos = ubicadas().map((e) => mapa.latLngToLayerPoint(centroEstacion(e.id)).subtract([0, 28]));
+    geo.features.filter((f) => f.geometry.type === "Polygon" && !esPredio(f) && !esCamino(f) && !(esEstacion(f) && capas.estaciones))
+      .filter((f) => ICON[f.properties.cultivo]).forEach((f) => {
+        const ll = centro(f), p = mapa.latLngToLayerPoint(ll);
+        if (puestos.some((q) => q.distanceTo(p) < 38)) return;
+        puestos.push(p);
+        L.marker(ll, { keyboard: false, title: f.properties.nombre, icon: L.divIcon({ className: "icono-libre", iconSize: [32, 32], iconAnchor: [16, 16],
+          html: `<div class="simbolo-cultivo">${ICON[f.properties.cultivo]}</div>` }) })
+          .on("click", () => cartelito(f.properties.nombre)).addTo(capaFrutas);
+      });
     capaFrutas.addTo(mapa);
   }
 
@@ -619,8 +612,7 @@
       className: "icono-libre ancla", iconSize: [0, 0], iconAnchor: [0, 0],
       html: `<svg class="guia" width="1" height="1" aria-hidden="true"><line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>
           <line x1="0" y1="0" x2="${ex}" y2="${ey}" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>
-          ${TEMA === "pixel" ? `<rect x="-6" y="-6" width="12" height="12" fill="${c}" stroke="#1b2838" stroke-width="2"/>`
-            : `<circle r="5.5" fill="${c}" stroke="#fff" stroke-width="2.5"/>`}</svg>
+          <circle r="5.5" fill="${c}" stroke="#fff" stroke-width="2.5"/></svg>
         <div class="${clases}" style="--c:${c};left:${dx}px;top:${dy}px;width:${w}px">${ahora ? '<span class="en-vivo-txt">Ahora</span>' : ""}
           <div class="tela">${mini ? `<span class="b-mini">${e.numero ? esc(e.numero) : ICON[e.icono] || ""}</span>`
             : `${e.numero ? `<span class="b-num">${esc(e.numero)}</span>` : ""}<span class="b-ico">${ICON[e.icono] || ""}</span>
@@ -1085,31 +1077,6 @@
     ponerModo("satelital"); // para dibujar conviene ver la imagen
   }
 
-  // Íconos en pixel: cada dibujo se rasteriza a 20×20 sin suavizado y se muestra ampliado (píxeles de verdad).
-  async function pixelarIconos(lado = 20) {
-    const claves = Object.keys(ICON).filter((k) => k !== "sello");
-    await Promise.all(claves.map((k) => new Promise((ok) => {
-      const svg = ICON[k].replace("<svg ", `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" `);
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const cv = document.createElement("canvas"); cv.width = cv.height = lado;
-          const c = cv.getContext("2d"); c.imageSmoothingEnabled = true; c.drawImage(img, 0, 0, lado, lado);
-          const d = c.getImageData(0, 0, lado, lado), px = d.data;
-          for (let i = 0; i < px.length; i += 4) { // sin semitransparencias: borde duro
-            if (px[i + 3] < 110) { px[i + 3] = 0; continue; }
-            px[i + 3] = 255;
-          }
-          c.putImageData(d, 0, 0);
-          ICON[k] = `<img class="pix" src="${cv.toDataURL()}" alt="">`;
-        } catch (_) { /* si el navegador no deja leer el dibujo, queda el vectorial */ }
-        ok();
-      };
-      img.onerror = () => ok();
-      img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-    })));
-  }
-
   // ---------- Arranque ----------
   async function cargar() {
     // Los datos van como .js (window.*) para que el sitio ande también abierto con doble clic.
@@ -1121,7 +1088,6 @@
     actividades = (ag.actividades || []).map((a) => ({ ...a, estacion: idEstacion(a.estacion) }));
     avisos = ag.avisos || [];
     if (DEMO) $("#subtitulo").textContent = "DEMOSTRACIÓN · lotes inventados";
-    if (TEMA === "pixel") await pixelarIconos();
     bienvenida();
     ponerModo("ilustrado");
     if (predio()) {
