@@ -30,6 +30,7 @@ Sitio estático: HTML, CSS y JS con Leaflet, sin compilar y sin servidor propio.
 | `plantillas/` | Encabezados de la planilla de agenda y avisos |
 | `datos/provisorios.js` | Ubicaciones provisorias de estaciones sin lugar en el KML |
 | `lib/fuentes/` | Tipografía Nunito (licencia SIL OFL), incluida para que ande sin señal |
+| `arboles.js` | Dibujo de las plantas por cultivo (marco de plantación, colores de suelo) y de los edificios con volumen |
 | `iconos.js` | Íconos de las estaciones (ilustraciones SVG propias, a color) |
 | `herramientas/kml_a_geojson.py` | Pasa el KML/KMZ de Google Earth a `datos/estaciones.geojson` |
 | `fuentes/` | KML originales |
@@ -63,8 +64,11 @@ usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese arc
 
 ## Estilos
 
-Dos estilos visuales: **moderno** (mapa ilustrado en paleta oliva: esquinas redondeadas, árboles con sombra, caminos
-de tierra que empalman con las rutas y engordan al acercarse —se dibuja así sin tocar el KML—, lotes con dibujitos según el cultivo, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
+Dos estilos visuales: **moderno** (mapa ilustrado en paleta oliva: cada lote con su cultivo visto desde arriba —olivos, cítricos con frutitos,
+nogales y pecanes, almendros, higueras, tuna, vid en hileras, surcos— plantado en hileras a lo largo del lado más largo
+del polígono con un marco típico de cada especie (`arboles.js`, tabla `MARCO`; es ilustrativo, no el marco real del
+ensayo), edificios con volumen, caminos de tierra que empalman con las rutas y engordan al acercarse —todo se dibuja
+sin tocar el KML—, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
 paradas que se tocan en pantalla se juntan en un círculo azul con la cantidad, que al tocarlo acerca; las selladas
 se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre abajo y se va solo) y **pixel** (tipografía pixelada, bordes duros, sombras en
 escalón, texturas en cuadraditos e íconos rasterizados a 20×20 y ampliados sin suavizar; el logo oficial no se

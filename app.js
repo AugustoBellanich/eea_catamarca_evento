@@ -273,9 +273,12 @@
     if (p.provisorio) return { color: "#1E3A2F", weight: 1.5, opacity: .5, dashArray: "4 5", fillColor: "#1E3A2F", fillOpacity: .06,
       className: "lote lote-pq lote-prov" + (est ? " es-est" : "") };
     const patron = p.patron || (estacion(estDe(f)) || {}).patron || "pasto";
-    const edif = patron === "edificio";
-    return { color: edif ? "#BBAE94" : "#A9B27E", weight: edif ? 1 : 1.4, opacity: edif ? .9 : .55, lineJoin: "round", fillOpacity: 1,
-      className: "lote lote-pq " + (edif ? "p-edif" : "p-" + patron) + (est ? " es-est" : "") };
+    const extra = est ? " es-est" : "";
+    // edificios: los dibuja la arboleda con volumen; el polígono queda invisible pero se puede tocar
+    if (patron === "edificio") return { stroke: false, fillColor: "#fff", fillOpacity: 0, className: "lote lote-pq" + extra };
+    const suelo = window.Arboleda && Arboleda.suelo(p);
+    if (suelo) return { color: "#BDB98C", weight: 1, opacity: .7, fillColor: suelo, fillOpacity: 1, className: "lote lote-pq" + extra };
+    return { color: "#BDB98C", weight: 1, opacity: .7, fillOpacity: 1, className: "lote lote-pq p-" + (patron === "agua" ? "agua" : "liso") + extra };
   }
   // Las líneas engordan al acercarse (hasta 2,6 veces), como en un plano dibujado a escala.
   let lineasPq = [];
@@ -358,11 +361,8 @@
         const t = g.geometry.type;
         let geom = g.geometry;
         if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false) };
-        else if (t === "Polygon") { // esquinas suaves: menos en edificios, más en el contorno del predio
-          const q = esPredio(g) ? .2 : g.properties.patron === "edificio" ? .06 : .12;
-          geom = { type: t, coordinates: g.geometry.coordinates.map((anillo) => {
-            const a = chaikin(anillo.slice(0, -1), true, 2, q); return a.concat([a[0]]); }) };
-        }
+        else if (t === "Polygon" && esPredio(g)) // solo el contorno del predio se suaviza; los lotes quedan como en el KML
+          geom = { type: t, coordinates: g.geometry.coordinates.map((anillo) => { const a = chaikin(anillo.slice(0, -1), true, 2, .15); return a.concat([a[0]]); }) };
         suaves.set(g, { type: "Feature", properties: g.properties, geometry: geom });
       });
     }
@@ -405,6 +405,9 @@
       },
     }).addTo(capaFondo);
     if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
+    // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
+    if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !f.properties.provisorio),
+      { visible: () => capas.lotes && calcularNivel() !== "lejos" }).addTo(capaFondo);
     ponerPatrones();
   }
 
