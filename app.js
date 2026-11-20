@@ -57,8 +57,9 @@
   const esEstacion = (f) => !!estDe(f);
   const esServicio = (f) => f.properties.tipo === "servicio";
   const esPredio = (f) => f.properties.tipo === "predio" || f.properties.id === "predio";
-  const esCamino = (f) => /^(camino|ruta|paseo)/.test(f.properties.id);
-  const tipoLinea = (f) => (f.properties.id.match(/^(camino|ruta|paseo)/) || [])[1];
+  const esCamino = (f) => /^(camino|ruta|paseo|calle)/.test(f.properties.id);
+  const tipoLinea = (f) => { const t = (f.properties.id.match(/^(camino|ruta|paseo|calle)/) || [])[1];
+    return t === "calle" ? "calle-" + (f.properties.superficie || "tierra") : t; };
   const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f);
   const lotesDe = (id) => geo.features.filter((f) => estDe(f) === id);
   const ubicadas = () => estaciones.filter((e) => lotesDe(e.id).length);
@@ -236,6 +237,7 @@
       <rect y="3" width="7" height="1.4" fill="#6E7F63" fill-opacity=".3"/></pattern>
     <pattern id="p-pasto" width="14" height="12" patternUnits="userSpaceOnUse">${TINTE}
       <path d="M3 8l1.5-3 1.5 3M9 4l1.5-3 1.5 3" stroke="#6E7F63" stroke-opacity=".4" stroke-width="1.1" fill="none"/></pattern>
+    <pattern id="p-liso" width="10" height="10" patternUnits="userSpaceOnUse">${TINTE}</pattern>
     <pattern id="p-agua" width="18" height="10" patternUnits="userSpaceOnUse">
       <rect width="18" height="10" fill="#CFE1E4"/><path d="M1 6q4-3 8 0t8 0" stroke="#fff" stroke-opacity=".7" stroke-width="1.2" fill="none"/></pattern>`;
   function ponerPatrones() {
@@ -253,7 +255,7 @@
       : { color: "#ffffff", weight: 2, dashArray: "4 6", fill: false, className: "predio" };
     if (esCamino(f)) return ilu ? { color: "#f8f3e6", weight: 12, lineCap: "round", className: "camino" }
       : { color: "#ffffff", weight: 4, opacity: 0.7, className: "camino" };
-    if (esContexto(f) || (!capas.estaciones && esEstacion(f))) return ilu ? { color: "#9c8a63", weight: 1.5, fillOpacity: 1, className: "lote lote-ctx p-" + (p.patron || "pasto") }
+    if (esContexto(f) || (!capas.estaciones && esEstacion(f))) return ilu ? { color: "#9c8a63", weight: 1.5, fillOpacity: 1, className: "lote lote-ctx p-" + (p.patron && p.patron !== "liso" ? p.patron : "pasto") }
       : { color: "#ffffff", weight: 1.5, opacity: 0.85, fillColor: "#ffffff", fillOpacity: 0.12, className: "lote lote-ctx" };
     const e = estacion(estDe(f));
     if (p.provisorio) return { color: zona(e).color, weight: 3, dashArray: "6 6", fillColor: zona(e).color, fillOpacity: 0.18, className: "lote lote-est lote-prov" };
@@ -275,8 +277,14 @@
   function dibujarLineasParque(lineas) {
     const capa = (fs, st) => L.geoJSON({ type: "FeatureCollection", features: fs }, { style: st, interactive: false }).addTo(capaFondo);
     const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
-    capa(de("ruta"), { color: "#FFFFFF", weight: 12, lineCap: "round", lineJoin: "round", className: "camino" });
-    capa(de("ruta"), { color: "#9AA3AB", weight: 8, lineCap: "round", lineJoin: "round", className: "camino" });
+    const r = { lineCap: "round", lineJoin: "round", className: "camino" };
+    // de afuera hacia adentro: calles del barrio, rutas, caminos internos y paseos
+    capa(de("calle-tierra"), { ...r, color: "#D8CEBE", weight: 7 });
+    capa(de("calle-tierra"), { ...r, color: "#EFE8D8", weight: 5 });
+    capa(de("calle-asfalto"), { ...r, color: "#FFFFFF", weight: 9 });
+    capa(de("calle-asfalto"), { ...r, color: "#B9C0C6", weight: 6 });
+    capa(de("ruta"), { ...r, color: "#FFFFFF", weight: 13 });
+    capa(de("ruta"), { ...r, color: "#9AA3AB", weight: 9 });
     capa(de("camino"), { color: "#D8CEBE", weight: 11, lineCap: "round", lineJoin: "round", className: "camino" });
     capa(de("camino"), { color: "#F7F3E8", weight: 9, lineCap: "round", lineJoin: "round", className: "camino" });
     capa(de("camino"), { color: "#B8A988", weight: 1.2, opacity: .35, dashArray: "2 7", className: "camino" });

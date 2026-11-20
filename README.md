@@ -81,7 +81,9 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 
 | Nombre empieza con | Qué es | Cómo se dibuja |
 |---|---|---|
-| "Ruta" | Ruta asfaltada de acceso | Gris con borde blanco |
+| "Ruta", "RP" o "RN" | Ruta asfaltada (ej. "RP N° 33") | Gris con borde blanco |
+| "Calle asfalto" | Calle asfaltada del barrio (ej. "Calle asfalto Manuel Soria") | Gris claro con borde blanco, más fina |
+| "Calle tierra" | Calle de tierra del barrio | Arena fina |
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
 

@@ -46,7 +46,7 @@ button { font: inherit; cursor: pointer; }
 
 /* Patrones de los lotes (modo ilustrado, de cerca) */
 .p-arboles { fill: url(#p-arboles); } .p-hileras { fill: url(#p-hileras); } .p-surcos { fill: url(#p-surcos); }
-.p-pasto { fill: url(#p-pasto); } .p-agua { fill: url(#p-agua); } .p-edificio { fill: url(#p-edificio); }
+.p-pasto { fill: url(#p-pasto); } .p-agua { fill: url(#p-agua); } .p-liso { fill: url(#p-liso); } .p-edificio { fill: url(#p-edificio); }
 .lote { cursor: pointer; }
 .lote-ctx { cursor: default; }
 #mapa.ilustrado.nivel-cerca .lote-est { filter: drop-shadow(0 2px 0 rgba(80,60,20,.25)); }
