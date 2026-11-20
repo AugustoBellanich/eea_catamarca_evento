@@ -1,5 +1,5 @@
 // Guarda el sitio, los datos y las teselas vistas para usarlo con poca señal.
-const VERSION = "pa70-v25";
+const VERSION = "pa70-v26";
 const BASE = ["./", "index.html", "estilos.css", "app.js", "arboles.js", "config.js", "manifest.webmanifest",
   "iconos.js", "lib/leaflet.js", "lib/leaflet.css", "img/icono.svg", "img/logo-inta70-blanco-izquierda.png", "img/logo-inta70-color-izquierda.png", "datos/estaciones.js", "datos/mapa.js", "datos/agenda.js", "datos/provisorios.js", "lib/fuentes/nunito-latin-400-normal.woff2", "lib/fuentes/nunito-latin-700-normal.woff2", "lib/fuentes/nunito-latin-800-normal.woff2", "lib/fuentes/nunito-latin-900-normal.woff2", "lib/fuentes/pixelify-sans-latin-400-normal.woff2", "lib/fuentes/pixelify-sans-latin-700-normal.woff2"];
 

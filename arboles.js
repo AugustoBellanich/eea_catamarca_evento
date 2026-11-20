@@ -20,14 +20,14 @@
     algodon:  { fila: 1.4, planta: 0.9, copa: 0.45, tipo: "cultivo", hilera: true },
     girasol:  { fila: 1.6, planta: 1.0, copa: 0.55, tipo: "girasol", hilera: true },
     vivero:   { fila: 1.8, planta: 1.1, copa: 0.5, tipo: "plantin", hilera: true },
-    pastura:  { fila: 3.2, planta: 3.2, copa: 0.7, tipo: "mata", azar: true },
+    pastura:  { fila: 3.6, planta: 3.6, copa: 0.8, tipo: "pradera", azar: true },
     ganado:   { fila: 6,   planta: 6,   copa: 0.6, tipo: "corral", corral: true },
   };
   // Color de suelo de cada lote (debajo de las plantas).
   const SUELO = {
     olivo: "#DCDDBC", naranja: "#E7D9B0", lima: "#E7D9B0", nogal: "#D5DBB5", pecan: "#D5DBB5", almendra: "#E3DBB2",
     higo: "#DADDB8", frutal: "#E1DBB4", tuna: "#E4DAB2", vid: "#E6D8AE", algodon: "#E8DAAC", girasol: "#E6D8AA",
-    vivero: "#E5D8AE", pastura: "#DCE0B4", ganado: "#E2CFA2",
+    vivero: "#E5D8AE", pastura: "#C8D49B", ganado: "#E2CFA2",
   };
   const claveCultivo = (p) => (p.cultivo === "naranja" && p.patron === "surcos" ? "vivero" : p.cultivo);
 
@@ -93,7 +93,7 @@
       }
       return { tipo: "corral", plantas: [], hileras: [], animales, anillo: ll.map(([lng, lat]) => [lat, lng]), copa: 0, lat: lat0, ang };
     }
-    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng };
+    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng, anillo: ll.map(([lng, lat]) => [lat, lng]) };
   }
 
   // ---------- Dibujos vistos desde arriba ----------
@@ -161,6 +161,20 @@
       c.moveTo(x - r, y + r * .6); c.lineTo(x - r * .3, y - r); c.moveTo(x, y + r * .6); c.lineTo(x + r * .1, y - r * 1.1);
       c.moveTo(x + r, y + r * .6); c.lineTo(x + r * .4, y - r * .9); c.stroke(); },
   };
+  // Trazo de pasto en "v", como en los planos ilustrados.
+  function pastito(c, x, y, r, alfa = .55) {
+    c.strokeStyle = `rgba(104,128,72,${alfa})`; c.lineWidth = Math.max(1, r * .2); c.lineCap = "round"; c.lineJoin = "round";
+    c.beginPath(); c.moveTo(x - r * .75, y - r * .55); c.quadraticCurveTo(x - r * .25, y - r * .1, x - r * .1, y + r * .35);
+    c.quadraticCurveTo(x + r * .1, y - r * .3, x + r * .7, y - r * .75); c.moveTo(x - r * .05, y + r * .3); c.lineTo(x + r * .02, y - r * .5); c.stroke();
+  }
+  DIBUJO.pradera = (c, x, y, r) => pastito(c, x, y, Math.max(3, r * 1.4));
+  // Setos: varias copas juntas que forman una sola masa, como una nube (primero todas las sombras, después las copas).
+  function seto(c, copas) {
+    copas.forEach(({ x, y, r }) => { c.fillStyle = "rgba(70,82,42,.30)"; c.beginPath(); c.ellipse(x + r * .35, y + r * .45, r * 1.02, r * .9, 0, 0, 6.2832); c.fill(); });
+    copas.forEach(({ x, y, r }) => circ(c, x, y, r, "#6D884C"));
+    copas.forEach(({ x, y, r }) => circ(c, x - r * .22, y - r * .25, r * .62, "#7E9A59"));
+    copas.forEach(({ x, y, r }) => circ(c, x - r * .38, y - r * .42, r * .26, "#9DB674"));
+  }
   // Color de la franja de cada hilera (debajo de las plantas).
   const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C" };
 
@@ -252,7 +266,7 @@
         for (let lat = Math.min(...lats); lat < Math.max(...lats); lat += p10y) {
           const x = lng + (azar(lng * 3, lat) - .5) * p10x * .9, y = lat + (azar(lat * 3, lng) - .5) * p10y * .9, h = azar(x * 11, y * 13);
           if (h < .3 || !libre(x, y, 4)) continue;
-          out.cosas.push({ ll: [y, x], tipo: h < .68 ? "matita" : h < .86 ? "arbusto" : "flores", s: azar(y * 5, x * 5) });
+          out.cosas.push({ ll: [y, x], tipo: h < .7 ? "matita" : h < .77 ? "arbusto" : h < .85 ? "flores" : "nada", s: azar(y * 5, x * 5) });
         }
     });
     return out;
@@ -291,7 +305,7 @@
       }
       // Árboles sueltos (no una cortina): en el monte abierto de los sectores con paisaje "monte" y a lo largo del borde
       // de los tres sectores, con huecos, tamaños y formas distintas, lejos de lotes, caminos e ingresos.
-      this.sueltos = []; this.tierra = []; this.matas = [];
+      this.sueltos = []; this.tierra = []; this.matas = []; this.setos = [];
       const ingresos = this.opciones.ingresos || [];
       const lejosIngreso = (lng, lat) => ingresos.every((g) => Math.hypot((g[0] - lng) * k, (g[1] - lat) * M_LAT) > 28);
       const sumar = (lng, lat, sem) => { if (enPredio(lng, lat) && libre(lng, lat, 6) && lejosIngreso(lng, lat))
@@ -308,7 +322,12 @@
               const x = ax + ux * d - uy * adentro, y = ay + uy * d + ux * adentro;
               if (!dentro(x / k, y / M_LAT, anillo)) continue;
               sumar(x / k, y / M_LAT, d + i);
-              if (azar(x, y) < .25) sumar((x + (azar(y, 1) - .5) * 8) / k, (y + (azar(1, x) - .5) * 8) / M_LAT, d * 3);
+              if (azar(x, y) < .3) { // a veces un seto: varias copas juntas a lo largo del borde
+                const n2 = 3 + Math.floor(azar(y, x * 2) * 4), copas = [];
+                for (let j = 0; j < n2; j++) { const lng = (x + ux * j * 2.6 + (azar(j, x) - .5) * 1.6) / k, lat = (y + uy * j * 2.6 + (azar(x, j) - .5) * 1.6) / M_LAT;
+                  if (enPredio(lng, lat) && libre(lng, lat, 6) && lejosIngreso(lng, lat)) copas.push({ ll: [lat, lng], r: 1.8 + azar(j, y) * 1.2 }); }
+                if (copas.length > 1) this.setos.push(copas);
+              }
               break;
             }
           }
@@ -354,22 +373,21 @@
       this.pasto.manchas.forEach((m) => {
         if (!lim.contains(m.ll)) return;
         const p = pt(m.ll), r = m.r * escP;
-        c.fillStyle = "rgba(160,180,110,.16)"; c.beginPath(); c.ellipse(p.x, p.y, r, r * .62, m.a, 0, 6.2832); c.fill();
+        c.fillStyle = "rgba(150,175,100,.07)"; // capas superpuestas: el manchón se funde con el terreno, sin borde marcado
+        [1, .85, .7, .55, .4].forEach((f) => { c.beginPath(); c.ellipse(p.x, p.y, r * 1.5 * f, r * .95 * f, m.a, 0, 6.2832); c.fill();
+          c.beginPath(); c.ellipse(p.x + r * .5, p.y - r * .3, r * .9 * f, r * .6 * f, m.a + .8, 0, 6.2832); c.fill(); });
       });
       if (z >= 17) this.pasto.cosas.forEach((t) => {
         if (!lim.contains(t.ll)) return;
         const p = pt(t.ll);
         if (t.tipo === "matita") {
-          if (z < 18 && t.s > .45) return; // de media distancia, menos matitas
-          const r = Math.max(2.2, .7 * escP); c.strokeStyle = "rgba(122,145,86,.42)"; c.lineWidth = Math.max(.8, r * .22); c.lineCap = "round";
-          c.beginPath(); c.moveTo(p.x - r * .6, p.y); c.lineTo(p.x - r * .8, p.y - r); c.moveTo(p.x, p.y); c.lineTo(p.x + r * .05, p.y - r * 1.25);
-          c.moveTo(p.x + r * .6, p.y); c.lineTo(p.x + r * .85, p.y - r * .9); c.stroke();
+          if (z < 18 && t.s > .5) return; // de media distancia, menos matitas
+          pastito(c, p.x, p.y, Math.max(3, .9 * escP), .45);
         } else if (t.tipo === "arbusto") {
           const r = Math.max(2.6, 1.2 * escP);
           c.fillStyle = "rgba(78,84,46,.25)"; c.beginPath(); c.ellipse(p.x + r * .35, p.y + r * .45, r, r * .85, 0, 0, 6.2832); c.fill();
           circ(c, p.x, p.y, r, "#93AA6C"); circ(c, p.x - r * .3, p.y - r * .3, r * .45, "#AFC387");
-        } else {
-          if (z < 17) return;
+        } else if (t.tipo === "flores") {
           const r = Math.max(1, .22 * escP), cols = ["#F6F1DC", "#E9C85B", "#F6F1DC"];
           for (let i = 0; i < 3; i++) { const a = t.s * 6 + i * 2.1; circ(c, p.x + Math.cos(a) * r * 2.2, p.y + Math.sin(a) * r * 2.2, r, cols[i]); }
         }
@@ -382,9 +400,15 @@
           pl.hileras.forEach(([a, b]) => { const p = pt(a), q = pt(b); c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(q.x, q.y); c.stroke(); });
           if (pl.copa * esc < 1) return; // de lejos alcanza con las franjas
         }
+        if (pl.tipo === "pradera") { // borde sombreado hacia adentro, como un potrero dibujado
+          const q = pl.anillo.map((ll) => pt(ll)); c.save(); c.beginPath(); q.forEach((v, i) => (i ? c.lineTo(v.x, v.y) : c.moveTo(v.x, v.y))); c.closePath(); c.clip();
+          c.strokeStyle = "rgba(95,120,60,.06)"; [10, 7, 5, 3.5, 2].forEach((w) => { c.lineWidth = Math.max(w, w * esc); c.stroke(); }); c.restore();
+          if (z < 17) return;
+        }
         pl.plantas.forEach((t) => {
           if (!lim.contains(t.ll)) return;
           const p = pt(t.ll), r = t.r * esc;
+          if (pl.tipo === "pradera") return dib(c, p.x, p.y, r, t.s);
           if (r < 1.6) { circ(c, p.x, p.y, Math.max(.9, r), pl.tipo === "olivo" ? "#8A9B74" : pl.tipo === "citrico" ? "#5C874A" : "#7D9A58"); return; }
           dib(c, p.x, p.y, r, t.s);
         });
@@ -393,6 +417,8 @@
       if (z >= 17) this.matas.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = Math.max(1.6, t.r * escP);
         c.fillStyle = "rgba(78,84,46,.22)"; c.beginPath(); c.ellipse(p.x + r * .3, p.y + r * .4, r, r * .8, 0, 0, 6.2832); c.fill();
         lobulos(c, p.x, p.y, r, 3, .6, .35, t.s < .5 ? "#8E9A62" : "#9AA56E", t.s * 6); });
+      this.setos.forEach((copas) => { if (!lim.contains(copas[0].ll)) return;
+        seto(c, copas.map((q) => { const p = pt(q.ll); return { x: p.x, y: p.y, r: Math.max(1.2, q.r * escP) }; })); });
       this.sueltos.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = t.r * escP;
         if (r < 1.6) circ(c, p.x, p.y, Math.max(.9, r), "#6F8048"); else DIBUJO.nativo(c, p.x, p.y, r, t.s); });
       // corrales: cerco de madera y animales
