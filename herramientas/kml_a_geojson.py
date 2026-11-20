@@ -50,6 +50,8 @@ NOMBRES = {
     "higuera":               {"cultivo": "higo", "patron": "arboles"},
     "higueras":              {"cultivo": "higo", "patron": "arboles"},
     "estanque":              {"cultivo": "estanque", "patron": "agua"},
+    "de frutales":           {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio de frutales"},
+    "residuos agroquimicos": {"patron": "liso", "nombre": "Residuos agroquímicos"},
     "centro regional catamarca - la rioja": {"cultivo": "edificio", "patron": "edificio", "nombre": "Centro Regional"},
     "eea catamarca (edificio)": {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio EEA"},
     # Servicios
@@ -91,8 +93,12 @@ def main(ruta, salida="datos/estaciones.geojson"):
         info = NOMBRES.get(k)
         if info is None and k.startswith("camino"):  # "Camino", "Camino principal", etc.: caminos de tierra internos
             info = {"tipo": "camino"}
-        if info is None and k.startswith("ruta"):    # "Ruta", "Ruta de acceso": ruta asfaltada de afuera
+        if info is None and (k.startswith("ruta") or re.match(r"r[pn] ", k)):  # "Ruta…", "RP N° 33", "RN …": rutas
             info = {"tipo": "ruta"}
+        m = re.match(r"calle (asfalto|tierra) ?(.*)", k)
+        if info is None and m:  # "Calle asfalto Manuel Soria", "Calle tierra América": calles de afuera del predio
+            calle = re.sub(r"(?i)^calle (asfalto|tierra) ?", "", nombre).strip()
+            info = {"tipo": "calle", "superficie": m.group(1), "nombre": ("Calle " + calle.title()) if calle else "Calle"}
         if info is None and (k.startswith("paseo") or k.startswith("sendero")):  # paseo peatonal del recorrido
             info = {"tipo": "paseo"}
         if info is None:
@@ -110,9 +116,9 @@ def main(ruta, salida="datos/estaciones.geojson"):
         else:
             continue
         tipo = info.get("tipo", "lote")
-        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
+        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
-        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "revisar", "solo_en") if c in info})
+        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "revisar", "solo_en") if c in info})
         feats.append({"type": "Feature", "properties": props, "geometry": geom})
     # Predio en sectores: id único por sector. Estaciones con "solo_en": se quitan si el lote cae en otro sector.
     sectores = [f for f in feats if f["properties"]["tipo"] == "predio"]
