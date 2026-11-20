@@ -68,7 +68,8 @@ Dos estilos visuales: **moderno** (mapa ilustrado en paleta oliva: cada lote con
 nogales y pecanes, almendros, higueras, tuna, vid en hileras, surcos— plantado en hileras a lo largo del lado más largo
 del polígono con un marco típico de cada especie (`arboles.js`, tabla `MARCO`; es ilustrativo, no el marco real del
 ensayo), edificios con volumen, el Sector 3 como monte abierto (suelo desnudo, matas y árboles sueltos, como en la satelital),
-podadoras en el lote de la estación de poda (`config.js`, `podaMecanica`), un tractor en el camino principal, el corral
+podadoras moviéndose por la hilera en el lote de la estación de poda (`config.js`, `podaMecanica`; quietas si el
+teléfono pide reducir movimiento), el corral
 con cabras y ovejas, árboles sueltos y variados en el borde de los tres sectores (sin tapar los ingresos), caminos de tierra que empalman con las rutas y engordan al acercarse —todo se dibuja
 sin tocar el KML—, construcciones en arena con sombra corta y paradas como gotas blancas con el número; las
 paradas que se tocan en pantalla se juntan en un círculo azul con la cantidad, que al tocarlo acerca; las selladas

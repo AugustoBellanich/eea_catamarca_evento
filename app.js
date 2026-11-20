@@ -270,8 +270,9 @@
     const p = f.properties;
     if (esPredio(f)) return { color: "#C9C79E", weight: 2, fillColor: (window.Arboleda && Arboleda.suelo(p)) || "#E6E4C2", fillOpacity: 1, lineJoin: "round", className: "predio" };
     const est = esEstacion(f) && capas.estaciones;
-    if (p.provisorio) return { color: "#1E3A2F", weight: 1.5, opacity: .5, dashArray: "4 5", fillColor: "#1E3A2F", fillOpacity: .06,
-      className: "lote lote-pq lote-prov" + (est ? " es-est" : "") };
+    // provisorio: sin contorno (la gota ya lo marca con "?"); el lote se puede tocar igual
+    if (p.provisorio) return { stroke: false, fillColor: (window.Arboleda && Arboleda.suelo(p)) || "#1E3A2F", fillOpacity: window.Arboleda && Arboleda.suelo(p) ? 1 : 0,
+      className: "lote lote-pq" + (est ? " es-est" : "") };
     const patron = p.patron || (estacion(estDe(f)) || {}).patron || "pasto";
     const extra = est ? " es-est" : "";
     // edificios: los dibuja la arboleda con volumen; el polígono queda invisible pero se puede tocar

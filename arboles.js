@@ -297,12 +297,6 @@
           if (dentro(ll[1], ll[0], anillo)) this.maquinas.push({ ll, ang: pl.ang, clase: "podadora" });
         });
       });
-      // Un tractor sobre el camino interno principal.
-      const principal = lineas.find((l) => /^camino/.test(l.properties.id) && /principal/i.test(l.properties.nombre || "")) || lineas.find((l) => /^camino/.test(l.properties.id));
-      if (principal) {
-        const [a, b] = principal.geometry.coordinates, t = .38;
-        this.maquinas.push({ ll: [a[1] + (b[1] - a[1]) * t, a[0] + (b[0] - a[0]) * t], ang: Math.atan2((b[1] - a[1]) * M_LAT, (b[0] - a[0]) * k), clase: "tractor" });
-      }
       // Árboles sueltos (no una cortina): en el monte abierto de los sectores con paisaje "monte" y a lo largo del borde
       // de los tres sectores, con huecos, tamaños y formas distintas, lejos de lotes, caminos e ingresos.
       this.sueltos = []; this.tierra = []; this.matas = []; this.setos = [];
@@ -351,10 +345,34 @@
       const pane = map.getPane("arboleda") || map.createPane("arboleda");
       pane.style.zIndex = 410; pane.style.pointerEvents = "none";
       this.canvas = L.DomUtil.create("canvas", "arboleda leaflet-zoom-hide", pane);
+      // las máquinas van en un lienzo aparte, que se redibuja solo para moverlas
+      this.lienzoMaq = L.DomUtil.create("canvas", "arboleda leaflet-zoom-hide", pane);
       map.on("moveend zoomend resize", this.dibujar, this);
       this.dibujar();
+      const quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const paso = (t) => { if (!this.map) return; if (!document.hidden) this.dibujarMaquinas(quieto ? 0 : t); this.cuadro = requestAnimationFrame(paso); };
+      if (this.maquinas.length) this.cuadro = requestAnimationFrame(paso);
     },
-    onRemove(map) { map.off("moveend zoomend resize", this.dibujar, this); L.DomUtil.remove(this.canvas); },
+    onRemove(map) {
+      map.off("moveend zoomend resize", this.dibujar, this); cancelAnimationFrame(this.cuadro); this.map = null;
+      L.DomUtil.remove(this.canvas); L.DomUtil.remove(this.lienzoMaq);
+    },
+    // Podadoras que avanzan y retroceden despacio por la hilera (unos 6 m para cada lado, ciclo de ~14 s).
+    dibujarMaquinas(t) {
+      const map = this.map, size = map.getSize(), dpr = window.devicePixelRatio || 1, cv = this.lienzoMaq;
+      if (cv.width !== size.x * dpr || cv.height !== size.y * dpr) { cv.width = size.x * dpr; cv.height = size.y * dpr; cv.style.width = size.x + "px"; cv.style.height = size.y + "px"; }
+      L.DomUtil.setPosition(cv, map.containerPointToLayerPoint([0, 0]));
+      const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, size.x, size.y);
+      const z = map.getZoom();
+      if (z < 16.5 || (this.opciones.visible && !this.opciones.visible())) return;
+      const esc = 2 ** (z + 8) / (40075016.686 * Math.cos(-28.47 * Math.PI / 180));
+      this.maquinas.forEach((m, i) => {
+        const fase = t / 14000 * 6.2832 + i * 2.4, d = Math.sin(fase) * 6, k = 111320 * Math.cos(m.ll[0] * Math.PI / 180);
+        const ll = [m.ll[0] + Math.sin(m.ang) * d / 110540, m.ll[1] + Math.cos(m.ang) * d / k];
+        const p = map.latLngToContainerPoint(ll); // avanza y retrocede sin darse vuelta, para que no salte
+        vehiculo(c, p.x, p.y, -m.ang, esc, m.clase);
+      });
+    },
     dibujar() {
       const map = this.map, size = map.getSize(), dpr = window.devicePixelRatio || 1, cv = this.canvas;
       cv.width = size.x * dpr; cv.height = size.y * dpr; cv.style.width = size.x + "px"; cv.style.height = size.y + "px";
@@ -430,7 +448,6 @@
         c.strokeStyle = "#C9A878"; c.lineWidth = Math.max(.8, .12 * escP); c.setLineDash([Math.max(3, 1.6 * escP), Math.max(2, 1 * escP)]); c.stroke(); c.setLineDash([]);
         if (z >= 16.5) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
       });
-      if (z >= 16.5) this.maquinas.forEach((m) => { if (!lim.contains(m.ll)) return; const p = pt(m.ll); vehiculo(c, p.x, p.y, -m.ang, escP, m.clase); });
       const altoEd = Math.max(2, Math.min(9, 2 ** (z - 16) * 2.2));
       this.edificios.forEach((f) => edificio(c, f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; }), altoEd));
     },
