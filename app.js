@@ -268,7 +268,7 @@
   // Parque: el predio es tierra clara (lo que queda entre lotes se lee como camino); los lotes no llevan borde.
   function estiloParque(f) {
     const p = f.properties;
-    if (esPredio(f)) return { color: "#C9C79E", weight: 2, fillColor: "#E6E4C2", fillOpacity: 1, lineJoin: "round", className: "predio" };
+    if (esPredio(f)) return { color: "#C9C79E", weight: 2, fillColor: (window.Arboleda && Arboleda.suelo(p)) || "#E6E4C2", fillOpacity: 1, lineJoin: "round", className: "predio" };
     const est = esEstacion(f) && capas.estaciones;
     if (p.provisorio) return { color: "#1E3A2F", weight: 1.5, opacity: .5, dashArray: "4 5", fillColor: "#1E3A2F", fillOpacity: .06,
       className: "lote lote-pq lote-prov" + (est ? " es-est" : "") };

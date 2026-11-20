@@ -21,13 +21,13 @@
     girasol:  { fila: 1.6, planta: 1.0, copa: 0.55, tipo: "girasol", hilera: true },
     vivero:   { fila: 1.8, planta: 1.1, copa: 0.5, tipo: "plantin", hilera: true },
     pastura:  { fila: 3.2, planta: 3.2, copa: 0.7, tipo: "mata", azar: true },
-    ganado:   { fila: 6,   planta: 6,   copa: 0.6, tipo: "mata", azar: true },
+    ganado:   { fila: 6,   planta: 6,   copa: 0.6, tipo: "corral", corral: true },
   };
   // Color de suelo de cada lote (debajo de las plantas).
   const SUELO = {
     olivo: "#DCDDBC", naranja: "#E7D9B0", lima: "#E7D9B0", nogal: "#D5DBB5", pecan: "#D5DBB5", almendra: "#E3DBB2",
     higo: "#DADDB8", frutal: "#E1DBB4", tuna: "#E4DAB2", vid: "#E6D8AE", algodon: "#E8DAAC", girasol: "#E6D8AA",
-    vivero: "#E5D8AE", pastura: "#DCE0B4", ganado: "#E3D5AC",
+    vivero: "#E5D8AE", pastura: "#DCE0B4", ganado: "#E2CFA2",
   };
   const claveCultivo = (p) => (p.cultivo === "naranja" && p.patron === "surcos" ? "vivero" : p.cultivo);
 
@@ -55,7 +55,7 @@
   }
 
   // Plantas de un lote: grilla alineada con el lado más largo, recortada al polígono y a un margen del borde.
-  function plantar(f) {
+  function plantar(f, libre) {
     const p = f.properties, m = MARCO[claveCultivo(p)];
     if (!m || f.geometry.type !== "Polygon") return null;
     const ll = f.geometry.coordinates[0].slice(0, -1);
@@ -75,7 +75,7 @@
         const jx = m.azar ? (azar(x, y) - .5) * m.planta * .9 : (azar(x, y) - .5) * m.planta * .08;
         const jy = m.azar ? (azar(y, x) - .5) * m.fila * .9 : (azar(y, x) - .5) * m.fila * .06;
         const px = x + jx, py = y + jy;
-        const ok = dentro(px, py, loc) && distBorde(px, py, loc) > margen;
+        const ok = dentro(px, py, loc) && distBorde(px, py, loc) > margen && (!libre || libre(aLatLng(px, py)));
         if (ok) {
           if (m.azar && azar(px * 3, py * 7) < .35) continue; // pasturas: matas salteadas
           plantas.push({ ll: aLatLng(px, py), r: m.copa * (.82 + azar(px, py * 2) * .36), s: azar(py, px * 3) });
@@ -84,7 +84,16 @@
       }
       if (tramo) hileras.push(tramo.map(([a, b]) => aLatLng(a, b)));
     }
-    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0 };
+    if (m.corral) { // corral: sin plantas; cabras (sobre todo) y algunas ovejas sueltas adentro
+      const animales = [];
+      for (let i = 0; i < 400 && animales.length < 14; i++) {
+        const x = Math.min(...xs) + azar(i, 3.1) * (Math.max(...xs) - Math.min(...xs)), y = Math.min(...ys) + azar(7.3, i) * (Math.max(...ys) - Math.min(...ys));
+        if (!dentro(x, y, loc) || distBorde(x, y, loc) < 2.5 || animales.some((a) => Math.hypot(a.x - x, a.y - y) < 2.2)) continue;
+        animales.push({ x, y, ll: aLatLng(x, y), clase: animales.length % 4 === 3 ? "oveja" : "cabra", rumbo: azar(x, y) * 6.28, s: azar(y, x) });
+      }
+      return { tipo: "corral", plantas: [], hileras: [], animales, anillo: ll.map(([lng, lat]) => [lat, lng]), copa: 0, lat: lat0, ang };
+    }
+    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng };
   }
 
   // ---------- Dibujos vistos desde arriba ----------
@@ -127,6 +136,8 @@
       lobulos(c, x, y, r, 4, .58, .42, "#6C984C", s * 6 + .4);
       circ(c, x - r * .25, y - r * .25, r * .32, "#8CB765");
     },
+    // cortina rompevientos: copas oscuras y apretadas
+    alamo(c, x, y, r) { sombra(c, x, y, r); circ(c, x, y, r, "#5E7F48"); circ(c, x - r * .3, y - r * .3, r * .45, "#7FA060"); },
     mixto(c, x, y, r, s) { (s < .33 ? DIBUJO.citrico : s < .66 ? DIBUJO.almendro : DIBUJO.higuera)(c, x, y, r, s * 3 % 1); },
     // tuna: paletas ovaladas
     tuna(c, x, y, r, s) {
@@ -158,6 +169,54 @@
     }
     c.fillStyle = "#E4D8C0"; c.strokeStyle = "#A99878"; c.lineWidth = 1;
     c.beginPath(); top.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath(); c.fill(); c.stroke();
+  }
+
+  // Función "este punto está libre": dentro de algún anillo permitido (opcional), fuera de los lotes y a más de d metros
+  // de rutas, calles y caminos.
+  function hacerLibre(anillosLotes, lineas, lat0) {
+    const k = mLng(lat0);
+    const segs = lineas.flatMap((l) => l.geometry.coordinates.slice(1).map((b, i) => [l.geometry.coordinates[i], b]));
+    const lejos = (lng, lat, d) => segs.every(([a, b]) => {
+      const ax = a[0] * k, ay = a[1] * M_LAT, dx = b[0] * k - ax, dy = b[1] * M_LAT - ay, px = lng * k, py = lat * M_LAT;
+      const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1e-9)));
+      return Math.hypot(px - ax - t * dx, py - ay - t * dy) > d;
+    });
+    return (lng, lat, d) => !anillosLotes.some((a) => dentro(lng, lat, a)) && lejos(lng, lat, d);
+  }
+
+  // Vehículos vistos desde arriba, mirando hacia +x. Medidas en metros (largo, ancho); se dibujan con un mínimo legible.
+  function vehiculo(c, x, y, ang, esc, clase) {
+    const e = Math.max(esc, 6.5); // al menos 6,5 px por metro para que se reconozca
+    c.save(); c.translate(x, y); c.rotate(ang); c.scale(e, e);
+    c.fillStyle = "rgba(60,60,30,.28)"; c.fillRect(-1.6, -0.9, 4, 2.2); // sombra
+    const cuerpo = clase === "podadora" ? "#D9962B" : "#B9473A";
+    c.fillStyle = "#3D3D38"; c.fillRect(-1.9, -1.25, 1.3, .45); c.fillRect(-1.9, .8, 1.3, .45); // ruedas traseras
+    c.fillRect(.9, -1.0, .8, .3); c.fillRect(.9, .7, .8, .3);                                   // ruedas delanteras
+    c.fillStyle = cuerpo; c.fillRect(-1.5, -.8, 3.4, 1.6);                                       // chasis
+    c.fillStyle = "#EFE8D6"; c.fillRect(-1.4, -.65, 1.2, 1.3);                                   // techo de la cabina
+    c.fillStyle = "rgba(255,255,255,.35)"; c.fillRect(.3, -.5, 1.4, .25);                         // brillo del capó
+    if (clase === "podadora") { // barra de corte lateral con discos
+      c.fillStyle = "#8A8F91"; c.fillRect(-.6, -3.6, .35, 2.9);
+      c.fillStyle = "#B7BCBE"; for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(-.42, -3.4 + i * .75, .38, 0, 6.2832); c.fill(); }
+    }
+    c.restore();
+  }
+  // Cabras y ovejas vistas desde arriba.
+  function animal(c, x, y, ang, esc, clase, s) {
+    const e = Math.max(esc, 7);
+    c.save(); c.translate(x, y); c.rotate(ang); c.scale(e, e);
+    c.fillStyle = "rgba(60,60,30,.25)"; c.beginPath(); c.ellipse(.15, .2, .62, .36, 0, 0, 6.2832); c.fill();
+    if (clase === "oveja") {
+      c.fillStyle = "#F5F1E6"; c.beginPath(); c.ellipse(0, 0, .6, .38, 0, 0, 6.2832); c.fill();
+      c.fillStyle = "#EAE3D2"; c.beginPath(); c.arc(-.2, -.08, .2, 0, 6.2832); c.arc(.15, .1, .2, 0, 6.2832); c.fill();
+      c.fillStyle = "#4A4440"; c.beginPath(); c.ellipse(.68, 0, .18, .13, 0, 0, 6.2832); c.fill();
+    } else {
+      const pelo = ["#7A5638", "#3E3631", "#EDE6D8", "#A9784C"][Math.floor(s * 4)];
+      c.fillStyle = pelo; c.beginPath(); c.ellipse(0, 0, .55, .26, 0, 0, 6.2832); c.fill();
+      c.beginPath(); c.ellipse(.62, 0, .17, .12, 0, 0, 6.2832); c.fill();
+      c.strokeStyle = "#5B5045"; c.lineWidth = .06; c.beginPath(); c.moveTo(.6, -.08); c.lineTo(.48, -.2); c.moveTo(.6, .08); c.lineTo(.48, .2); c.stroke();
+    }
+    c.restore();
   }
 
   // Detalles del pasto en el terreno abierto del predio (fuera de lotes y de caminos): manchones apenas más verdes,
@@ -196,9 +255,49 @@
   const Capa = L.Layer.extend({
     initialize(features, opciones) {
       this.opciones = opciones || {};
+      const lineas = this.opciones.lineas || [], predios = this.opciones.predios || [];
       this.lotes = features.map((f) => ({ f, pl: plantar(f) })).filter((x) => x.pl);
       this.edificios = features.filter((f) => f.properties.patron === "edificio" && f.geometry.type === "Polygon");
-      this.pasto = this.opciones.predios ? detallesPasto(this.opciones.predios, features, this.opciones.lineas || []) : { manchas: [], cosas: [] };
+      this.pasto = detallesPasto(predios.filter((pr) => !pr.properties.cultivo), features, lineas);
+      const anillos = features.filter((f) => f.geometry.type === "Polygon").map((f) => f.geometry.coordinates[0]);
+      const lat0 = predios.length ? predios[0].geometry.coordinates[0][0][1] : -28.47, k = mLng(lat0);
+      const libre = hacerLibre(anillos, lineas, lat0);
+      const enPredio = (lng, lat) => predios.some((pr) => dentro(lng, lat, pr.geometry.coordinates[0]));
+      const mover = ([lat, lng], este, norte) => [lat + norte / M_LAT, lng + este / k];
+      this.maquinas = [];
+      // Sectores enteros con cultivo (por ejemplo, el Sector 3: olivar): se plantan fuera de lotes y caminos,
+      // y llevan dos podadoras trabajando entre hileras.
+      predios.filter((pr) => pr.properties.cultivo).forEach((pr) => {
+        const pl = plantar(pr, ([lat, lng]) => libre(lng, lat, 6));
+        if (!pl || !pl.plantas.length) return;
+        this.lotes.push({ f: pr, pl });
+        const cLat = pl.plantas.reduce((t, q) => t + q.ll[0], 0) / pl.plantas.length, cLng = pl.plantas.reduce((t, q) => t + q.ll[1], 0) / pl.plantas.length;
+        const base = pl.plantas.reduce((m, q) => (Math.hypot(q.ll[0] - cLat, q.ll[1] - cLng) < Math.hypot(m.ll[0] - cLat, m.ll[1] - cLng) ? q : m));
+        const perp = [-Math.sin(pl.ang), Math.cos(pl.ang)], largo = [Math.cos(pl.ang), Math.sin(pl.ang)];
+        [[.5, 0], [3.5, 28]].forEach(([filas, avance]) => {
+          const ll = mover(base.ll, perp[0] * pl.fila * filas + largo[0] * avance, perp[1] * pl.fila * filas + largo[1] * avance);
+          if (enPredio(ll[1], ll[0]) && libre(ll[1], ll[0], 5)) this.maquinas.push({ ll, ang: pl.ang, clase: "podadora" });
+        });
+      });
+      // Un tractor sobre el camino interno principal.
+      const principal = lineas.find((l) => /^camino/.test(l.properties.id) && /principal/i.test(l.properties.nombre || "")) || lineas.find((l) => /^camino/.test(l.properties.id));
+      if (principal) {
+        const [a, b] = principal.geometry.coordinates, t = .38;
+        this.maquinas.push({ ll: [a[1] + (b[1] - a[1]) * t, a[0] + (b[0] - a[0]) * t], ang: Math.atan2((b[1] - a[1]) * M_LAT, (b[0] - a[0]) * k), clase: "tractor" });
+      }
+      // Cortinas de árboles a los costados de las rutas, dentro del predio (se ven en la imagen satelital sobre la RP 33).
+      this.cortina = [];
+      lineas.filter((l) => /^ruta/.test(l.properties.id)).forEach((l) => {
+        const c = l.geometry.coordinates;
+        for (let i = 0; i < c.length - 1; i++) {
+          const ax = c[i][0] * k, ay = c[i][1] * M_LAT, bx = c[i + 1][0] * k, by = c[i + 1][1] * M_LAT, L2 = Math.hypot(bx - ax, by - ay);
+          const ux = (bx - ax) / L2, uy = (by - ay) / L2;
+          for (let d = 0; d < L2; d += 4.2) for (const lado of [-1, 1]) {
+            const x = ax + ux * d - uy * 11 * lado, y = ay + uy * d + ux * 11 * lado, lng = x / k, lat = y / M_LAT;
+            if (enPredio(lng, lat) && libre(lng, lat, 8)) this.cortina.push({ ll: [lat, lng], r: 2 + azar(x, y) * .7, s: azar(y, x) });
+          }
+        }
+      });
     },
     onAdd(map) {
       this.map = map;
@@ -257,6 +356,19 @@
           dib(c, p.x, p.y, r, t.s);
         });
       });
+      // cortinas de árboles junto a las rutas
+      this.cortina.forEach((t) => { if (!lim.contains(t.ll)) return; const p = pt(t.ll), r = t.r * escP;
+        if (r < 1.6) circ(c, p.x, p.y, Math.max(.9, r), "#5E7F48"); else DIBUJO.alamo(c, p.x, p.y, r, t.s); });
+      // corrales: cerco de madera y animales
+      this.lotes.forEach(({ pl }) => {
+        if (pl.tipo !== "corral") return;
+        const pts = pl.anillo.map((ll) => pt(ll));
+        c.lineJoin = "round"; c.strokeStyle = "#8C6B46"; c.lineWidth = Math.max(1.6, .3 * escP); c.setLineDash([]);
+        c.beginPath(); pts.forEach((q, i) => (i ? c.lineTo(q.x, q.y) : c.moveTo(q.x, q.y))); c.closePath(); c.stroke();
+        c.strokeStyle = "#C9A878"; c.lineWidth = Math.max(.8, .12 * escP); c.setLineDash([Math.max(3, 1.6 * escP), Math.max(2, 1 * escP)]); c.stroke(); c.setLineDash([]);
+        if (z >= 16.5) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
+      });
+      if (z >= 16.5) this.maquinas.forEach((m) => { if (!lim.contains(m.ll)) return; const p = pt(m.ll); vehiculo(c, p.x, p.y, -m.ang, escP, m.clase); });
       const altoEd = Math.max(2, Math.min(9, 2 ** (z - 16) * 2.2));
       this.edificios.forEach((f) => edificio(c, f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; }), altoEd));
     },
