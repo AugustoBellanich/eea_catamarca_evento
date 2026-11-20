@@ -160,11 +160,45 @@
     c.beginPath(); top.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.closePath(); c.fill(); c.stroke();
   }
 
+  // Detalles del pasto en el terreno abierto del predio (fuera de lotes y de caminos): manchones apenas más verdes,
+  // matitas, arbustos chicos y florcitas. Pocos y dispersos, para levantar el dibujo sin llenarlo de textura.
+  function detallesPasto(predios, lotes, lineas) {
+    const out = { manchas: [], cosas: [] };
+    const anillosLotes = lotes.filter((f) => f.geometry.type === "Polygon").map((f) => f.geometry.coordinates[0]);
+    predios.forEach((pr) => {
+      const anillo = pr.geometry.coordinates[0];
+      const lats = anillo.map((c) => c[1]), lngs = anillo.map((c) => c[0]);
+      const lat0 = (Math.min(...lats) + Math.max(...lats)) / 2, k = mLng(lat0);
+      const segs = lineas.flatMap((l) => l.geometry.coordinates.slice(1).map((b, i) => [l.geometry.coordinates[i], b]));
+      const lejosDeCaminos = (lng, lat, d) => segs.every(([a, b]) => {
+        const ax = a[0] * k, ay = a[1] * M_LAT, dx = b[0] * k - ax, dy = b[1] * M_LAT - ay, px = lng * k, py = lat * M_LAT;
+        const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1e-9)));
+        return Math.hypot(px - ax - t * dx, py - ay - t * dy) > d;
+      });
+      const libre = (lng, lat, d) => dentro(lng, lat, anillo) && !anillosLotes.some((a) => dentro(lng, lat, a)) && lejosDeCaminos(lng, lat, d);
+      const paso = (m) => [m / k, m / M_LAT];
+      const [p60x, p60y] = paso(55), [p10x, p10y] = paso(10);
+      for (let lng = Math.min(...lngs); lng < Math.max(...lngs); lng += p60x)
+        for (let lat = Math.min(...lats); lat < Math.max(...lats); lat += p60y) {
+          const x = lng + (azar(lng, lat) - .5) * p60x, y = lat + (azar(lat, lng) - .5) * p60y;
+          if (azar(x * 9, y * 5) < .55 && libre(x, y, 10)) out.manchas.push({ ll: [y, x], r: 10 + azar(y, x * 7) * 16, a: azar(x, y * 3) * 3.14 });
+        }
+      for (let lng = Math.min(...lngs); lng < Math.max(...lngs); lng += p10x)
+        for (let lat = Math.min(...lats); lat < Math.max(...lats); lat += p10y) {
+          const x = lng + (azar(lng * 3, lat) - .5) * p10x * .9, y = lat + (azar(lat * 3, lng) - .5) * p10y * .9, h = azar(x * 11, y * 13);
+          if (h < .3 || !libre(x, y, 4)) continue;
+          out.cosas.push({ ll: [y, x], tipo: h < .68 ? "matita" : h < .86 ? "arbusto" : "flores", s: azar(y * 5, x * 5) });
+        }
+    });
+    return out;
+  }
+
   const Capa = L.Layer.extend({
     initialize(features, opciones) {
       this.opciones = opciones || {};
       this.lotes = features.map((f) => ({ f, pl: plantar(f) })).filter((x) => x.pl);
       this.edificios = features.filter((f) => f.properties.patron === "edificio" && f.geometry.type === "Polygon");
+      this.pasto = this.opciones.predios ? detallesPasto(this.opciones.predios, features, this.opciones.lineas || []) : { manchas: [], cosas: [] };
     },
     onAdd(map) {
       this.map = map;
@@ -183,6 +217,31 @@
       if (this.opciones.visible && !this.opciones.visible()) return;
       const z = map.getZoom(), lim = map.getBounds().pad(.1);
       const pt = (ll) => map.latLngToContainerPoint(ll);
+      // pasto: manchones siempre (muy tenues); matitas, arbustos y flores solo de cerca
+      const mppP = 40075016.686 * Math.cos(-28.47 * Math.PI / 180) / 2 ** (z + 8), escP = 1 / mppP;
+      this.pasto.manchas.forEach((m) => {
+        if (!lim.contains(m.ll)) return;
+        const p = pt(m.ll), r = m.r * escP;
+        c.fillStyle = "rgba(160,180,110,.16)"; c.beginPath(); c.ellipse(p.x, p.y, r, r * .62, m.a, 0, 6.2832); c.fill();
+      });
+      if (z >= 17) this.pasto.cosas.forEach((t) => {
+        if (!lim.contains(t.ll)) return;
+        const p = pt(t.ll);
+        if (t.tipo === "matita") {
+          if (z < 18 && t.s > .45) return; // de media distancia, menos matitas
+          const r = Math.max(2.2, .7 * escP); c.strokeStyle = "rgba(122,145,86,.42)"; c.lineWidth = Math.max(.8, r * .22); c.lineCap = "round";
+          c.beginPath(); c.moveTo(p.x - r * .6, p.y); c.lineTo(p.x - r * .8, p.y - r); c.moveTo(p.x, p.y); c.lineTo(p.x + r * .05, p.y - r * 1.25);
+          c.moveTo(p.x + r * .6, p.y); c.lineTo(p.x + r * .85, p.y - r * .9); c.stroke();
+        } else if (t.tipo === "arbusto") {
+          const r = Math.max(2.6, 1.2 * escP);
+          c.fillStyle = "rgba(78,84,46,.25)"; c.beginPath(); c.ellipse(p.x + r * .35, p.y + r * .45, r, r * .85, 0, 0, 6.2832); c.fill();
+          circ(c, p.x, p.y, r, "#93AA6C"); circ(c, p.x - r * .3, p.y - r * .3, r * .45, "#AFC387");
+        } else {
+          if (z < 17) return;
+          const r = Math.max(1, .22 * escP), cols = ["#F6F1DC", "#E9C85B", "#F6F1DC"];
+          for (let i = 0; i < 3; i++) { const a = t.s * 6 + i * 2.1; circ(c, p.x + Math.cos(a) * r * 2.2, p.y + Math.sin(a) * r * 2.2, r, cols[i]); }
+        }
+      });
       this.lotes.forEach(({ pl }) => {
         const mpp = 40075016.686 * Math.cos(pl.lat * Math.PI / 180) / 2 ** (z + 8); // metros por píxel
         const esc = 1 / mpp, dib = DIBUJO[pl.tipo];

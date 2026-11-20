@@ -287,23 +287,28 @@
   // Rutas, caminos y paseos dibujados en el KML (nombres "Ruta…", "Camino…", "Paseo…").
   function dibujarLineasParque(lineas) {
     lineasPq = [];
-    const capa = (fs, st) => { const c = L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false }).addTo(capaFondo);
+    // las vías van en una capa propia, encima de la arboleda y del pasto
+    if (!mapa.getPane("vias")) { const pv = mapa.createPane("vias"); pv.style.zIndex = 420; pv.style.pointerEvents = "none"; }
+    const lienzo = dibujarLineasParque.lienzo || (dibujarLineasParque.lienzo = L.svg({ pane: "vias" }));
+    const capa = (fs, st) => { const c = L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false, renderer: lienzo }).addTo(capaFondo);
       lineasPq.push({ c, w: st.weight }); };
     const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
     const r = { lineCap: "round", lineJoin: "round", className: "camino" };
-    // de afuera hacia adentro: calles del barrio, rutas, caminos internos y paseos (primero todos los bordes,
-    // después todos los rellenos, así los cruces se ven como empalmes y no como líneas encimadas)
+    // Jerarquía de abajo hacia arriba: caminos internos, paseos, calles de tierra, calles de asfalto y rutas. Cada tipo
+    // dibuja su borde y su relleno juntos, así el de más arriba tapa al de abajo en los cruces.
     const tierra = de("calle-tierra"), asfalto = de("calle-asfalto"), rutas = de("ruta"), caminos = de("camino"), paseos = de("paseo");
-    capa(tierra, { ...r, color: "#CDB58A", weight: 8 });
-    capa(asfalto, { ...r, color: "#FFFFFF", weight: 10 });
+    // caminos de tierra: finos, de borde difuso y con huellas tenues, para que se apoyen en el dibujo
+    capa(caminos, { ...r, color: "#C9B184", weight: 6, opacity: .28 });
+    capa(caminos, { ...r, color: "#E6D3A8", weight: 3.6, opacity: .95 });
+    capa(caminos, { ...r, color: "#CDB78E", weight: .8, opacity: .55, dashArray: "1 6" });
+    capa(paseos, { ...r, color: "#FAF8F5", weight: 4.5, opacity: .95, className: "camino paseo" });
+    capa(tierra, { ...r, color: "#C9B184", weight: 7, opacity: .3 });
+    capa(tierra, { ...r, color: "#E6D4AC", weight: 4.4, opacity: .95 });
+    capa(asfalto, { ...r, color: "#FFFFFF", weight: 9 });
+    capa(asfalto, { ...r, color: "#A3A8AA", weight: 6 });
     capa(rutas, { ...r, color: "#FFFFFF", weight: 14 });
-    capa(caminos, { ...r, color: "#CDB58A", weight: 10 });
-    capa(tierra, { ...r, color: "#E8D5AE", weight: 5.5 });
-    capa(asfalto, { ...r, color: "#A3A8AA", weight: 6.5 });
     capa(rutas, { ...r, color: "#8C9295", weight: 10 });
     capa(rutas, { ...r, color: "#F4F1E6", weight: 1.2, opacity: .7, dashArray: "8 10" });
-    capa(caminos, { ...r, color: "#EAD8B0", weight: 7.5 });
-    capa(paseos, { ...r, color: "#FAF8F5", weight: 6, className: "camino paseo" });
   }
   const EMOJI = { arboles: "🌳", hileras: "🍇", surcos: "🌱", pasto: "🌾", agua: "💧", edificio: "🏠" };
   // Cartelito discreto abajo al tocar un lote que no es parada; se va solo.
@@ -360,7 +365,7 @@
       geo.features.forEach((g) => {
         const t = g.geometry.type;
         let geom = g.geometry;
-        if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false) };
+        if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false, 3) };
         else if (t === "Polygon" && esPredio(g)) // solo el contorno del predio se suaviza; los lotes quedan como en el KML
           geom = { type: t, coordinates: g.geometry.coordinates.map((anillo) => { const a = chaikin(anillo.slice(0, -1), true, 2, .15); return a.concat([a[0]]); }) };
         suaves.set(g, { type: "Feature", properties: g.properties, geometry: geom });
@@ -407,7 +412,8 @@
     if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
     if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !f.properties.provisorio),
-      { visible: () => capas.lotes && calcularNivel() !== "lejos" }).addTo(capaFondo);
+      { visible: () => capas.lotes && calcularNivel() !== "lejos", predios: geo.features.filter(esPredio),
+        lineas: geo.features.filter((f) => esCamino(f) && f.geometry.type === "LineString") }).addTo(capaFondo);
     ponerPatrones();
   }
 
