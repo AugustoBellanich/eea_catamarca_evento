@@ -119,9 +119,16 @@
   const esProvisoria = (id) => lotesDe(id).length > 0 && lotesDe(id).every((f) => f.properties.provisorio);
 
   // ---------- Mapa ----------
-  const mapa = L.map("mapa", { zoomControl: false, attributionControl: true, maxZoom: 20, zoomSnap: 0.5 }).setView(C.centro, C.zoom);
+  // MARGEN: lotes, caminos y árboles se dibujan media pantalla más allá de cada borde, así al arrastrar con el dedo
+  // no aparecen huecos ni cortes rectos (Leaflet trae 0,1). Igual al de arboles.js.
+  const MARGEN = .5;
+  const mapa = L.map("mapa", { zoomControl: false, attributionControl: true, maxZoom: 20, zoomSnap: 0.5,
+    renderer: L.svg({ padding: MARGEN }) }).setView(C.centro, C.zoom);
   L.control.zoom({ position: "topleft" }).addTo(mapa);
-  const satelital = L.tileLayer(C.teselas.url, { maxZoom: 20, maxNativeZoom: C.teselas.zoomMax, attribution: C.teselas.atribucion });
+  // En el celular Leaflet espera a que se suelte el dedo para pedir fotos nuevas; así las pide mientras se arrastra
+  // y guarda más alrededor de la vista.
+  const satelital = L.tileLayer(C.teselas.url, { maxZoom: 20, maxNativeZoom: C.teselas.zoomMax, attribution: C.teselas.atribucion,
+    updateWhenIdle: false, keepBuffer: 4 });
 
   // Esri devuelve una imagen gris ("Map data not yet available") donde no tiene foto, en lugar de un error.
   // Se consulta hasta qué zoom hay foto en el centro del predio y de ahí en adelante se amplía esa.
@@ -274,7 +281,7 @@
     lineasPq = [];
     // las vías van en una capa propia, encima de la arboleda y del pasto
     if (!mapa.getPane("vias")) { const pv = mapa.createPane("vias"); pv.style.zIndex = 420; pv.style.pointerEvents = "none"; }
-    const lienzo = dibujarLineasParque.lienzo || (dibujarLineasParque.lienzo = L.svg({ pane: "vias" }));
+    const lienzo = dibujarLineasParque.lienzo || (dibujarLineasParque.lienzo = L.svg({ pane: "vias", padding: MARGEN }));
     const capa = (fs, st) => { const c = L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false, renderer: lienzo }).addTo(capaFondo);
       lineasPq.push({ c, w: st.weight }); };
     const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
@@ -380,6 +387,7 @@
     const dibujo = parque ? vect.map(suave) : vect; // en parque: esquinas redondeadas y caminos empalmados
     L.geoJSON({ type: "FeatureCollection", features: parque || sat ? dibujo.filter((f) => !esCamino(f)) : dibujo }, {
       style: estilo,
+      noClip: true, // sin recortar los polígonos al borde del lienzo: el recorte dejaba un borde recto (con sombra) al arrastrar
       onEachFeature: (f, capa) => {
         if (sat) { // nombre chico de cada lote (de cerca) para reconocerlo en la foto
           if (esEstacion(f) && capas.estaciones) capa.on("click", () => abrirFicha(estDe(f)));
@@ -433,6 +441,8 @@
     if (cambio || forzar) dibujarServicios();
     dibujarFrutas(); // los símbolos de cultivos se reacomodan con cada zoom
     dibujarParadas(); // las agrupaciones cambian con cada zoom
+    // la animación de entrada de paradas y símbolos va solo la primera vez: en cada zoom se rearman todas y parpadeaban
+    if (!actualizarNivel.hecho) { actualizarNivel.hecho = true; setTimeout(() => $("#mapa").classList.add("sin-aparecer"), 600); }
   }
   mapa.on("zoomend", () => actualizarNivel(false));
 
@@ -936,7 +946,7 @@
     const m = puntos.reduce((t, p, i) => (i ? t + mapa.distance(puntos[i - 1], p) : 0), 0);
     const medio = puntos[Math.floor(puntos.length / 2)];
     if (!mapa.getPane("recorrido")) mapa.createPane("recorrido").style.zIndex = 430; // encima de árboles y vías
-    const sobre = { pane: "recorrido", renderer: comoLlegar.lienzo || (comoLlegar.lienzo = L.svg({ pane: "recorrido" })) };
+    const sobre = { pane: "recorrido", renderer: comoLlegar.lienzo || (comoLlegar.lienzo = L.svg({ pane: "recorrido", padding: MARGEN })) };
     capaRuta = L.layerGroup([
       L.polyline(puntos, { ...sobre, color: "#ffffff", weight: 9, opacity: 0.9, lineCap: "round", lineJoin: "round", interactive: false }),
       L.polyline(puntos, { ...sobre, color: zona(e).color, weight: 5, dashArray: "2 12", lineCap: "round", lineJoin: "round", className: "ruta", interactive: false }),
