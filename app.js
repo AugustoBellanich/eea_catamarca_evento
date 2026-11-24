@@ -59,7 +59,8 @@
   const esCamino = (f) => /^(camino|ruta|paseo|calle)/.test(f.properties.id);
   const tipoLinea = (f) => { const t = (f.properties.id.match(/^(camino|ruta|paseo|calle)/) || [])[1];
     return t === "calle" ? "calle-" + (f.properties.superficie || "tierra") : t; };
-  const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f);
+  const esCanal = (f) => f.properties.tipo === "canal" && f.geometry.type === "LineString";
+  const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f) && !esCanal(f);
   const lotesDe = (id) => geo.features.filter((f) => estDe(f) === id);
   const ubicadas = () => estaciones.filter((e) => lotesDe(e.id).length);
 
@@ -302,6 +303,23 @@
     capa(rutas, { ...r, color: "#8C9295", weight: 10 });
     capa(rutas, { ...r, color: "#F4F1E6", weight: 1.2, opacity: .7, dashArray: "8 10" });
   }
+  // Canales y acequias de riego (KML: líneas "Canal…" o "Acequia…"): encima de las plantas y debajo de caminos y rutas.
+  // Se tocan para ver el nombre; una línea invisible más ancha hace fácil tocarlos con el dedo.
+  let canalesPq = [];
+  mapa.on("zoomend", () => canalesPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
+  function dibujarCanales(lineas, sat) {
+    canalesPq = [];
+    if (!lineas.length) return;
+    if (!mapa.getPane("canales")) mapa.createPane("canales").style.zIndex = 415;
+    const lienzo = dibujarCanales.lienzo || (dibujarCanales.lienzo = L.svg({ pane: "canales", padding: MARGEN }));
+    const fc = { type: "FeatureCollection", features: lineas };
+    const trazo = (st) => { const c = L.geoJSON(fc, { style: { lineCap: "round", lineJoin: "round", className: "canal", ...st, weight: st.weight * anchoZoom() },
+      interactive: false, renderer: lienzo }).addTo(capaFondo); canalesPq.push({ c, w: st.weight }); };
+    if (sat) trazo({ color: "#8fd8ff", weight: 2, opacity: .9 });
+    else { trazo({ color: "#7FAFBF", weight: 4.6, opacity: .75 }); trazo({ color: "#BFE0E6", weight: 2.2, opacity: 1 }); }
+    L.geoJSON(fc, { style: { weight: 18, opacity: 0, className: "canal" }, renderer: lienzo,
+      onEachFeature: (f, capa) => capa.on("click", (ev) => { L.DomEvent.stop(ev); cartelito("💧 " + f.properties.nombre); }) }).addTo(capaFondo);
+  }
   const EMOJI = { arboles: "🌳", hileras: "🍇", surcos: "🌱", pasto: "🌾", agua: "💧", edificio: "🏠" };
   // Cartelito discreto abajo al tocar un lote que no es parada; se va solo.
   function cartelito(texto) {
@@ -372,7 +390,7 @@
     if (capaFondo) capaFondo.remove();
     capaFondo = L.featureGroup().addTo(mapa);
     const orden = (f) => (esPredio(f) ? 0 : esCamino(f) ? 1 : esContexto(f) ? 2 : 3);
-    const vect = geo.features.filter((f) => f.geometry.type !== "Point").sort((a, b) => orden(a) - orden(b));
+    const vect = geo.features.filter((f) => f.geometry.type !== "Point" && !esCanal(f)).sort((a, b) => orden(a) - orden(b));
     if (modo === "ilustrado" && !PARQUE) {
       L.geoJSON({ type: "FeatureCollection", features: vect.filter(esCamino) },
         { style: { color: "#cdbb8f", weight: 16, lineCap: "round", className: "camino" }, interactive: false }).addTo(capaFondo);
@@ -411,6 +429,7 @@
       },
     }).addTo(capaFondo);
     if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
+    dibujarCanales(geo.features.filter(esCanal), sat);
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
     // (un lote provisorio entra si dice su cultivo: por ejemplo, el de olivos que se tomó para la estación de poda)
     if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !(f.properties.provisorio && !f.properties.cultivo)),

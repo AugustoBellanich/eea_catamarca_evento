@@ -52,7 +52,7 @@ button { font: inherit; cursor: pointer; }
 #mapa.ilustrado.nivel-cerca .lote-est { filter: drop-shadow(0 2px 0 rgba(80,60,20,.25)); }
 
 /* Niveles de detalle: lejos = solo el predio; medio = lotes lisos; cerca = texturas, frutitas y nombres */
-#mapa.nivel-lejos .lote, #mapa.nivel-lejos .camino { display: none; }
+#mapa.nivel-lejos .lote, #mapa.nivel-lejos .camino, #mapa.nivel-lejos .canal { display: none; }
 #mapa.ilustrado.nivel-medio .lote-ctx { fill: #d9e4b8; stroke: #c3b48a; }
 #mapa.ilustrado.nivel-medio .lote-est { fill: #cfe0aa; }
 #mapa:not(.nivel-cerca) .ctx-nombre { display: none; }
