@@ -71,6 +71,9 @@ Nombres que se reconocen solos:
   "Cítricos", "Higueras", "Edificio: SUM"). Un nombre nuevo entra como lote sin cultivo y queda marcado para revisar
   (carpeta "Sin reconocer", en magenta): hay que sumarlo a la tabla.
 - Canal dibujado como polígono: se toma como superficie de agua.
+- Edificios: "Galpón …" lleva techo de chapa. Para cambiar el techo de cualquier edificio, escribir en su descripción
+  "Techo: chapa", "Techo: tejas", "Techo: vidrio" (invernadero) o "Techo: losa" (plano).
+- "Pozo de agua …" (marcador): se muestra como servicio.
 
 Cuando termines: clic derecho en la carpeta principal → Guardar lugar como → KML o KMZ, guardarlo en fuentes/
 y correr: python herramientas/kml_a_geojson.py fuentes/archivo.kml"""
@@ -119,6 +122,7 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
         partes = []
         if p.get("cultivo"): partes.append("Cultivo: " + p["cultivo"])
         if p.get("nombre") and p["nombre"] != nombre and tipo != "estacion": partes.append("En el mapa: " + p["nombre"])
+        if p.get("patron") == "edificio": partes.append("Techo: " + p.get("techo", "losa"))
         desc = " · ".join(partes)
         if tipo == "predio":
             grupos["predio"].append(placemark(nombre, "predio", g, desc))

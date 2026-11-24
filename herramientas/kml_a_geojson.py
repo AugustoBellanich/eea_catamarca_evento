@@ -48,7 +48,16 @@ NOMBRES = {
     "higueras":              {"cultivo": "higo", "patron": "arboles"},
     "estanque":              {"cultivo": "estanque", "patron": "agua"},
     "de frutales":           {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio de frutales"},
-    "residuos agroquimicos": {"patron": "liso", "nombre": "Residuos agroquímicos"},
+    "residuos agroquimicos": {"cultivo": "edificio", "patron": "edificio", "nombre": "Residuos agroquímicos", "techo": "chapa"},
+    "mip":                   {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio MIP"},
+    "apinta":                {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio APINTA"},
+    "deposito":              {"cultivo": "edificio", "patron": "edificio", "nombre": "Depósito", "techo": "chapa"},
+    "secadero":              {"cultivo": "edificio", "patron": "edificio", "techo": "chapa"},
+    "invernadero citricos":  {"cultivo": "naranja", "patron": "edificio", "nombre": "Invernadero de cítricos", "techo": "vidrio"},
+    "monte frutal":          {"cultivo": "frutal", "patron": "arboles"},
+    "compostaje":            {"patron": "liso"},
+    # A CONFIRMAR: predio de generadores (unos 50 × 75 m); por ahora se dibuja como lote liso, no como edificio.
+    "generadores esapen":    {"patron": "liso", "nombre": "Generadores ESAPEN"},
     "centro regional catamarca - la rioja": {"cultivo": "edificio", "patron": "edificio", "nombre": "Centro Regional"},
     "eea catamarca (edificio)": {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio EEA", "techo": "tejas"},
     # Servicios
@@ -58,6 +67,7 @@ NOMBRES = {
     "ingreso secundario":    {"tipo": "servicio", "servicio": "ingreso"},
     "ingreso zona 2":        {"tipo": "servicio", "servicio": "ingreso", "nombre": "Ingreso sector 2"},
     "estacion meteorologica inta": {"tipo": "servicio", "servicio": "clima", "nombre": "Estación meteorológica"},
+    "pozo de agua":          {"tipo": "servicio", "servicio": "pozo", "nombre": "Pozo de agua"},
 }
 
 # Correcciones de ubicación indicadas por Augusto sobre el mapa (se aplican después de leer el KML).
@@ -124,6 +134,10 @@ def reconocer(nombre):
         info = {"tipo": "paseo"}
     if info is None and (k.startswith("canal") or k.startswith("acequia")):  # "Canal…", "Acequia…": riego
         info = {"tipo": "canal"}
+    if info is None and re.match(r"galpon\b", k):  # "Galpón maquinarias", "Galpón depósito": techo de chapa
+        info = {"cultivo": "edificio", "patron": "edificio", "techo": "chapa", "nombre": re.sub(r"(?i)^galp[oó]n", "Galpón", nombre.strip())}
+    if info is None and re.match(r"pozo de agua", k):  # "Pozo de agua 1", "Pozo de agua 2"
+        info = NOMBRES["pozo de agua"]
     if info is None and k.startswith("estacion"):  # "Estación 5 · Nogal y pecán": punto de la estación (dentro o cerca de su lote)
         eid = estacion_de(k)
         if eid:
@@ -164,6 +178,10 @@ def convertir(ruta):
             geom = {"type": "LineString", "coordinates": coords(lin.text)}
         else:
             continue
+        desc = re.sub(r"<[^>]+>", " ", pm.findtext("k:description", default="", namespaces=NS) or "")
+        m = re.search(r"(?i)techo:\s*(chapa|tejas|vidrio|losa)", desc)
+        if m and info.get("patron") == "edificio":  # "Techo: chapa" en la descripción manda sobre la tabla
+            info = dict(info, techo=m.group(1).lower())
         if info.get("tipo") == "estacion" and geom["type"] != "Point":  # la estación va como punto; un polígono así no cuenta
             sin_mapear.append(nombre + " (las estaciones van como marcador)")
             continue
@@ -177,7 +195,7 @@ def convertir(ruta):
         props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "provisorio") if c in info})
         if tipo == "estacion":
             props["nombre"] = nombre
-            nota = (pm.findtext("k:description", default="", namespaces=NS) or "").strip()
+            nota = re.sub(r"\s+", " ", desc).strip()
             if nota:
                 props["nota"] = nota
         feats.append({"type": "Feature", "properties": props, "geometry": geom})
