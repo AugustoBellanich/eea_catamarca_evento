@@ -16,7 +16,7 @@ Sitio estático: HTML, CSS y JS con Leaflet, sin compilar y sin servidor propio.
   activada. Con el recorrido completo, la foto lleva la insignia "Recorrido completo".
 - Vista de demostración con lotes inventados: `?demo`.
 - "Estás aquí" con el GPS del teléfono y botón "Más cercana".
-- Ficha de cada estación; se abre directo con `#e1`, `#e2`… (`#girasol-romero` para la que no tiene número):
+- Ficha de cada estación; se abre directo con `#e1`, `#e2`… (la 13, Girasol y romero, también con `#girasol-romero`):
   para los QR de cada parada.
 - Foto con marco de los 70 años para compartir o descargar. La foto no sale del teléfono.
 - Funciona con poca señal después de la primera carga (service worker).

@@ -839,7 +839,8 @@
     return filas.filter((f) => f.some((x) => x.trim())).map((f) => Object.fromEntries(cab.map((k, i) => [k, (f[i] || "").trim()])));
   }
   // "6", "e6" o "girasol-romero" → id de estación
-  const idEstacion = (v) => { v = (v || "").trim().toLowerCase(); if (!v) return ""; return estacion(v) ? v : estacion("e" + v) ? "e" + v : ""; };
+  const idEstacion = (v) => { v = (v || "").trim().toLowerCase(); if (!v) return ""; if (estacion(v)) return v; if (estacion("e" + v)) return "e" + v;
+    const n = v.replace(/^e/, ""), e = estaciones.find((x) => String(x.numero) === n); return e ? e.id : ""; }; // "13" o "e13" → girasol-romero
   async function traerCSV(url) { const r = await fetch(url, { cache: "no-store" }); if (!r.ok) throw new Error(r.status); return leerCSV(await r.text()); }
   async function actualizarRemotos() {
     const cache = leer(K.agenda, null);
@@ -1288,12 +1289,12 @@
     await actualizarRemotos();
     if (C.agendaCSV || C.avisosCSV) setInterval(actualizarRemotos, 60000);
     setInterval(() => { if (!$("#agenda").hidden) armarAgenda(); }, 60000); // "Ahora" y "Próximo" avanzan solos
-    const id = decodeURIComponent(location.hash.slice(1));
+    const id = idEstacion(decodeURIComponent(location.hash.slice(1))) || decodeURIComponent(location.hash.slice(1));
     if (recuperarPasaporte(id)) { armarPasaporte(); mostrar("#pasaporte"); }
     else if (id && estacion(id)) { sellar(id, true); abrirFicha(id); } // llegó por el QR de la estación
     // QR escaneado con el sitio ya abierto: algunos navegadores reutilizan la pestaña y solo cambian el #.
     addEventListener("hashchange", () => {
-      const h = decodeURIComponent(location.hash.slice(1));
+      const h = idEstacion(decodeURIComponent(location.hash.slice(1))) || decodeURIComponent(location.hash.slice(1));
       if (recuperarPasaporte(h)) { armarPasaporte(); mostrar("#pasaporte"); }
       else if (h && estacion(h)) { sellar(h); abrirFicha(h); }
     });
