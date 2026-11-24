@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Lámina para redes · EEA Catamarca</title>
+<style>
+  @font-face { font-family: "Caveat"; src: url(lib/caveat-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Caveat"; src: url(lib/caveat-latin-700-normal.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Caveat Brush"; src: url(lib/caveat-brush-latin-400-normal.woff2) format("woff2"); }
+  html, body { margin: 0; background: #2b2620; }
+  canvas { display: block; margin: 0 auto; }
+</style>
+</head>
+<body>
+<!-- Lámina estática para redes (mapa ilustrado a mano). Se genera desde los mismos datos del sitio:
+     ?formato=feed (1080×1350, publicación) o ?formato=historia (1080×1920). Ver lamina/README.md. -->
+<canvas id="lamina"></canvas>
+<script src="../config.js"></script>
+<script src="../datos/mapa.js"></script>
+<script src="../datos/estaciones.js"></script>
+<script src="lib/rough.js"></script>
+<script src="lamina.js"></script>
+</body>
+</html>
