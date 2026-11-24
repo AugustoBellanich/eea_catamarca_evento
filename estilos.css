@@ -102,6 +102,7 @@ button { font: inherit; cursor: pointer; }
 .r-cant { flex: none; min-width: 28px; height: 28px; border-radius: 14px; background: #fff; color: var(--marca-oscuro);
   display: grid; place-items: center; font-size: 15px; }
 @keyframes aparecer { from { transform: translateY(-6px) scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+#mapa.sin-aparecer :is(.bandera, .gota, .racimo-pq, .simbolo-cultivo) { animation: none; }
 
 /* Ingresos */
 .servicio { display: inline-flex; align-items: center; gap: 4px; background: #fff; border: 2px solid #455a64; border-radius: 14px;
