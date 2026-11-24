@@ -8,7 +8,8 @@ ubicación, estación de cada lote). Cada elemento conserva su nombre original, 
 conversor, y lleva en la descripción qué entendió el sitio. Se edita en Google Earth, se exporta la carpeta
 completa como KML o KMZ y se vuelve a pasar por kml_a_geojson.py.
 
-La carpeta "Referencia" (ubicaciones provisorias) es solo guía: el conversor la saltea.
+Los lotes son lotes (con su cultivo) y las estaciones del recorrido son marcadores aparte, "Estación N · …",
+ubicados dentro o cerca del lote donde se hace la parada. Así un lote no cambia si deja de ser estación.
 """
 import json, re, sys, os
 from xml.sax.saxutils import escape
@@ -41,17 +42,27 @@ ESTILOS = {
 for z, col in ZONAS.items():
     ESTILOS["est-" + z] = (col, 3, (col, "66"))
 
-ICONOS = {
-    "ingreso": "http://maps.google.com/mapfiles/kml/shapes/arrow.png",
-    "servicio": "http://maps.google.com/mapfiles/kml/shapes/info-i.png",
-    "provisoria": "http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png",
-    "ejemplo": "http://maps.google.com/mapfiles/kml/shapes/water.png",
+ICONOS = {  # id: (ícono, color o None)
+    "ingreso": ("http://maps.google.com/mapfiles/kml/shapes/arrow.png", None),
+    "servicio": ("http://maps.google.com/mapfiles/kml/shapes/info-i.png", None),
 }
+for z, col in ZONAS.items():
+    ICONOS["parada-" + z] = ("http://maps.google.com/mapfiles/kml/paddle/wht-blank.png", col)
+
+# Nombre de cada cultivo para las subcarpetas de lotes.
+CULTIVOS = {"almendra": "Almendros", "nogal": "Nogales", "pecan": "Pecanes", "pecan_joven": "Pecanes jóvenes", "olivo": "Olivos",
+            "naranja": "Cítricos", "lima": "Cítricos", "higo": "Higueras", "frutal": "Frutal mixto", "tuna": "Tuna", "vid": "Vid",
+            "algodon": "Algodón", "girasol": "Girasol", "pastura": "Pasturas", "ganado": "Corrales", "estanque": "Agua"}
 
 AYUDA = """Mapa del evento de la EEA Catamarca, para seguir dibujando en Google Earth.
 
 El sitio reconoce cada elemento por su NOMBRE (no por la carpeta ni por el color). Las carpetas y los colores
 son para ordenarse; al volver a exportar se pueden mover cosas de carpeta sin problema.
+
+Lotes y estaciones van separados: el lote es el cultivo (no cambia aunque deje de ser parada) y la ESTACIÓN es un
+marcador "Estación N · nombre" (por número, por ejemplo "Estación 5 · Nogal y pecán"; la que no tiene número, por su
+nombre: "Estación · Girasol y romero"), puesto dentro o cerca del lote donde se hace la parada. Si el lugar no está
+confirmado, agregar "(provisoria)" al final del nombre; la descripción del marcador se muestra en la ficha.
 
 Nombres que se reconocen solos:
 - Líneas (ruta): "Canal …" o "Acequia …" (canales de riego), "Camino …" (camino de tierra interno),
@@ -92,28 +103,28 @@ def estilos():
     for i, (linea, ancho, relleno) in ESTILOS.items():
         poli = "<PolyStyle><color>%s</color></PolyStyle>" % kml(relleno[0], relleno[1]) if relleno else "<PolyStyle><fill>0</fill></PolyStyle>"
         out.append('<Style id="%s"><LineStyle><color>%s</color><width>%s</width></LineStyle>%s</Style>' % (i, kml(linea), ancho, poli))
-    for i, href in ICONOS.items():
-        out.append('<Style id="%s"><IconStyle><scale>1.1</scale><Icon><href>%s</href></Icon></IconStyle></Style>' % (i, href))
+    for i, (href, col) in ICONOS.items():
+        color = "<color>%s</color>" % kml(col) if col else ""
+        out.append('<Style id="%s"><IconStyle>%s<scale>1.1</scale><Icon><href>%s</href></Icon></IconStyle></Style>' % (i, color, href))
     return "".join(out)
 
 def main(ruta, salida="fuentes/predio-editable.kml"):
     feats, originales, _ = convertir(ruta)
     ests = {e["id"]: e for e in json.load(open(os.path.join(AQUI, "datos/estaciones.json"), encoding="utf-8"))["estaciones"]}
-    def etiqueta(eid):
-        e = ests.get(eid, {})
-        return ("Estación %s · %s" % (e["numero"], e.get("corto") or e["nombre"])) if e.get("numero") else (e.get("corto") or e.get("nombre") or eid)
-
-    grupos = {g: [] for g in ("predio", "estaciones", "lotes", "edificios", "servicios", "rutas", "calles", "caminos", "paseos", "canales", "revisar")}
+    grupos = {g: [] for g in ("predio", "estaciones", "edificios", "servicios", "rutas", "calles", "caminos", "paseos", "canales", "revisar")}
+    lotes = {}
     for f, nombre in zip(feats, originales):
         p, g = f["properties"], f["geometry"]
         tipo = p["tipo"]
         partes = []
         if p.get("cultivo"): partes.append("Cultivo: " + p["cultivo"])
-        if p.get("estacion"): partes.append(etiqueta(p["estacion"]))
-        if p.get("nombre") and p["nombre"] != nombre: partes.append("En el mapa: " + p["nombre"])
+        if p.get("nombre") and p["nombre"] != nombre and tipo != "estacion": partes.append("En el mapa: " + p["nombre"])
         desc = " · ".join(partes)
         if tipo == "predio":
             grupos["predio"].append(placemark(nombre, "predio", g, desc))
+        elif tipo == "estacion":  # la descripción es la nota que muestra la ficha: se conserva tal cual
+            zona = ests.get(p["estacion"], {}).get("zona", "frutales")
+            grupos["estaciones"].append((ests.get(p["estacion"], {}).get("numero") or 99, placemark(nombre, "parada-" + zona, g, p.get("nota", ""))))
         elif tipo == "servicio":
             grupos["servicios"].append(placemark(nombre, "ingreso" if p.get("servicio") == "ingreso" else "servicio", g, desc))
         elif tipo in ("ruta", "calle", "camino", "paseo", "canal"):
@@ -121,37 +132,22 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
             grupos[{"ruta": "rutas", "calle": "calles", "camino": "caminos", "paseo": "paseos", "canal": "canales"}[tipo]].append(placemark(nombre, estilo, g, desc))
         elif p.get("revisar"):
             grupos["revisar"].append(placemark(nombre, "revisar", g, "Nombre sin reconocer: sumarlo a NOMBRES en kml_a_geojson.py"))
-        elif p.get("estacion"):
-            zona = ests.get(p["estacion"], {}).get("zona", "frutales")
-            grupos["estaciones"].append((etiqueta(p["estacion"]), placemark(nombre, "est-" + zona, g, desc)))
         elif p.get("patron") == "edificio":
             grupos["edificios"].append(placemark(nombre, "edificio", g, desc))
         else:
-            grupos["lotes"].append(placemark(nombre, "agua" if p.get("patron") == "agua" else "lote", g, desc))
+            cult = CULTIVOS.get(p.get("cultivo"), "Otros")
+            lotes.setdefault(cult, []).append(placemark(nombre, "agua" if p.get("patron") == "agua" else "lote", g, desc))
 
-    # estaciones: una subcarpeta por estación, en orden de número
-    def orden(n):
-        m = re.match(r"Estación (\d+)", n)
-        return int(m.group(1)) if m else 99
-    por_est = {}
-    for n, pm in grupos["estaciones"]:
-        por_est.setdefault(n, []).append(pm)
-    est_carpetas = [carpeta(n, pms) for n, pms in sorted(por_est.items(), key=lambda x: orden(x[0]))]
-
-    # referencia: ubicaciones provisorias (el conversor saltea esta carpeta)
-    prov = open(os.path.join(AQUI, "datos/provisorios.js"), encoding="utf-8").read()
-    prov = json.loads(prov[prov.index("{"):prov.rindex("}") + 1])
-    ref = [placemark("Provisoria: " + etiqueta(f["properties"]["estacion"]), "provisoria", f["geometry"],
-                     (f["properties"].get("nota", "") + ". Para ubicarla de verdad, dibujar su lote o edificio con el nombre que corresponda (tabla NOMBRES).").strip(". "))
-           for f in prov["features"] if f["geometry"]["type"] == "Point"]
+    estaciones_kml = [pm for _, pm in sorted(grupos["estaciones"], key=lambda x: int(x[0]))]
+    lotes_carpetas = [carpeta(n, pms) for n, pms in sorted(lotes.items(), key=lambda x: (x[0] == "Otros", x[0]))]
 
     canales_desc = ('Dibujar cada canal o acequia como RUTA (línea) siguiendo su traza, con un nombre que empiece con "Canal" '
                     'o "Acequia" (por ejemplo "Canal principal", "Canal secundario lote olivos", "Acequia norte"). '
                     "El nombre completo aparece al tocarlo en el mapa.")
     cuerpo = [
         carpeta("Predio (sectores)", grupos["predio"]),
-        carpeta("Estaciones del recorrido", est_carpetas, "Color de la zona de cada estación (config.js)."),
-        carpeta("Lotes y cultivos", grupos["lotes"]),
+        carpeta("Estaciones del recorrido", estaciones_kml, "Un marcador por estación, del color de su zona (config.js).", abierta=True),
+        carpeta("Lotes y cultivos", lotes_carpetas, "Un lote por cultivo; no lleva la estación (esa va en su marcador)."),
         carpeta("Edificios", grupos["edificios"]),
         carpeta("Ingresos y servicios", grupos["servicios"]),
         carpeta("Vías", [carpeta("Rutas", grupos["rutas"]), carpeta("Calles", grupos["calles"]),
@@ -160,14 +156,12 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
     ]
     if grupos["revisar"]:
         cuerpo.append(carpeta("Sin reconocer", grupos["revisar"], "Nombres que el sitio no reconoce todavía."))
-    cuerpo.append(carpeta("Referencia (no se importa)", [carpeta("Ubicaciones provisorias", ref)],
-                          "Guía nomás: el conversor saltea toda carpeta cuyo nombre empiece con Referencia."))
     doc = ('<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>'
            "<name>EEA Catamarca – mapa del evento (editable)</name><open>1</open><description>%s</description>%s%s</Document></kml>\n"
            % (escape(AYUDA), estilos(), "".join(cuerpo)))
     with open(salida, "w", encoding="utf-8") as s:
         s.write(doc)
-    print(f"{len(feats)} elementos -> {salida} ({len(ref)} provisorias de referencia)")
+    print(f"{len(feats)} elementos -> {salida} ({len(estaciones_kml)} estaciones)")
 
 if __name__ == "__main__":
     main(*sys.argv[1:])
