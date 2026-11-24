@@ -85,6 +85,12 @@ window.ICONOS = (function () {
     pecan: svg(`
       <path d="M24 6c8 0 11 9 11 18s-3 18-11 18-11-9-11-18S16 6 24 6z" fill="#9c5f2d" ${O}/>
       <path d="M24 7v34" stroke="#5d3412" stroke-width="1.6"/><path d="M18 14c2 3 2 6 0 9M30 14c-2 3-2 6 0 9M18 27c2 3 2 6 0 9M30 27c-2 3-2 6 0 9" stroke="#5d3412" stroke-width="1.3" fill="none"/>`),
+    // comino: planta de tallos finos con umbelas de flores blancas y semillas
+    comino: svg(`
+      <path d="M24 44V24M24 30l-9-10M24 30l9-10M24 24l-4-10M24 24l4-10" stroke="#689f38" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <circle cx="15" cy="18" r="4.5" fill="#f5f5f5" ${O}/><circle cx="33" cy="18" r="4.5" fill="#f5f5f5" ${O}/>
+      <circle cx="20" cy="11" r="4.5" fill="#f5f5f5" ${O}/><circle cx="28" cy="11" r="4.5" fill="#f5f5f5" ${O}/>
+      <path d="M12 40c2-1 4-1 5 1M31 41c2-2 4-2 5 0" stroke="#a1887f" stroke-width="2.4" fill="none" stroke-linecap="round"/>`),
     naranja: svg(`
       <circle cx="24" cy="27" r="15" fill="#fb8c00" ${O}/><circle cx="19" cy="22" r="3" fill="#ffb74d"/>
       <path d="M24 12c0-4 2-6 5-6" stroke="#5d4037" stroke-width="2" fill="none"/>

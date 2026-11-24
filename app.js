@@ -485,16 +485,33 @@
 
   // Símbolos de cultivos (Capas → "Símbolos de cultivos"): un disco blanco con el dibujo del cultivo sobre cada lote
   // que no es parada (las paradas ya tienen su gota). Si dos se tocan en pantalla, queda uno solo.
+  // Ícono de cada cultivo (los que no tienen dibujo propio usan el de su especie).
+  const ICONO_CULTIVO = { pecan_joven: "pecan" };
+  const iconoCultivo = (c) => ICON[c] || ICON[ICONO_CULTIVO[c]] || null;
   function dibujarSimbolos() {
     if (nivel === "lejos" || !capas.cultivos) return;
-    const puestos = ubicadas().map((e) => mapa.latLngToLayerPoint(centroEstacion(e.id)).subtract([0, 28]));
-    geo.features.filter((f) => f.geometry.type === "Polygon" && !esPredio(f) && !esCamino(f) && !(esEstacion(f) && capas.estaciones))
-      .filter((f) => ICON[f.properties.cultivo]).forEach((f) => {
-        const ll = centro(f), p = mapa.latLngToLayerPoint(ll);
-        if (puestos.some((q) => q.distanceTo(p) < 38)) return;
+    const puestos = capas.estaciones ? ubicadas().map((e) => mapa.latLngToLayerPoint(centroEstacion(e.id)).subtract([0, 28])) : [];
+    const libre = (p) => puestos.every((q) => q.distanceTo(p) >= 38);
+    // Lotes cultivados (no edificios): el símbolo va en el centro del lote o, si ahí hay una gota u otro símbolo,
+    // en el punto libre del lote más cercano al centro. Si el lote se ve muy chico para que entre, no lleva símbolo.
+    geo.features.filter((f) => f.geometry.type === "Polygon" && !esPredio(f) && !esCamino(f) && f.properties.patron !== "edificio")
+      .filter((f) => iconoCultivo(f.properties.cultivo)).forEach((f) => {
+        const anillo = f.geometry.coordinates[0], c = centro(f);
+        let ll = c, p = mapa.latLngToLayerPoint(c);
+        if (!dentroDe(c.lng, c.lat, anillo) || !libre(p)) {
+          const xs = anillo.map((v) => v[0]), ys = anillo.map((v) => v[1]), cand = [];
+          for (let i = 1; i < 10; i++) for (let j = 1; j < 10; j++) {
+            const x = Math.min(...xs) + (Math.max(...xs) - Math.min(...xs)) * i / 10, y = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * j / 10;
+            if (dentroDe(x, y, anillo)) cand.push(L.latLng(y, x));
+          }
+          const ok = cand.map((q) => ({ q, pt: mapa.latLngToLayerPoint(q) })).filter((o) => libre(o.pt))
+            .sort((a, b) => a.pt.distanceTo(p) - b.pt.distanceTo(p))[0];
+          if (!ok) return;
+          ll = ok.q; p = ok.pt;
+        }
         puestos.push(p);
         L.marker(ll, { keyboard: false, title: f.properties.nombre, icon: L.divIcon({ className: "icono-libre", iconSize: [32, 32], iconAnchor: [16, 16],
-          html: `<div class="simbolo-cultivo">${ICON[f.properties.cultivo]}</div>` }) })
+          html: `<div class="simbolo-cultivo">${iconoCultivo(f.properties.cultivo)}</div>` }) })
           .on("click", () => cartelito(f.properties.nombre)).addTo(capaFrutas);
       });
     capaFrutas.addTo(mapa);
