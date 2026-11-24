@@ -98,7 +98,9 @@ matas y claros); "Desmonte", casi todo tierra desnuda con algunos árboles. La d
 
 El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta las estaciones, los ingresos
 y servicios, y los **símbolos de cultivos**: un disco blanco con el dibujo del cultivo sobre cada lote que no es parada
-(apagado de entrada; las plantas se ven siempre). Tocar un símbolo muestra el nombre del lote.
+(apagado de entrada; las plantas se ven siempre). Va en todos los lotes cultivados, no en edificios ni en lotes arados, de
+monte o desmonte; si en el centro del lote hay una gota, se corre a un lugar libre del mismo lote. Tocar un símbolo muestra
+el nombre del lote.
 
 ## Caminos
 
