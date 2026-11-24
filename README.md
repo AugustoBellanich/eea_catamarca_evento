@@ -88,6 +88,12 @@ se apagan y llevan un tilde; al tocar un lote que no es parada aparece su nombre
 dibujadas, solo contornos blancos finos de los lotes y del predio, el nombre chico de cada lote de cerca, y las paradas
 y los servicios más chicos. Los recorridos y los avisos de cruce se ven igual.
 
+## Lotes sin cultivo
+
+"Lote vacío" se dibuja como lote arado (surcos de tierra, listo para sembrar); "Monte", como monte nativo (árboles nativos,
+matas y claros); "Desmonte", casi todo tierra desnuda con algunos árboles. La densidad de cada uno está en `arboles.js`
+(`SILVESTRE` y `MARCO.arado`).
+
 ## Capas
 
 El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta las estaciones, los ingresos
@@ -140,7 +146,7 @@ solo el número; después número e ícono; de cerca, también el nombre). Los c
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
-El KML vigente es `fuentes/predio-2026-11-24c.kml` (el `24b` es el que exportó Augusto, tal cual): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
+El KML vigente es `fuentes/predio-2026-11-24e.kml` (los `24b` y `24d` son los que exportó Augusto, tal cual): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
 vías, canales), los colores de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en
 Google Earth, agregar lo nuevo y exportar la carpeta completa. Para reordenar en carpetas un KML exportado:
 `python herramientas/kml_editable.py fuentes/archivo.kml fuentes/salida.kml`. El conversor saltea toda carpeta cuyo nombre
