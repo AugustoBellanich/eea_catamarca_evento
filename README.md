@@ -194,7 +194,8 @@ HTTPS es obligatorio para el GPS y la cámara: Pages ya lo da.
 ## Antes de la jornada
 
 - [ ] `centro` real en `config.js` y estaciones dibujadas.
-- [ ] Cuenta oficial de Instagram y hashtag (Comunicación).
+- [x] Cuenta oficial de Instagram: @intacatamarca.
+- [ ] Hashtag oficial (Comunicación).
 - [ ] Marco oficial de los 70 años (PNG con transparencia) en lugar del marco provisorio de texto.
 - [ ] Revisar los términos de uso de la imagen satelital, o reemplazarla por el ortomosaico del dron
       (`gdal2tiles.py --xyz -z 16-20 orto.tif teselas/` y cambiar `teselas.url` a `teselas/{z}/{x}/{y}.png`).
