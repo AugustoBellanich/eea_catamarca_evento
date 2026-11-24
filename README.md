@@ -116,8 +116,11 @@ declaran en `config.js` (`accesos`, hoy el Sector 2 por "Ingreso sector 2", ubic
 Manuel Soria por corrección en `CORRECCIONES` del conversor): el recorrido entra y sale solo por ahí.
 Sin caminos cargados, va en línea recta.
 
-Techos: en la tabla `NOMBRES` del conversor, `"techo": "vidrio"` dibuja un invernadero (naves de vidrio) y
-`"techo": "tejas"` un techo de tejas terracota a dos aguas (hoy el edificio de la EEA y el laboratorio de aceite).
+Techos: `"techo": "vidrio"` dibuja un invernadero (naves de vidrio), `"tejas"` un techo terracota a dos aguas (edificio
+de la EEA y laboratorio de aceite), `"chapa"` un galpón de chapa gris ondulada con poca pendiente (todo lo que se llama
+"Galpón …", secadero, depósito y residuos agroquímicos) y `"losa"` (o nada) un techo plano. Se fija en la tabla `NOMBRES` del
+conversor o, para un edificio puntual, escribiendo en su descripción de Google Earth "Techo: chapa" (o tejas, vidrio, losa),
+que manda sobre la tabla.
 Los "Pecanes jóvenes" de la estación 5 se dibujan como plantines recién implantados (tazón de riego y tutor). Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
 
@@ -137,7 +140,7 @@ solo el número; después número e ícono; de cerca, también el nombre). Los c
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
-El KML vigente es `fuentes/predio-2026-11-24.kml`: carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
+El KML vigente es `fuentes/predio-2026-11-24c.kml` (el `24b` es el que exportó Augusto, tal cual): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
 vías, canales), los colores de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en
 Google Earth, agregar lo nuevo y exportar la carpeta completa. Para reordenar en carpetas un KML exportado:
 `python herramientas/kml_editable.py fuentes/archivo.kml fuentes/salida.kml`. El conversor saltea toda carpeta cuyo nombre
