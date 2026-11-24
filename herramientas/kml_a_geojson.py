@@ -6,7 +6,7 @@ Cada elemento del KML se reconoce por su nombre (tabla NOMBRES): qué cultivo es
 y, si es parte de una estación, cuál. Varios lotes pueden ser de la misma estación. Lo que no está en la tabla
 entra como lote sin frutita y se avisa por pantalla para revisarlo.
 """
-import json, sys, zipfile, re, unicodedata
+import json, os, sys, zipfile, re, unicodedata
 import xml.etree.ElementTree as ET
 
 NS = {"k": "http://www.opengis.net/kml/2.2"}
@@ -18,23 +18,20 @@ NOMBRES = {
     "eea catamarca 1/3":     {"tipo": "predio", "nombre": "Sector 1"},
     "eea catamarca 2/3":     {"tipo": "predio", "nombre": "Sector 2"},
     "eea catamarca 3/3":     {"tipo": "predio", "nombre": "Sector 3", "paisaje": "monte"},  # monte abierto: suelo desnudo, pasto y árboles sueltos
-    # Lotes y edificios con estación (estacion = id de la ficha en datos/estaciones.json)
-    "almendros":             {"cultivo": "almendra", "patron": "arboles", "estacion": "e10"},
-    "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "estacion": "e2", "techo": "vidrio"},
-    "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "estacion": "e1", "techo": "tejas"},
-    "vid":                   {"cultivo": "vid", "patron": "hileras", "estacion": "e9"},
-    "sum":                   {"cultivo": "charla", "patron": "edificio", "estacion": "e6"},
-    "laboratorio suelo":     {"cultivo": "suelo", "patron": "edificio", "estacion": "e4"},
-    # A CONFIRMAR: la planilla dice "Monte nogal y pecán grande"; por ahora los tres lotes son de la estación 5.
-    # "solo_en": la estación se asigna solo si el lote está dentro de ese sector (hay lotes con el mismo nombre en otros)
-    "nogal":                 {"cultivo": "nogal", "patron": "arboles", "estacion": "e5", "solo_en": "Sector 1"},
-    "animales":              {"cultivo": "ganado", "patron": "pasto", "estacion": "e8", "nombre": "Corrales"},
-    "algodon":               {"cultivo": "algodon", "patron": "surcos", "estacion": "e12", "nombre": "Algodón"},
-    "algogon":               {"cultivo": "algodon", "patron": "surcos", "estacion": "e12", "nombre": "Algodón"},
-    "girasol perenne":       {"cultivo": "girasol", "patron": "surcos", "estacion": "girasol-romero"},
-    "pecanes":               {"cultivo": "pecan", "patron": "arboles", "estacion": "e5"},
-    "pecanes jovenes":       {"cultivo": "pecan_joven", "patron": "arboles", "estacion": "e5", "nombre": "Pecanes jóvenes"},  # plantines recién implantados
-    # Lotes sin estación (se dibujan con su frutita)
+    # Lotes y edificios
+    "almendros":             {"cultivo": "almendra", "patron": "arboles"},
+    "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "techo": "vidrio"},
+    "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "techo": "tejas"},
+    "vid":                   {"cultivo": "vid", "patron": "hileras"},
+    "sum":                   {"cultivo": "charla", "patron": "edificio"},
+    "laboratorio suelo":     {"cultivo": "suelo", "patron": "edificio"},
+    "nogal":                 {"cultivo": "nogal", "patron": "arboles"},
+    "animales":              {"cultivo": "ganado", "patron": "pasto", "nombre": "Corrales"},
+    "algodon":               {"cultivo": "algodon", "patron": "surcos", "nombre": "Algodón"},
+    "algogon":               {"cultivo": "algodon", "patron": "surcos", "nombre": "Algodón"},
+    "girasol perenne":       {"cultivo": "girasol", "patron": "surcos"},
+    "pecanes":               {"cultivo": "pecan", "patron": "arboles"},
+    "pecanes jovenes":       {"cultivo": "pecan_joven", "patron": "arboles", "nombre": "Pecanes jóvenes"},  # plantines recién implantados
     "citricos":              {"cultivo": "naranja", "patron": "arboles", "nombre": "Cítricos"},
     "lima":                  {"cultivo": "lima", "patron": "arboles"},
     "tuna":                  {"cultivo": "tuna", "patron": "pasto"},
@@ -89,6 +86,26 @@ def leer(ruta):
             return ET.fromstring(z.read(nombre))
     return ET.parse(ruta).getroot()
 
+ESTACIONES = None
+def estaciones():
+    global ESTACIONES
+    if ESTACIONES is None:
+        ruta = os.path.join(os.path.dirname(__file__), "..", "datos", "estaciones.json")
+        ESTACIONES = json.load(open(ruta, encoding="utf-8"))["estaciones"]
+    return ESTACIONES
+
+def estacion_de(k):
+    """ "estacion 5 · nogal y pecan" -> e5; "estacion · girasol y romero" -> girasol-romero (por número, id o nombre corto)."""
+    resto = re.sub(r"^estacion\s*", "", re.sub(r"\(provisori[ao]\)", "", k)).strip(" ·:-")
+    m = re.match(r"(\d+)", resto)
+    for e in estaciones():
+        if m and str(e.get("numero")) == m.group(1):
+            return e["id"]
+    for e in estaciones():
+        if resto in (e["id"], clave(e.get("corto") or ""), clave(e.get("nombre") or "")):
+            return e["id"]
+    return None
+
 def reconocer(nombre):
     """Qué es un elemento según su nombre en Google Earth: (clave, info) o (clave, None) si no se reconoce."""
     k = clave(nombre)
@@ -107,6 +124,12 @@ def reconocer(nombre):
         info = {"tipo": "paseo"}
     if info is None and (k.startswith("canal") or k.startswith("acequia")):  # "Canal…", "Acequia…": riego
         info = {"tipo": "canal"}
+    if info is None and k.startswith("estacion"):  # "Estación 5 · Nogal y pecán": punto de la estación (dentro o cerca de su lote)
+        eid = estacion_de(k)
+        if eid:
+            info = {"tipo": "estacion", "estacion": eid}
+            if "provisori" in k:
+                info["provisorio"] = True
     return k, info
 
 def placemarks(nodo, saltar=False):
@@ -141,34 +164,31 @@ def convertir(ruta):
             geom = {"type": "LineString", "coordinates": coords(lin.text)}
         else:
             continue
+        if info.get("tipo") == "estacion" and geom["type"] != "Point":  # la estación va como punto; un polígono así no cuenta
+            sin_mapear.append(nombre + " (las estaciones van como marcador)")
+            continue
         if k in CORRECCIONES and geom["type"] == "Point":
             geom = {"type": "Point", "coordinates": CORRECCIONES[k]}
         if info.get("tipo") == "canal" and geom["type"] == "Polygon":  # canal dibujado como superficie: lote de agua
             info = {"cultivo": "estanque", "patron": "agua"}
         tipo = info.get("tipo", "lote")
-        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n, "canal": "canal-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
+        props = {"id": {"estacion": "est-%s" % info.get("estacion"), "predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n, "canal": "canal-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
-        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "solo_en") if c in info})
+        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "provisorio") if c in info})
+        if tipo == "estacion":
+            props["nombre"] = nombre
+            nota = (pm.findtext("k:description", default="", namespaces=NS) or "").strip()
+            if nota:
+                props["nota"] = nota
         feats.append({"type": "Feature", "properties": props, "geometry": geom})
         originales.append(nombre)
-    # Predio en sectores: id único por sector. Estaciones con "solo_en": se quitan si el lote cae en otro sector.
+    # Predio en sectores: id único por sector.
     sectores = [f for f in feats if f["properties"]["tipo"] == "predio"]
     for i, f in enumerate(sectores, 1):
         f["properties"]["id"] = "predio" if len(sectores) == 1 else "predio-%d" % i
-    def dentro(pt, anillo):
-        x, y = pt; ok = False
-        for (x1, y1), (x2, y2) in zip(anillo, anillo[1:]):
-            if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1: ok = not ok
-        return ok
-    for f in feats:
-        sec = f["properties"].pop("solo_en", None)
-        if not sec or f["geometry"]["type"] != "Polygon":
-            continue
-        anillo = f["geometry"]["coordinates"][0][:-1]
-        c = (sum(p[0] for p in anillo) / len(anillo), sum(p[1] for p in anillo) / len(anillo))
-        destino = next((x for x in sectores if x["properties"].get("nombre") == sec), None)
-        if destino and not dentro(c, destino["geometry"]["coordinates"][0]):
-            f["properties"].pop("estacion", None)
+    vistas = [f["properties"]["estacion"] for f in feats if f["properties"]["tipo"] == "estacion"]
+    for eid in sorted(set(x for x in vistas if vistas.count(x) > 1)):
+        print("Aviso: la estación %s tiene más de un punto; el mapa usa el primero." % eid)
     return feats, originales, sin_mapear
 
 def main(ruta, salida="datos/estaciones.geojson"):
