@@ -52,7 +52,8 @@ for z, col in ZONAS.items():
 # Nombre de cada cultivo para las subcarpetas de lotes.
 CULTIVOS = {"almendra": "Almendros", "nogal": "Nogales", "pecan": "Pecanes", "pecan_joven": "Pecanes jóvenes", "olivo": "Olivos",
             "naranja": "Cítricos", "lima": "Cítricos", "higo": "Higueras", "frutal": "Frutal mixto", "tuna": "Tuna", "vid": "Vid",
-            "algodon": "Algodón", "girasol": "Girasol", "pastura": "Pasturas", "ganado": "Corrales", "estanque": "Agua"}
+            "algodon": "Algodón", "girasol": "Girasol", "pastura": "Pasturas", "ganado": "Corrales", "estanque": "Agua",
+            "arado": "Lotes arados", "monte": "Monte nativo", "desmonte": "Desmonte", "comino": "Comino"}
 
 AYUDA = """Mapa del evento de la EEA Catamarca, para seguir dibujando en Google Earth.
 

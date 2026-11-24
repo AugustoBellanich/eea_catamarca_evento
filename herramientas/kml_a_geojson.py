@@ -23,7 +23,7 @@ NOMBRES = {
     "invernadero":           {"cultivo": "sanidad", "patron": "edificio", "techo": "vidrio"},
     "laboratorio de aceite": {"cultivo": "aceite", "patron": "edificio", "techo": "tejas"},
     "vid":                   {"cultivo": "vid", "patron": "hileras"},
-    "sum":                   {"cultivo": "charla", "patron": "edificio"},
+    "sum":                   {"cultivo": "charla", "patron": "edificio", "techo": "tejas"},
     "laboratorio suelo":     {"cultivo": "suelo", "patron": "edificio"},
     "nogal":                 {"cultivo": "nogal", "patron": "arboles"},
     "animales":              {"cultivo": "ganado", "patron": "pasto", "nombre": "Corrales"},
@@ -56,6 +56,10 @@ NOMBRES = {
     "invernadero citricos":  {"cultivo": "naranja", "patron": "edificio", "nombre": "Invernadero de cítricos", "techo": "vidrio"},
     "monte frutal":          {"cultivo": "frutal", "patron": "arboles"},
     "compostaje":            {"patron": "liso"},
+    "lote vacio":            {"cultivo": "arado", "patron": "surcos", "nombre": "Lote arado"},  # arado, listo para sembrar
+    "monte":                 {"cultivo": "monte", "patron": "arboles", "nombre": "Monte nativo"},  # árboles nativos, arbustos y claros
+    "desmonte":              {"cultivo": "desmonte", "patron": "pasto"},  # sobre todo tierra desnuda, algunos árboles
+    "comino":                {"cultivo": "comino", "patron": "surcos"},
     # A CONFIRMAR: predio de generadores (unos 50 × 75 m); por ahora se dibuja como lote liso, no como edificio.
     "generadores esapen":    {"patron": "liso", "nombre": "Generadores ESAPEN"},
     "centro regional catamarca - la rioja": {"cultivo": "edificio", "patron": "edificio", "nombre": "Centro Regional"},
