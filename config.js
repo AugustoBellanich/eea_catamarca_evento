@@ -57,8 +57,8 @@ window.CONFIG = {
   // Contacto institucional (dirección oficial de la EEA).
   contacto: "eeacatamarca@inta.gob.ar",
 
-  // A COMPLETAR con Comunicación: cuenta oficial y hashtag.
-  instagram: "@cuenta_oficial_eea",
+  // Instagram: cuenta oficial de la EEA. A COMPLETAR con Comunicación: el hashtag.
+  instagram: "@intacatamarca",          // cuenta oficial de la EEA Catamarca (Augusto, 24/11/2026)
   hashtag: "#INTA70Catamarca",
 
   // Concurso de fotos: queda apagado hasta que la organización apruebe las bases.
