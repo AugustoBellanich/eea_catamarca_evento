@@ -202,7 +202,7 @@ window.ESTACIONES = {
   },
   {
    "id": "girasol-romero",
-   "numero": null,
+   "numero": "13",
    "nombre": "Girasol perenne/romero",
    "corto": "Girasol y romero",
    "icono": "girasol",
