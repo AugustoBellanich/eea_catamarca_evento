@@ -28,12 +28,12 @@ Sitio estático: HTML, CSS y JS con Leaflet, sin compilar y sin servidor propio.
 | `config.js` | Centro del predio, imagen base, zonas y colores, radio de sello, contacto, Instagram, hashtag, concurso |
 | `datos/agenda.js` | Agenda y avisos de respaldo (sin planilla o sin señal) |
 | `plantillas/` | Encabezados de la planilla de agenda y avisos |
-| `datos/provisorios.js` | Ubicaciones provisorias de estaciones sin lugar en el KML |
+| `datos/provisorios.js` | Formato viejo de ubicaciones provisorias; hoy vacío (las provisorias son marcadores del KML) |
 | `lib/fuentes/` | Tipografía Nunito (licencia SIL OFL), incluida para que ande sin señal |
 | `arboles.js` | Dibujo de las plantas por cultivo (marco de plantación, colores de suelo) y de los edificios con volumen |
 | `iconos.js` | Íconos de las estaciones (ilustraciones SVG propias, a color) |
 | `herramientas/kml_a_geojson.py` | Pasa el KML/KMZ de Google Earth a `datos/estaciones.geojson` |
-| `herramientas/kml_editable.py` | Arma `fuentes/predio-editable.kml`: el mapa actual en carpetas y con colores, para seguir dibujando en Google Earth |
+| `herramientas/kml_editable.py` | Reordena un KML en carpetas y con colores (estaciones, lotes por cultivo, vías, canales), para seguir dibujando en Google Earth |
 | `fuentes/` | KML originales |
 | `datos/estaciones.json` | Fichas: nombre corto del cartel, ícono, zona, textura (`patron`), textos, foto y `enlaces` (`[{"texto": "Video", "url": "…"}]`). Los `null` se completan con lo que mande cada responsable |
 | `datos/demo.geojson` | Lotes inventados, solo para mostrar el estilo |
@@ -57,11 +57,19 @@ El sitio consulta la planilla cada minuto y guarda la última versión para cuan
 `datos/agenda.js` (hoy con filas de ejemplo). Un cambio en la planilla puede tardar unos minutos en verse,
 porque Google demora en actualizar lo publicado.
 
+## Lotes y estaciones
+
+Desde el 24/11/2026 van separados. El **lote** es el cultivo o el edificio (nombre, cultivo, dibujo) y no cambia aunque deje
+de ser parada; tocarlo muestra su nombre. La **estación** es un marcador del KML llamado "Estación N · nombre" (por
+número; la que no tiene número, por su nombre: "Estación · Girasol y romero"), puesto dentro o cerca del lote donde se hace
+la parada: ahí va la gota, se mide la distancia para el sello y termina "Cómo llegar". Las podadoras de `podaMecanica` se
+dibujan en el lote donde está el marcador de esa estación.
+
 ## Estaciones con ubicación provisoria
 
-`datos/provisorios.js` pone en el mapa, marcadas como provisorias (borde punteado y "?" en el número), las
-estaciones que todavía no están en el KML. Apenas una estación tiene su lote en el KML, la provisoria deja de
-usarse sola. Para cambiar un lugar provisorio, editar sus coordenadas en ese archivo.
+Si el lugar no está confirmado, el marcador lleva "(provisoria)" al final del nombre: en el mapa se ve con borde punteado y
+"?" en el número, y la descripción del marcador aparece en la ficha. Al confirmar el lugar, mover el marcador y sacar
+"(provisoria)" del nombre.
 
 ## Estilo
 
@@ -129,19 +137,23 @@ solo el número; después número e ícono; de cerca, también el nombre). Los c
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
-Para seguir sobre lo que ya está: `python herramientas/kml_editable.py fuentes/predio-2026-11-20.kml` arma
-`fuentes/predio-editable.kml`, con carpetas (predio, estaciones, lotes, edificios, servicios, vías, canales), los colores
-de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en Google Earth, agregar lo
-nuevo y exportar la carpeta completa. La carpeta "Referencia" (ubicaciones provisorias) es guía: el conversor la saltea.
+El KML vigente es `fuentes/predio-2026-11-24.kml`: carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
+vías, canales), los colores de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en
+Google Earth, agregar lo nuevo y exportar la carpeta completa. Para reordenar en carpetas un KML exportado:
+`python herramientas/kml_editable.py fuentes/archivo.kml fuentes/salida.kml`. El conversor saltea toda carpeta cuyo nombre
+empiece con "Referencia" (para dejar guías que no van al mapa).
 
 1. Dibujar en Google Earth el límite del predio, los lotes, los edificios y los ingresos (marcadores).
 2. Exportar la carpeta como KML o KMZ y guardarla en `fuentes/`.
 3. `python herramientas/kml_a_geojson.py fuentes/archivo.kmz` → genera `datos/mapa.js` (lo que lee el sitio) y una
    copia en `datos/estaciones.geojson` para abrir en QGIS.
-4. Cada elemento se reconoce por su **nombre** (tabla `NOMBRES` del script): ahí se dice qué lote es cada
-   estación. Lo que no está en la tabla entra como lote de contexto y el script lo avisa.
+4. Cada elemento se reconoce por su **nombre** (tabla `NOMBRES` del script): ahí se dice qué cultivo o edificio es cada
+   lote. Las estaciones son los marcadores "Estación N · …" (ver "Lotes y estaciones"). Lo que no está en la tabla entra
+   como lote sin cultivo y el script lo avisa.
 
 ## Ubicar las estaciones (modo editor)
+
+Forma vieja (un polígono por estación); se sigue leyendo, pero lo recomendado es el KML con marcadores.
 
 1. Abrir el sitio con `?editar` al final de la dirección (mejor en la computadora).
 2. Navegar al predio y tocar **Centrar acá**: copia `centro` y `zoom` para pegar en `config.js`.
@@ -194,7 +206,7 @@ Sin tocar código:
 | Nombre, fecha, contacto, Instagram, hashtag, concurso | `config.js` |
 | Plano del predio y lotes | KML de Google Earth → `herramientas/kml_a_geojson.py` → `datos/mapa.js` |
 | Estaciones (fichas) | `datos/estaciones.json` → `herramientas/actualizar_fichas.py` |
-| Ubicaciones provisorias | `datos/provisorios.js` |
+| Ubicación de cada estación (y si es provisoria) | Marcadores "Estación N · …" del KML |
 | Agenda y avisos | planilla publicada (`agendaCSV`, `avisosCSV`) o `datos/agenda.js` |
 | Zonas y colores | `config.js` (`zonas`) |
 | Colores de la interfaz | `estilos.css` (`--marca`) |
