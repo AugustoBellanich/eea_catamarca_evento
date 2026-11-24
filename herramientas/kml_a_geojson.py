@@ -89,25 +89,44 @@ def leer(ruta):
             return ET.fromstring(z.read(nombre))
     return ET.parse(ruta).getroot()
 
-def main(ruta, salida="datos/estaciones.geojson"):
+def reconocer(nombre):
+    """Qué es un elemento según su nombre en Google Earth: (clave, info) o (clave, None) si no se reconoce."""
+    k = clave(nombre)
+    if k == "eea catamarca" and re.match(r"(?i)\s*edificio", nombre):
+        k = "eea catamarca (edificio)"
+    info = NOMBRES.get(k)
+    if info is None and k.startswith("camino"):  # "Camino", "Camino principal", etc.: caminos de tierra internos
+        info = {"tipo": "camino"}
+    if info is None and (k.startswith("ruta") or re.match(r"r[pn] ", k)):  # "Ruta…", "RP N° 33", "RN …": rutas
+        info = {"tipo": "ruta"}
+    m = re.match(r"calle (asfalto|tierra) ?(.*)", k)
+    if info is None and m:  # "Calle asfalto Manuel Soria", "Calle tierra América": calles de afuera del predio
+        calle = re.sub(r"(?i)^calle (asfalto|tierra) ?", "", nombre).strip()
+        info = {"tipo": "calle", "superficie": m.group(1), "nombre": ("Calle " + calle.title()) if calle else "Calle"}
+    if info is None and (k.startswith("paseo") or k.startswith("sendero")):  # paseo peatonal del recorrido
+        info = {"tipo": "paseo"}
+    if info is None and (k.startswith("canal") or k.startswith("acequia")):  # "Canal…", "Acequia…": riego
+        info = {"tipo": "canal"}
+    return k, info
+
+def placemarks(nodo, saltar=False):
+    """Recorre los Placemark; los de una carpeta que empieza con "Referencia" se saltean (solo son guía)."""
+    for hijo in nodo:
+        etiqueta = hijo.tag.split("}")[-1]
+        if etiqueta == "Placemark":
+            if not saltar:
+                yield hijo
+        elif etiqueta in ("Document", "Folder", "kml"):
+            nombre = (hijo.findtext("k:name", default="", namespaces=NS) or "").strip()
+            yield from placemarks(hijo, saltar or (etiqueta == "Folder" and clave(nombre).startswith("referencia")))
+
+def convertir(ruta):
+    """Lee el KML/KMZ y devuelve (features, nombres originales en el mismo orden, sin reconocer)."""
     raiz = leer(ruta)
-    feats, sin_mapear = [], []
-    for n, pm in enumerate(raiz.iter("{%s}Placemark" % NS["k"]), 1):
+    feats, originales, sin_mapear = [], [], []
+    for n, pm in enumerate(placemarks([raiz]), 1):
         nombre = (pm.findtext("k:name", default="", namespaces=NS) or "").strip()
-        k = clave(nombre)
-        if k == "eea catamarca" and re.match(r"(?i)\s*edificio", nombre):
-            k = "eea catamarca (edificio)"
-        info = NOMBRES.get(k)
-        if info is None and k.startswith("camino"):  # "Camino", "Camino principal", etc.: caminos de tierra internos
-            info = {"tipo": "camino"}
-        if info is None and (k.startswith("ruta") or re.match(r"r[pn] ", k)):  # "Ruta…", "RP N° 33", "RN …": rutas
-            info = {"tipo": "ruta"}
-        m = re.match(r"calle (asfalto|tierra) ?(.*)", k)
-        if info is None and m:  # "Calle asfalto Manuel Soria", "Calle tierra América": calles de afuera del predio
-            calle = re.sub(r"(?i)^calle (asfalto|tierra) ?", "", nombre).strip()
-            info = {"tipo": "calle", "superficie": m.group(1), "nombre": ("Calle " + calle.title()) if calle else "Calle"}
-        if info is None and (k.startswith("paseo") or k.startswith("sendero")):  # paseo peatonal del recorrido
-            info = {"tipo": "paseo"}
+        k, info = reconocer(nombre)
         if info is None:
             sin_mapear.append(nombre)
             info = {"revisar": True}
@@ -124,11 +143,14 @@ def main(ruta, salida="datos/estaciones.geojson"):
             continue
         if k in CORRECCIONES and geom["type"] == "Point":
             geom = {"type": "Point", "coordinates": CORRECCIONES[k]}
+        if info.get("tipo") == "canal" and geom["type"] == "Polygon":  # canal dibujado como superficie: lote de agua
+            info = {"cultivo": "estanque", "patron": "agua"}
         tipo = info.get("tipo", "lote")
-        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
+        props = {"id": {"predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n, "canal": "canal-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
         props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "solo_en") if c in info})
         feats.append({"type": "Feature", "properties": props, "geometry": geom})
+        originales.append(nombre)
     # Predio en sectores: id único por sector. Estaciones con "solo_en": se quitan si el lote cae en otro sector.
     sectores = [f for f in feats if f["properties"]["tipo"] == "predio"]
     for i, f in enumerate(sectores, 1):
@@ -147,6 +169,10 @@ def main(ruta, salida="datos/estaciones.geojson"):
         destino = next((x for x in sectores if x["properties"].get("nombre") == sec), None)
         if destino and not dentro(c, destino["geometry"]["coordinates"][0]):
             f["properties"].pop("estacion", None)
+    return feats, originales, sin_mapear
+
+def main(ruta, salida="datos/estaciones.geojson"):
+    feats, _, sin_mapear = convertir(ruta)
     json.dump({"type": "FeatureCollection", "_fuente": ruta, "features": feats}, open(salida, "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
     with open("datos/mapa.js", "w", encoding="utf-8") as js:
