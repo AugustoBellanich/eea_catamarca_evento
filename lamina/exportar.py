@@ -2,9 +2,11 @@
 
 Uso (desde la raíz del repo): python lamina/exportar.py
 Necesita Playwright con Chromium (pip install playwright && playwright install chromium).
-Sale: lamina/salida/eea-catamarca-feed.png (1080×1350 ×2) y lamina/salida/eea-catamarca-historia.png (1080×1920 ×2).
+Sale: lamina/salida/eea-catamarca-feed.jpg (1080×1350 ×2) y lamina/salida/eea-catamarca-historia.jpg (1080×1920 ×2), en JPG
+de alta calidad para redes; el PNG sin pérdida queda al lado (no se sube al repo: pesa ~8 MB por la textura del papel).
 """
 import asyncio, functools, http.server, os, socketserver, threading
+from PIL import Image
 from playwright.async_api import async_playwright
 
 RAIZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -30,7 +32,9 @@ async def main():
             await pag.wait_for_function("window.__listo === true", timeout=120000)
             salida = os.path.join(RAIZ, "lamina", "salida", f"eea-catamarca-{nombre}.png")
             await pag.locator("#lamina").screenshot(path=salida)
-            print(salida, "errores:", errores or "ninguno")
+            jpg = salida[:-4] + ".jpg"
+            Image.open(salida).convert("RGB").save(jpg, quality=92, optimize=True, progressive=True)
+            print(os.path.relpath(jpg, RAIZ), f"{os.path.getsize(jpg) / 1e6:.1f} MB", "errores:", errores or "ninguno")
         await nav.close()
     srv.shutdown()
 
