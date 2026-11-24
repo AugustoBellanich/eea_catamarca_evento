@@ -33,6 +33,7 @@ Sitio estático: HTML, CSS y JS con Leaflet, sin compilar y sin servidor propio.
 | `arboles.js` | Dibujo de las plantas por cultivo (marco de plantación, colores de suelo) y de los edificios con volumen |
 | `iconos.js` | Íconos de las estaciones (ilustraciones SVG propias, a color) |
 | `herramientas/kml_a_geojson.py` | Pasa el KML/KMZ de Google Earth a `datos/estaciones.geojson` |
+| `herramientas/kml_editable.py` | Arma `fuentes/predio-editable.kml`: el mapa actual en carpetas y con colores, para seguir dibujando en Google Earth |
 | `fuentes/` | KML originales |
 | `datos/estaciones.json` | Fichas: nombre corto del cartel, ícono, zona, textura (`patron`), textos, foto y `enlaces` (`[{"texto": "Video", "url": "…"}]`). Los `null` se completan con lo que mande cada responsable |
 | `datos/demo.geojson` | Lotes inventados, solo para mostrar el estilo |
@@ -96,6 +97,7 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 | "Calle tierra" | Calle de tierra del barrio | Arena fina |
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
+| "Canal" o "Acequia" | Canal de riego | Agua celeste con borde (celeste fino en satelital); se toca para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
 
 Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino.
 
@@ -126,6 +128,11 @@ primer hueco libre alrededor, unido por una línea guía, para que no se pisen n
 solo el número; después número e ícono; de cerca, también el nombre). Los cortes se cambian en `config.js` (`zoomParadas`, `zoomLotes`).
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
+
+Para seguir sobre lo que ya está: `python herramientas/kml_editable.py fuentes/predio-2026-11-20.kml` arma
+`fuentes/predio-editable.kml`, con carpetas (predio, estaciones, lotes, edificios, servicios, vías, canales), los colores
+de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en Google Earth, agregar lo
+nuevo y exportar la carpeta completa. La carpeta "Referencia" (ubicaciones provisorias) es guía: el conversor la saltea.
 
 1. Dibujar en Google Earth el límite del predio, los lotes, los edificios y los ingresos (marcadores).
 2. Exportar la carpeta como KML o KMZ y guardarla en `fuentes/`.
