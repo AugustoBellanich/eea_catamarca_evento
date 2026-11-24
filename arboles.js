@@ -23,12 +23,20 @@
     vivero:   { fila: 1.8, planta: 1.1, copa: 0.5, tipo: "plantin", hilera: true },
     pastura:  { fila: 3.6, planta: 3.6, copa: 0.8, tipo: "pradera", azar: true },
     ganado:   { fila: 6,   planta: 6,   copa: 0.6, tipo: "corral", corral: true },
+    comino:   { fila: 1.2, planta: 0.7, copa: 0.3, tipo: "cultivo", hilera: true },
+    arado:    { fila: 1.4, planta: 1.0, copa: 0.25, tipo: "arado", hilera: true, surcos: true }, // solo surcos, sin plantas
+  };
+  // Monte nativo y desmonte: sin marco de plantación; árboles nativos, matas y claros sueltos (ver Capa.initialize).
+  const SILVESTRE = {
+    monte:    { claros: [26, .45, 5, 9],  arboles: [11, .62], matas: [5, .4] },   // [paso m, probabilidad, radio mín., variación]
+    desmonte: { claros: [16, .9, 8, 12],  arboles: [28, .22], matas: [9, .14] },
   };
   // Color de suelo de cada lote (debajo de las plantas).
   const SUELO = {
     olivo: "#DCDDBC", naranja: "#E7D9B0", lima: "#E7D9B0", nogal: "#D5DBB5", pecan: "#D5DBB5", pecan_joven: "#E3D6AE", almendra: "#E3DBB2",
     higo: "#DADDB8", frutal: "#E1DBB4", tuna: "#E4DAB2", vid: "#E6D8AE", algodon: "#E8DAAC", girasol: "#E6D8AA",
     vivero: "#E5D8AE", pastura: "#C8D49B", ganado: "#E2CFA2",
+    arado: "#DCC69C", comino: "#E4D8AC", monte: "#D3D6A8", desmonte: "#E6D3A6",
   };
   const claveCultivo = (p) => (p.cultivo === "naranja" && p.patron === "surcos" ? "vivero" : p.cultivo);
 
@@ -94,6 +102,7 @@
       }
       return { tipo: "corral", plantas: [], hileras: [], animales, anillo: ll.map(([lng, lat]) => [lat, lng]), copa: 0, lat: lat0, ang };
     }
+    if (m.surcos) plantas.length = 0; // lote arado: quedan las franjas de los surcos
     return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng, anillo: ll.map(([lng, lat]) => [lat, lng]) };
   }
 
@@ -187,8 +196,23 @@
     copas.forEach(({ x, y, r }) => circ(c, x - r * .38, y - r * .42, r * .26, "#9DB674"));
   }
   // Color de la franja de cada hilera (debajo de las plantas).
-  const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C" };
+  const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C", arado: "rgba(150,116,74,.5)" };
 
+  // Quita los vértices casi alineados (menos de ~5°), así un edificio dibujado con un punto de más sigue teniendo 4
+  // esquinas y lleva su techo a dos aguas.
+  function sinAlineados(pts) {
+    let q = pts.slice(), cambio = true;
+    while (cambio && q.length > 3) {
+      cambio = false;
+      for (let i = 0; i < q.length; i++) {
+        const a = q[(i + q.length - 1) % q.length], b = q[i], c = q[(i + 1) % q.length];
+        const ux = b[0] - a[0], uy = b[1] - a[1], vx = c[0] - b[0], vy = c[1] - b[1];
+        const seno = Math.abs(ux * vy - uy * vx) / ((Math.hypot(ux, uy) * Math.hypot(vx, vy)) || 1);
+        if (seno < .09 && ux * vx + uy * vy > 0) { q.splice(i, 1); cambio = true; break; }
+      }
+    }
+    return q;
+  }
   // Edificios con volumen: paredes hacia abajo a la derecha y techo claro.
   // techo: "vidrio" (invernadero), "tejas" (a dos aguas, terracota), "chapa" (galpón: dos aguas bajas, metálico y ondulado);
   // "losa" o sin dato, techo plano claro.
@@ -428,6 +452,20 @@
           if (azar(px, py * 3) < .22 && dentro(px / k, py / M_LAT, anillo) && libre(px / k, py / M_LAT, 4))
             this.matas.push({ ll: [py / M_LAT, px / k], r: .7 + azar(py, px * 9) * .7, s: azar(px * 7, py) }); });
       });
+      // Lotes de monte nativo y desmonte: claros de tierra, árboles nativos y matas dentro del lote (densidad en SILVESTRE).
+      features.filter((f) => SILVESTRE[f.properties.cultivo] && f.geometry.type === "Polygon").forEach((f, n) => {
+        const q = SILVESTRE[f.properties.cultivo], anillo = f.geometry.coordinates[0];
+        const lats = anillo.map((v) => v[1]), lngs = anillo.map((v) => v[0]);
+        const recorrer = (m, fn) => { for (let x = Math.min(...lngs) * k; x < Math.max(...lngs) * k; x += m) for (let y = Math.min(...lats) * M_LAT; y < Math.max(...lats) * M_LAT; y += m) fn(x, y); };
+        const adentro = (px, py) => dentro(px / k, py / M_LAT, anillo);
+        recorrer(q.claros[0], (x, y) => { const px = x + (azar(x, y + n) - .5) * q.claros[0] * .8, py = y + (azar(y, x + n) - .5) * q.claros[0] * .8;
+          if (azar(px, py) < q.claros[1] && adentro(px, py))
+            this.tierra.push({ ll: [py / M_LAT, px / k], r: q.claros[2] + azar(py, px) * q.claros[3], a: azar(px * 2, py) * 3.1, s: azar(py * 3, px) }); });
+        recorrer(q.arboles[0], (x, y) => { const px = x + (azar(x * 2, y) - .5) * q.arboles[0] * .9, py = y + (azar(y * 2, x) - .5) * q.arboles[0] * .9;
+          if (azar(px * 3, py) < q.arboles[1] && adentro(px, py)) this.sueltos.push({ ll: [py / M_LAT, px / k], r: 1.6 + azar(n, py * 7) * 2.8, s: azar(px * 5, py) }); });
+        recorrer(q.matas[0], (x, y) => { const px = x + (azar(x * 5, y) - .5) * q.matas[0] * .9, py = y + (azar(y * 5, x) - .5) * q.matas[0] * .9;
+          if (azar(px, py * 3) < q.matas[1] && adentro(px, py)) this.matas.push({ ll: [py / M_LAT, px / k], r: .7 + azar(py, px * 9) * .9, s: azar(px * 7, py) }); });
+      });
     },
     onAdd(map) {
       this.map = map;
@@ -557,7 +595,7 @@
         if (z >= 16.5) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
       });
       const altoEd = Math.max(2, Math.min(9, 2 ** (z - 16) * 2.2));
-      this.edificios.forEach((f) => edificio(c, f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; }), altoEd, f.properties.techo));
+      this.edificios.forEach((f) => edificio(c, sinAlineados(f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; })), altoEd, f.properties.techo));
     },
   });
 
