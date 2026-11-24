@@ -1,6 +1,6 @@
 {
  "type": "FeatureCollection",
- "_fuente": "fuentes/predio-2026-11-20.kml",
+ "_fuente": "fuentes/predio-2026-11-24.kml",
  "features": [
   {
    "type": "Feature",
@@ -104,908 +104,6 @@
       [
        -65.7294042,
        -28.4723817
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k2",
-    "tipo": "lote",
-    "nombre": "Almendros",
-    "cultivo": "almendra",
-    "patron": "arboles",
-    "estacion": "e10"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7289094,
-       -28.4668223
-      ],
-      [
-       -65.7285546,
-       -28.4678022
-      ],
-      [
-       -65.7282936,
-       -28.4678297
-      ],
-      [
-       -65.7282841,
-       -28.4676128
-      ],
-      [
-       -65.7285325,
-       -28.466856
-      ],
-      [
-       -65.7289094,
-       -28.4668223
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k3",
-    "tipo": "lote",
-    "nombre": "Invernadero",
-    "cultivo": "sanidad",
-    "patron": "edificio",
-    "estacion": "e2",
-    "techo": "vidrio"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.728346,
-       -28.4721879
-      ],
-      [
-       -65.7283188,
-       -28.4722822
-      ],
-      [
-       -65.7280439,
-       -28.4722178
-      ],
-      [
-       -65.7280778,
-       -28.472123
-      ],
-      [
-       -65.728346,
-       -28.4721879
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k4",
-    "tipo": "lote",
-    "nombre": "Laboratorio de aceite",
-    "cultivo": "aceite",
-    "patron": "edificio",
-    "estacion": "e1",
-    "techo": "tejas"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.72834,
-       -28.472425
-      ],
-      [
-       -65.7283056,
-       -28.472554
-      ],
-      [
-       -65.728059,
-       -28.472508
-      ],
-      [
-       -65.7280982,
-       -28.4723829
-      ],
-      [
-       -65.72834,
-       -28.472425
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k5",
-    "tipo": "lote",
-    "nombre": "Vid",
-    "cultivo": "vid",
-    "patron": "hileras",
-    "estacion": "e9"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7289337,
-       -28.4678237
-      ],
-      [
-       -65.728953,
-       -28.4680175
-      ],
-      [
-       -65.7289672,
-       -28.4682069
-      ],
-      [
-       -65.7284101,
-       -28.4682418
-      ],
-      [
-       -65.7283821,
-       -28.467875
-      ],
-      [
-       -65.7289337,
-       -28.4678237
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k6",
-    "tipo": "lote",
-    "nombre": "Cítricos",
-    "cultivo": "naranja",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7280715,
-       -28.4670344
-      ],
-      [
-       -65.7280141,
-       -28.4679269
-      ],
-      [
-       -65.7275244,
-       -28.467945
-      ],
-      [
-       -65.7276201,
-       -28.4670709
-      ],
-      [
-       -65.7280715,
-       -28.4670344
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k7",
-    "tipo": "lote",
-    "nombre": "SUM",
-    "cultivo": "charla",
-    "patron": "edificio",
-    "estacion": "e6"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7280311,
-       -28.4682222
-      ],
-      [
-       -65.728042,
-       -28.4684311
-      ],
-      [
-       -65.7277337,
-       -28.4684363
-      ],
-      [
-       -65.7277314,
-       -28.4682398
-      ],
-      [
-       -65.7280311,
-       -28.4682222
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k8",
-    "tipo": "lote",
-    "nombre": "Tuna",
-    "cultivo": "tuna",
-    "patron": "pasto"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.72791,
-       -28.4660357
-      ],
-      [
-       -65.7279736,
-       -28.4665855
-      ],
-      [
-       -65.7275409,
-       -28.4666214
-      ],
-      [
-       -65.727496,
-       -28.4660605
-      ],
-      [
-       -65.72791,
-       -28.4660357
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k9",
-    "tipo": "lote",
-    "nombre": "Olivos",
-    "cultivo": "olivo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.728139,
-       -28.4692063
-      ],
-      [
-       -65.7283349,
-       -28.4710606
-      ],
-      [
-       -65.7273088,
-       -28.4711327
-      ],
-      [
-       -65.727151,
-       -28.4692768
-      ],
-      [
-       -65.728139,
-       -28.4692063
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k10",
-    "tipo": "lote",
-    "nombre": "Olivos",
-    "cultivo": "olivo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7283391,
-       -28.4711009
-      ],
-      [
-       -65.7283932,
-       -28.4719572
-      ],
-      [
-       -65.727855,
-       -28.4719955
-      ],
-      [
-       -65.7277555,
-       -28.47116
-      ],
-      [
-       -65.7283391,
-       -28.4711009
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k11",
-    "tipo": "lote",
-    "nombre": "Pecanes",
-    "cultivo": "pecan",
-    "patron": "arboles",
-    "estacion": "e5"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7292092,
-       -28.4703774
-      ],
-      [
-       -65.7292493,
-       -28.4711148
-      ],
-      [
-       -65.7286366,
-       -28.4711463
-      ],
-      [
-       -65.7285653,
-       -28.4704039
-      ],
-      [
-       -65.7292092,
-       -28.4703774
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k12",
-    "tipo": "lote",
-    "nombre": "Pecanes jóvenes",
-    "cultivo": "pecan_joven",
-    "patron": "arboles",
-    "estacion": "e5"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7297125,
-       -28.4695617
-      ],
-      [
-       -65.7300263,
-       -28.4704955
-      ],
-      [
-       -65.7297386,
-       -28.4712368
-      ],
-      [
-       -65.729336,
-       -28.4712579
-      ],
-      [
-       -65.7291982,
-       -28.4696055
-      ],
-      [
-       -65.7297125,
-       -28.4695617
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k13",
-    "tipo": "lote",
-    "nombre": "Estanque",
-    "cultivo": "estanque",
-    "patron": "agua"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7291828,
-       -28.4646751
-      ],
-      [
-       -65.7290812,
-       -28.4650236
-      ],
-      [
-       -65.7288863,
-       -28.4651073
-      ],
-      [
-       -65.7288546,
-       -28.4651758
-      ],
-      [
-       -65.728719,
-       -28.4652027
-      ],
-      [
-       -65.7284553,
-       -28.4650861
-      ],
-      [
-       -65.7283668,
-       -28.4649092
-      ],
-      [
-       -65.7286712,
-       -28.4647235
-      ],
-      [
-       -65.7288904,
-       -28.4646763
-      ],
-      [
-       -65.7289909,
-       -28.4647478
-      ],
-      [
-       -65.7290412,
-       -28.4646864
-      ],
-      [
-       -65.7291828,
-       -28.4646751
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k14",
-    "tipo": "lote",
-    "nombre": "Olivos",
-    "cultivo": "olivo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7275951,
-       -28.4670834
-      ],
-      [
-       -65.7275062,
-       -28.4679383
-      ],
-      [
-       -65.72708,
-       -28.4679628
-      ],
-      [
-       -65.7271144,
-       -28.4671457
-      ],
-      [
-       -65.7275951,
-       -28.4670834
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k15",
-    "tipo": "lote",
-    "nombre": "Higuera",
-    "cultivo": "higo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7279757,
-       -28.4666092
-      ],
-      [
-       -65.7280032,
-       -28.4669577
-      ],
-      [
-       -65.72737,
-       -28.4669994
-      ],
-      [
-       -65.7273352,
-       -28.4666441
-      ],
-      [
-       -65.7279757,
-       -28.4666092
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k16",
-    "tipo": "lote",
-    "nombre": "Edificio EEA",
-    "cultivo": "edificio",
-    "patron": "edificio",
-    "techo": "tejas"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.728133,
-       -28.4685578
-      ],
-      [
-       -65.7281633,
-       -28.4690088
-      ],
-      [
-       -65.7277219,
-       -28.4690401
-      ],
-      [
-       -65.7276964,
-       -28.4685893
-      ],
-      [
-       -65.728133,
-       -28.4685578
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k17",
-    "tipo": "lote",
-    "nombre": "Laboratorio Suelo",
-    "cultivo": "suelo",
-    "patron": "edificio",
-    "estacion": "e4"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7276273,
-       -28.468711
-      ],
-      [
-       -65.7276497,
-       -28.4690001
-      ],
-      [
-       -65.7275091,
-       -28.4690009
-      ],
-      [
-       -65.7274712,
-       -28.4687266
-      ],
-      [
-       -65.7276273,
-       -28.468711
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k18",
-    "tipo": "lote",
-    "nombre": "Centro Regional",
-    "cultivo": "edificio",
-    "patron": "edificio"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7291198,
-       -28.4722378
-      ],
-      [
-       -65.7291357,
-       -28.4724211
-      ],
-      [
-       -65.7290556,
-       -28.4725114
-      ],
-      [
-       -65.7287456,
-       -28.4725491
-      ],
-      [
-       -65.7287239,
-       -28.4722681
-      ],
-      [
-       -65.7291198,
-       -28.4722378
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k19",
-    "tipo": "lote",
-    "nombre": "Lima",
-    "cultivo": "lima",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7291267,
-       -28.4715571
-      ],
-      [
-       -65.7291627,
-       -28.4720676
-      ],
-      [
-       -65.72869,
-       -28.472096
-      ],
-      [
-       -65.7286334,
-       -28.4715803
-      ],
-      [
-       -65.7291267,
-       -28.4715571
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k20",
-    "tipo": "lote",
-    "nombre": "Nogal",
-    "cultivo": "nogal",
-    "patron": "arboles",
-    "estacion": "e5"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7292556,
-       -28.4711342
-      ],
-      [
-       -65.7292793,
-       -28.47154
-      ],
-      [
-       -65.7286417,
-       -28.4715665
-      ],
-      [
-       -65.7286228,
-       -28.4711726
-      ],
-      [
-       -65.7292556,
-       -28.4711342
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k21",
-    "tipo": "lote",
-    "nombre": "Olivos",
-    "cultivo": "olivo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7264311,
-       -28.4689767
-      ],
-      [
-       -65.7265508,
-       -28.4700759
-      ],
-      [
-       -65.7253862,
-       -28.4700362
-      ],
-      [
-       -65.725511,
-       -28.4689334
-      ],
-      [
-       -65.7264311,
-       -28.4689767
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k22",
-    "tipo": "lote",
-    "nombre": "Olivos",
-    "cultivo": "olivo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7268406,
-       -28.4680132
-      ],
-      [
-       -65.7263606,
-       -28.4688846
-      ],
-      [
-       -65.7253916,
-       -28.468854
-      ],
-      [
-       -65.7255848,
-       -28.4679872
-      ],
-      [
-       -65.7268406,
-       -28.4680132
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k23",
-    "tipo": "servicio",
-    "nombre": "Ingreso principal",
-    "servicio": "ingreso"
-   },
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.728587,
-     -28.4726797
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k24",
-    "tipo": "servicio",
-    "nombre": "Ingreso secundario",
-    "servicio": "ingreso"
-   },
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.7279653,
-     -28.4649431
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k25",
-    "tipo": "lote",
-    "nombre": "Higueras",
-    "cultivo": "higo",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7287997,
-       -28.4695876
-      ],
-      [
-       -65.7288334,
-       -28.470122
-      ],
-      [
-       -65.7285553,
-       -28.470148
-      ],
-      [
-       -65.7285041,
-       -28.4696005
-      ],
-      [
-       -65.7287997,
-       -28.4695876
       ]
      ]
     ]
@@ -1177,7 +275,993 @@
   {
    "type": "Feature",
    "properties": {
+    "id": "est-e1",
+    "tipo": "estacion",
+    "nombre": "Estación 1 · Aceites",
+    "estacion": "e1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7282007,
+     -28.4724675
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e2",
+    "tipo": "estacion",
+    "nombre": "Estación 2 · Protección vegetal",
+    "estacion": "e2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7281966,
+     -28.4722027
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e3",
+    "tipo": "estacion",
+    "nombre": "Estación 3 · Olivo (provisoria)",
+    "estacion": "e3",
+    "provisorio": true,
+    "nota": "Planilla: monte del ingreso. Se tomó el lote de olivos más cercano al ingreso principal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7280857,
+     -28.4715534
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e4",
+    "tipo": "estacion",
+    "nombre": "Estación 4 · Suelos",
+    "estacion": "e4"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7275643,
+     -28.4688596
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e5",
+    "tipo": "estacion",
+    "nombre": "Estación 5 · Nogal y pecán",
+    "estacion": "e5"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7296023,
+     -28.4704315
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e6",
+    "tipo": "estacion",
+    "nombre": "Estación 6 · Charlas en el SUM",
+    "estacion": "e6"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7278845,
+     -28.4683324
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e7",
+    "tipo": "estacion",
+    "nombre": "Estación 7 · Huerta (provisoria)",
+    "estacion": "e7",
+    "provisorio": true,
+    "nota": "Planilla: lugar a definir"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7265387,
+     -28.4695158
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e8",
+    "tipo": "estacion",
+    "nombre": "Estación 8 · Animales",
+    "estacion": "e8"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7278907,
+     -28.4680946
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e9",
+    "tipo": "estacion",
+    "nombre": "Estación 9 · Vid",
+    "estacion": "e9"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7287292,
+     -28.468033
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e10",
+    "tipo": "estacion",
+    "nombre": "Estación 10 · Riego y sensores",
+    "estacion": "e10"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7285148,
+     -28.4673846
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e11",
+    "tipo": "estacion",
+    "nombre": "Estación 11 · Centro Regional (provisoria)",
+    "estacion": "e11",
+    "provisorio": true,
+    "nota": "Planilla: galería del SUM"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7278742,
+     -28.4681791
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-e12",
+    "tipo": "estacion",
+    "nombre": "Estación 12 · Algodón",
+    "estacion": "e12"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7304359,
+     -28.4718223
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "est-girasol-romero",
+    "tipo": "estacion",
+    "nombre": "Estación · Girasol y romero",
+    "estacion": "girasol-romero"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7288762,
+     -28.4685081
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k17",
+    "tipo": "lote",
+    "nombre": "Estanque",
+    "cultivo": "estanque",
+    "patron": "agua"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7291828,
+       -28.4646751
+      ],
+      [
+       -65.7290812,
+       -28.4650236
+      ],
+      [
+       -65.7288863,
+       -28.4651073
+      ],
+      [
+       -65.7288546,
+       -28.4651758
+      ],
+      [
+       -65.728719,
+       -28.4652027
+      ],
+      [
+       -65.7284553,
+       -28.4650861
+      ],
+      [
+       -65.7283668,
+       -28.4649092
+      ],
+      [
+       -65.7286712,
+       -28.4647235
+      ],
+      [
+       -65.7288904,
+       -28.4646763
+      ],
+      [
+       -65.7289909,
+       -28.4647478
+      ],
+      [
+       -65.7290412,
+       -28.4646864
+      ],
+      [
+       -65.7291828,
+       -28.4646751
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k18",
+    "tipo": "lote",
+    "nombre": "Algodón",
+    "cultivo": "algodon",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7304016,
+       -28.4709544
+      ],
+      [
+       -65.7311181,
+       -28.472192
+      ],
+      [
+       -65.7297881,
+       -28.4723204
+      ],
+      [
+       -65.7304016,
+       -28.4709544
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k19",
+    "tipo": "lote",
+    "nombre": "Almendros",
+    "cultivo": "almendra",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7289094,
+       -28.4668223
+      ],
+      [
+       -65.7285546,
+       -28.4678022
+      ],
+      [
+       -65.7282936,
+       -28.4678297
+      ],
+      [
+       -65.7282841,
+       -28.4676128
+      ],
+      [
+       -65.7285325,
+       -28.466856
+      ],
+      [
+       -65.7289094,
+       -28.4668223
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k20",
+    "tipo": "lote",
+    "nombre": "Almendro",
+    "cultivo": "almendra",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7327359,
+       -28.4741367
+      ],
+      [
+       -65.7329817,
+       -28.4746972
+      ],
+      [
+       -65.7322881,
+       -28.4749459
+      ],
+      [
+       -65.7320126,
+       -28.4743973
+      ],
+      [
+       -65.7327359,
+       -28.4741367
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k21",
+    "tipo": "lote",
+    "nombre": "Corrales",
+    "cultivo": "ganado",
+    "patron": "pasto"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7280431,
+       -28.468007
+      ],
+      [
+       -65.7280609,
+       -28.4681744
+      ],
+      [
+       -65.727719,
+       -28.4682046
+      ],
+      [
+       -65.7277397,
+       -28.4679926
+      ],
+      [
+       -65.7280431,
+       -28.468007
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k22",
+    "tipo": "lote",
+    "nombre": "Cítricos",
+    "cultivo": "naranja",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7280715,
+       -28.4670344
+      ],
+      [
+       -65.7280141,
+       -28.4679269
+      ],
+      [
+       -65.7275244,
+       -28.467945
+      ],
+      [
+       -65.7276201,
+       -28.4670709
+      ],
+      [
+       -65.7280715,
+       -28.4670344
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k23",
+    "tipo": "lote",
+    "nombre": "Lima",
+    "cultivo": "lima",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7291267,
+       -28.4715571
+      ],
+      [
+       -65.7291627,
+       -28.4720676
+      ],
+      [
+       -65.72869,
+       -28.472096
+      ],
+      [
+       -65.7286334,
+       -28.4715803
+      ],
+      [
+       -65.7291267,
+       -28.4715571
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k24",
+    "tipo": "lote",
+    "nombre": "Portainjertos de cítricos",
+    "cultivo": "naranja",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.732847,
+       -28.4726375
+      ],
+      [
+       -65.7330424,
+       -28.473066
+      ],
+      [
+       -65.7325641,
+       -28.4732359
+      ],
+      [
+       -65.7323959,
+       -28.4728119
+      ],
+      [
+       -65.732847,
+       -28.4726375
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k25",
+    "tipo": "lote",
+    "nombre": "Vivero de cítricos",
+    "cultivo": "naranja",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7321402,
+       -28.4727928
+      ],
+      [
+       -65.7322042,
+       -28.4729094
+      ],
+      [
+       -65.7318569,
+       -28.4730572
+      ],
+      [
+       -65.7318135,
+       -28.472948
+      ],
+      [
+       -65.7321402,
+       -28.4727928
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k26",
+    "tipo": "lote",
+    "nombre": "Frutal mixto",
+    "cultivo": "frutal",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7334237,
+       -28.4739057
+      ],
+      [
+       -65.7336798,
+       -28.4744397
+      ],
+      [
+       -65.7331692,
+       -28.4746463
+      ],
+      [
+       -65.7328669,
+       -28.4740817
+      ],
+      [
+       -65.7334237,
+       -28.4739057
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k27",
+    "tipo": "lote",
+    "nombre": "Girasol perenne",
+    "cultivo": "girasol",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7292295,
+       -28.4683519
+      ],
+      [
+       -65.7293213,
+       -28.4685802
+      ],
+      [
+       -65.7284987,
+       -28.4686751
+      ],
+      [
+       -65.7284553,
+       -28.4684252
+      ],
+      [
+       -65.7292295,
+       -28.4683519
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
     "id": "k28",
+    "tipo": "lote",
+    "nombre": "Higuera",
+    "cultivo": "higo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7279757,
+       -28.4666092
+      ],
+      [
+       -65.7280032,
+       -28.4669577
+      ],
+      [
+       -65.72737,
+       -28.4669994
+      ],
+      [
+       -65.7273352,
+       -28.4666441
+      ],
+      [
+       -65.7279757,
+       -28.4666092
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k29",
+    "tipo": "lote",
+    "nombre": "Higueras",
+    "cultivo": "higo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7287997,
+       -28.4695876
+      ],
+      [
+       -65.7288334,
+       -28.470122
+      ],
+      [
+       -65.7285553,
+       -28.470148
+      ],
+      [
+       -65.7285041,
+       -28.4696005
+      ],
+      [
+       -65.7287997,
+       -28.4695876
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k30",
+    "tipo": "lote",
+    "nombre": "Nogal",
+    "cultivo": "nogal",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7292556,
+       -28.4711342
+      ],
+      [
+       -65.7292793,
+       -28.47154
+      ],
+      [
+       -65.7286417,
+       -28.4715665
+      ],
+      [
+       -65.7286228,
+       -28.4711726
+      ],
+      [
+       -65.7292556,
+       -28.4711342
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k31",
+    "tipo": "lote",
+    "nombre": "Nogal",
+    "cultivo": "nogal",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7314809,
+       -28.4698731
+      ],
+      [
+       -65.7319677,
+       -28.4707925
+      ],
+      [
+       -65.7308617,
+       -28.4711817
+      ],
+      [
+       -65.7305827,
+       -28.4706356
+      ],
+      [
+       -65.7308483,
+       -28.4703113
+      ],
+      [
+       -65.7314809,
+       -28.4698731
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k32",
+    "tipo": "lote",
+    "nombre": "Olivos",
+    "cultivo": "olivo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.728139,
+       -28.4692063
+      ],
+      [
+       -65.7283349,
+       -28.4710606
+      ],
+      [
+       -65.7273088,
+       -28.4711327
+      ],
+      [
+       -65.727151,
+       -28.4692768
+      ],
+      [
+       -65.728139,
+       -28.4692063
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k33",
+    "tipo": "lote",
+    "nombre": "Olivos",
+    "cultivo": "olivo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7283391,
+       -28.4711009
+      ],
+      [
+       -65.7283932,
+       -28.4719572
+      ],
+      [
+       -65.727855,
+       -28.4719955
+      ],
+      [
+       -65.7277555,
+       -28.47116
+      ],
+      [
+       -65.7283391,
+       -28.4711009
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k34",
+    "tipo": "lote",
+    "nombre": "Olivos",
+    "cultivo": "olivo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7275951,
+       -28.4670834
+      ],
+      [
+       -65.7275062,
+       -28.4679383
+      ],
+      [
+       -65.72708,
+       -28.4679628
+      ],
+      [
+       -65.7271144,
+       -28.4671457
+      ],
+      [
+       -65.7275951,
+       -28.4670834
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k35",
+    "tipo": "lote",
+    "nombre": "Olivos",
+    "cultivo": "olivo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7264311,
+       -28.4689767
+      ],
+      [
+       -65.7265508,
+       -28.4700759
+      ],
+      [
+       -65.7253862,
+       -28.4700362
+      ],
+      [
+       -65.725511,
+       -28.4689334
+      ],
+      [
+       -65.7264311,
+       -28.4689767
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k36",
+    "tipo": "lote",
+    "nombre": "Olivos",
+    "cultivo": "olivo",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7268406,
+       -28.4680132
+      ],
+      [
+       -65.7263606,
+       -28.4688846
+      ],
+      [
+       -65.7253916,
+       -28.468854
+      ],
+      [
+       -65.7255848,
+       -28.4679872
+      ],
+      [
+       -65.7268406,
+       -28.4680132
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k37",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1222,82 +1306,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k29",
-    "tipo": "lote",
-    "nombre": "Nogal",
-    "cultivo": "nogal",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7314809,
-       -28.4698731
-      ],
-      [
-       -65.7319677,
-       -28.4707925
-      ],
-      [
-       -65.7308617,
-       -28.4711817
-      ],
-      [
-       -65.7305827,
-       -28.4706356
-      ],
-      [
-       -65.7308483,
-       -28.4703113
-      ],
-      [
-       -65.7314809,
-       -28.4698731
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k30",
-    "tipo": "lote",
-    "nombre": "Algodón",
-    "cultivo": "algodon",
-    "patron": "surcos",
-    "estacion": "e12"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7304016,
-       -28.4709544
-      ],
-      [
-       -65.7311181,
-       -28.472192
-      ],
-      [
-       -65.7297881,
-       -28.4723204
-      ],
-      [
-       -65.7304016,
-       -28.4709544
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k31",
+    "id": "k38",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1338,7 +1347,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k32",
+    "id": "k39",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1375,45 +1384,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k33",
-    "tipo": "lote",
-    "nombre": "Girasol perenne",
-    "cultivo": "girasol",
-    "patron": "surcos",
-    "estacion": "girasol-romero"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7292295,
-       -28.4683519
-      ],
-      [
-       -65.7293213,
-       -28.4685802
-      ],
-      [
-       -65.7284987,
-       -28.4686751
-      ],
-      [
-       -65.7284553,
-       -28.4684252
-      ],
-      [
-       -65.7292295,
-       -28.4683519
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k34",
+    "id": "k40",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1450,7 +1421,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k35",
+    "id": "k41",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1487,44 +1458,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k36",
-    "tipo": "lote",
-    "nombre": "Pasturas nativas",
-    "cultivo": "pastura",
-    "patron": "pasto"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7316393,
-       -28.4738741
-      ],
-      [
-       -65.7318907,
-       -28.4743086
-      ],
-      [
-       -65.7313887,
-       -28.4744921
-      ],
-      [
-       -65.7311754,
-       -28.4740634
-      ],
-      [
-       -65.7316393,
-       -28.4738741
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k37",
+    "id": "k42",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1561,208 +1495,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k38",
-    "tipo": "lote",
-    "nombre": "Frutal mixto",
-    "cultivo": "frutal",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7334237,
-       -28.4739057
-      ],
-      [
-       -65.7336798,
-       -28.4744397
-      ],
-      [
-       -65.7331692,
-       -28.4746463
-      ],
-      [
-       -65.7328669,
-       -28.4740817
-      ],
-      [
-       -65.7334237,
-       -28.4739057
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k39",
-    "tipo": "lote",
-    "nombre": "Almendro",
-    "cultivo": "almendra",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7327359,
-       -28.4741367
-      ],
-      [
-       -65.7329817,
-       -28.4746972
-      ],
-      [
-       -65.7322881,
-       -28.4749459
-      ],
-      [
-       -65.7320126,
-       -28.4743973
-      ],
-      [
-       -65.7327359,
-       -28.4741367
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k40",
-    "tipo": "lote",
-    "nombre": "Edificio MIP",
-    "cultivo": "edificio",
-    "patron": "edificio"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7331142,
-       -28.4732129
-      ],
-      [
-       -65.7333896,
-       -28.4738343
-      ],
-      [
-       -65.732933,
-       -28.4739775
-      ],
-      [
-       -65.732633,
-       -28.4733675
-      ],
-      [
-       -65.7331142,
-       -28.4732129
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k41",
-    "tipo": "lote",
-    "nombre": "Portainjertos de cítricos",
-    "cultivo": "naranja",
-    "patron": "arboles"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.732847,
-       -28.4726375
-      ],
-      [
-       -65.7330424,
-       -28.473066
-      ],
-      [
-       -65.7325641,
-       -28.4732359
-      ],
-      [
-       -65.7323959,
-       -28.4728119
-      ],
-      [
-       -65.732847,
-       -28.4726375
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k42",
-    "tipo": "lote",
-    "nombre": "Vivero de cítricos",
-    "cultivo": "naranja",
-    "patron": "surcos"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7321402,
-       -28.4727928
-      ],
-      [
-       -65.7322042,
-       -28.4729094
-      ],
-      [
-       -65.7318569,
-       -28.4730572
-      ],
-      [
-       -65.7318135,
-       -28.472948
-      ],
-      [
-       -65.7321402,
-       -28.4727928
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
     "id": "k43",
-    "tipo": "servicio",
-    "nombre": "Estación meteorológica",
-    "servicio": "clima"
-   },
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.7323865,
-     -28.4723093
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k44",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -1799,36 +1532,72 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k45",
+    "id": "k44",
     "tipo": "lote",
-    "nombre": "Corrales",
-    "cultivo": "ganado",
-    "patron": "pasto",
-    "estacion": "e8"
+    "nombre": "Pasturas nativas",
+    "cultivo": "pastura",
+    "patron": "pasto"
    },
    "geometry": {
     "type": "Polygon",
     "coordinates": [
      [
       [
-       -65.7280431,
-       -28.468007
+       -65.7316393,
+       -28.4738741
       ],
       [
-       -65.7280609,
-       -28.4681744
+       -65.7318907,
+       -28.4743086
       ],
       [
-       -65.727719,
-       -28.4682046
+       -65.7313887,
+       -28.4744921
       ],
       [
-       -65.7277397,
-       -28.4679926
+       -65.7311754,
+       -28.4740634
       ],
       [
-       -65.7280431,
-       -28.468007
+       -65.7316393,
+       -28.4738741
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k45",
+    "tipo": "lote",
+    "nombre": "Pecanes",
+    "cultivo": "pecan",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7292092,
+       -28.4703774
+      ],
+      [
+       -65.7292493,
+       -28.4711148
+      ],
+      [
+       -65.7286366,
+       -28.4711463
+      ],
+      [
+       -65.7285653,
+       -28.4704039
+      ],
+      [
+       -65.7292092,
+       -28.4703774
       ]
      ]
     ]
@@ -1838,35 +1607,39 @@
    "type": "Feature",
    "properties": {
     "id": "k46",
-    "tipo": "servicio",
-    "nombre": "Ingreso sector 2",
-    "servicio": "ingreso"
+    "tipo": "lote",
+    "nombre": "Pecanes jóvenes",
+    "cultivo": "pecan_joven",
+    "patron": "arboles"
    },
    "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.7296176,
-     -28.4724063
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-47",
-    "tipo": "camino",
-    "nombre": "Camino interno principal"
-   },
-   "geometry": {
-    "type": "LineString",
+    "type": "Polygon",
     "coordinates": [
      [
-      -65.7286095,
-      -28.4726923
-     ],
-     [
-      -65.7279826,
-      -28.4648215
+      [
+       -65.7297125,
+       -28.4695617
+      ],
+      [
+       -65.7300263,
+       -28.4704955
+      ],
+      [
+       -65.7297386,
+       -28.4712368
+      ],
+      [
+       -65.729336,
+       -28.4712579
+      ],
+      [
+       -65.7291982,
+       -28.4696055
+      ],
+      [
+       -65.7297125,
+       -28.4695617
+      ]
      ]
     ]
    }
@@ -1874,20 +1647,36 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-48",
-    "tipo": "camino",
-    "nombre": "camino interno"
+    "id": "k47",
+    "tipo": "lote",
+    "nombre": "Tuna",
+    "cultivo": "tuna",
+    "patron": "pasto"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Polygon",
     "coordinates": [
      [
-      -65.7282685,
-      -28.4684346
-     ],
-     [
-      -65.7269719,
-      -28.4685546
+      [
+       -65.72791,
+       -28.4660357
+      ],
+      [
+       -65.7279736,
+       -28.4665855
+      ],
+      [
+       -65.7275409,
+       -28.4666214
+      ],
+      [
+       -65.727496,
+       -28.4660605
+      ],
+      [
+       -65.72791,
+       -28.4660357
+      ]
      ]
     ]
    }
@@ -1895,20 +1684,76 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-49",
-    "tipo": "camino",
-    "nombre": "camino inerno"
+    "id": "k48",
+    "tipo": "lote",
+    "nombre": "Vid",
+    "cultivo": "vid",
+    "patron": "hileras"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Polygon",
     "coordinates": [
      [
-      -65.7283207,
-      -28.4691113
-     ],
+      [
+       -65.7289337,
+       -28.4678237
+      ],
+      [
+       -65.728953,
+       -28.4680175
+      ],
+      [
+       -65.7289672,
+       -28.4682069
+      ],
+      [
+       -65.7284101,
+       -28.4682418
+      ],
+      [
+       -65.7283821,
+       -28.467875
+      ],
+      [
+       -65.7289337,
+       -28.4678237
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k49",
+    "tipo": "lote",
+    "nombre": "Residuos agroquímicos",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
      [
-      -65.7275569,
-      -28.4691628
+      [
+       -65.7286238,
+       -28.4742824
+      ],
+      [
+       -65.728656,
+       -28.4744915
+      ],
+      [
+       -65.7284863,
+       -28.4745185
+      ],
+      [
+       -65.7284576,
+       -28.4742965
+      ],
+      [
+       -65.7286238,
+       -28.4742824
+      ]
      ]
     ]
    }
@@ -1917,6 +1762,272 @@
    "type": "Feature",
    "properties": {
     "id": "k50",
+    "tipo": "lote",
+    "nombre": "Invernadero",
+    "cultivo": "sanidad",
+    "patron": "edificio",
+    "techo": "vidrio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.728346,
+       -28.4721879
+      ],
+      [
+       -65.7283188,
+       -28.4722822
+      ],
+      [
+       -65.7280439,
+       -28.4722178
+      ],
+      [
+       -65.7280778,
+       -28.472123
+      ],
+      [
+       -65.728346,
+       -28.4721879
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k51",
+    "tipo": "lote",
+    "nombre": "Laboratorio de aceite",
+    "cultivo": "aceite",
+    "patron": "edificio",
+    "techo": "tejas"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.72834,
+       -28.472425
+      ],
+      [
+       -65.7283056,
+       -28.472554
+      ],
+      [
+       -65.728059,
+       -28.472508
+      ],
+      [
+       -65.7280982,
+       -28.4723829
+      ],
+      [
+       -65.72834,
+       -28.472425
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k52",
+    "tipo": "lote",
+    "nombre": "SUM",
+    "cultivo": "charla",
+    "patron": "edificio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7280311,
+       -28.4682222
+      ],
+      [
+       -65.728042,
+       -28.4684311
+      ],
+      [
+       -65.7277337,
+       -28.4684363
+      ],
+      [
+       -65.7277314,
+       -28.4682398
+      ],
+      [
+       -65.7280311,
+       -28.4682222
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k53",
+    "tipo": "lote",
+    "nombre": "Edificio EEA",
+    "cultivo": "edificio",
+    "patron": "edificio",
+    "techo": "tejas"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.728133,
+       -28.4685578
+      ],
+      [
+       -65.7281633,
+       -28.4690088
+      ],
+      [
+       -65.7277219,
+       -28.4690401
+      ],
+      [
+       -65.7276964,
+       -28.4685893
+      ],
+      [
+       -65.728133,
+       -28.4685578
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k54",
+    "tipo": "lote",
+    "nombre": "Laboratorio Suelo",
+    "cultivo": "suelo",
+    "patron": "edificio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7276273,
+       -28.468711
+      ],
+      [
+       -65.7276497,
+       -28.4690001
+      ],
+      [
+       -65.7275091,
+       -28.4690009
+      ],
+      [
+       -65.7274712,
+       -28.4687266
+      ],
+      [
+       -65.7276273,
+       -28.468711
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k55",
+    "tipo": "lote",
+    "nombre": "Centro Regional",
+    "cultivo": "edificio",
+    "patron": "edificio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7291198,
+       -28.4722378
+      ],
+      [
+       -65.7291357,
+       -28.4724211
+      ],
+      [
+       -65.7290556,
+       -28.4725114
+      ],
+      [
+       -65.7287456,
+       -28.4725491
+      ],
+      [
+       -65.7287239,
+       -28.4722681
+      ],
+      [
+       -65.7291198,
+       -28.4722378
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k56",
+    "tipo": "lote",
+    "nombre": "Edificio MIP",
+    "cultivo": "edificio",
+    "patron": "edificio"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7331142,
+       -28.4732129
+      ],
+      [
+       -65.7333896,
+       -28.4738343
+      ],
+      [
+       -65.732933,
+       -28.4739775
+      ],
+      [
+       -65.732633,
+       -28.4733675
+      ],
+      [
+       -65.7331142,
+       -28.4732129
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k57",
     "tipo": "lote",
     "nombre": "Edificio de frutales",
     "cultivo": "edificio",
@@ -1953,282 +2064,71 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-51",
-    "tipo": "camino",
-    "nombre": "Camino interno"
+    "id": "k58",
+    "tipo": "servicio",
+    "nombre": "Ingreso principal",
+    "servicio": "ingreso"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Point",
     "coordinates": [
-     [
-      -65.728598,
-      -28.47255
-     ],
-     [
-      -65.7283038,
-      -28.4725886
-     ]
+     -65.728587,
+     -28.4726797
     ]
    }
   },
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-52",
-    "tipo": "camino",
-    "nombre": "Camino interno"
+    "id": "k59",
+    "tipo": "servicio",
+    "nombre": "Ingreso secundario",
+    "servicio": "ingreso"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Point",
     "coordinates": [
-     [
-      -65.7296176,
-      -28.4724063
-     ],
-     [
-      -65.7323894,
-      -28.4734357
-     ],
-     [
-      -65.733132,
-      -28.4731585
-     ],
-     [
-      -65.7315774,
-      -28.4697024
-     ]
+     -65.7279653,
+     -28.4649431
     ]
    }
   },
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-53",
-    "tipo": "camino",
-    "nombre": "Camino interno"
+    "id": "k60",
+    "tipo": "servicio",
+    "nombre": "Estación meteorológica",
+    "servicio": "clima"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Point",
     "coordinates": [
-     [
-      -65.7317921,
-      -28.4732106
-     ],
-     [
-      -65.7304097,
-      -28.470701
-     ]
+     -65.7323865,
+     -28.4723093
     ]
    }
   },
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-54",
-    "tipo": "camino",
-    "nombre": "Camino interno"
+    "id": "k61",
+    "tipo": "servicio",
+    "nombre": "Ingreso sector 2",
+    "servicio": "ingreso"
    },
    "geometry": {
-    "type": "LineString",
+    "type": "Point",
     "coordinates": [
-     [
-      -65.7280329,
-      -28.4654486
-     ],
-     [
-      -65.7283173,
-      -28.4654231
-     ]
+     -65.7296176,
+     -28.4724063
     ]
    }
   },
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-55",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.7327484,
-      -28.4723129
-     ],
-     [
-      -65.7315532,
-      -28.4727567
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-56",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.7303064,
-      -28.4726679
-     ],
-     [
-      -65.7318291,
-      -28.4774785
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-57",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.731552,
-      -28.4766131
-     ],
-     [
-      -65.7300209,
-      -28.4769218
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-58",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.7296067,
-      -28.4747629
-     ],
-     [
-      -65.7308216,
-      -28.4742943
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-59",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.7309822,
-      -28.4747913
-     ],
-     [
-      -65.732979,
-      -28.4739884
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-60",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.7329747,
-      -28.4739886
-     ],
-     [
-      -65.732632,
-      -28.4733423
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "camino-61",
-    "tipo": "camino",
-    "nombre": "Camino interno"
-   },
-   "geometry": {
-    "type": "LineString",
-    "coordinates": [
-     [
-      -65.730788,
-      -28.4741954
-     ],
-     [
-      -65.7323802,
-      -28.4734371
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k62",
-    "tipo": "lote",
-    "nombre": "Residuos agroquímicos",
-    "patron": "liso"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7286238,
-       -28.4742824
-      ],
-      [
-       -65.728656,
-       -28.4744915
-      ],
-      [
-       -65.7284863,
-       -28.4745185
-      ],
-      [
-       -65.7284576,
-       -28.4742965
-      ],
-      [
-       -65.7286238,
-       -28.4742824
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "ruta-63",
+    "id": "ruta-62",
     "tipo": "ruta",
     "nombre": "RP N° 33"
    },
@@ -2266,6 +2166,67 @@
      [
       -65.729527,
       -28.4792095
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "ruta-63",
+    "tipo": "ruta",
+    "nombre": "RP N° 41"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7235604,
+      -28.4649077
+     ],
+     [
+      -65.7283368,
+      -28.4647408
+     ],
+     [
+      -65.7287531,
+      -28.4645738
+     ],
+     [
+      -65.7296212,
+      -28.4645183
+     ],
+     [
+      -65.7298597,
+      -28.4645566
+     ],
+     [
+      -65.7300559,
+      -28.4647136
+     ],
+     [
+      -65.7306987,
+      -28.4654196
+     ],
+     [
+      -65.7309421,
+      -28.4656894
+     ],
+     [
+      -65.7311582,
+      -28.465773
+     ],
+     [
+      -65.7317913,
+      -28.4656436
+     ],
+     [
+      -65.7320763,
+      -28.4656162
+     ],
+     [
+      -65.7322763,
+      -28.4656868
      ]
     ]
    }
@@ -2407,60 +2368,301 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "ruta-67",
-    "tipo": "ruta",
-    "nombre": "RP N° 41"
+    "id": "camino-67",
+    "tipo": "camino",
+    "nombre": "Camino interno principal"
    },
    "geometry": {
     "type": "LineString",
     "coordinates": [
      [
-      -65.7235604,
-      -28.4649077
+      -65.7286095,
+      -28.4726923
      ],
      [
-      -65.7283368,
-      -28.4647408
+      -65.7279826,
+      -28.4648215
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-68",
+    "tipo": "camino",
+    "nombre": "camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7282685,
+      -28.4684346
      ],
      [
-      -65.7287531,
-      -28.4645738
+      -65.7269719,
+      -28.4685546
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-69",
+    "tipo": "camino",
+    "nombre": "camino inerno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7283207,
+      -28.4691113
      ],
      [
-      -65.7296212,
-      -28.4645183
+      -65.7275569,
+      -28.4691628
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-70",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.728598,
+      -28.47255
      ],
      [
-      -65.7298597,
-      -28.4645566
+      -65.7283038,
+      -28.4725886
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-71",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7296176,
+      -28.4724063
      ],
      [
-      -65.7300559,
-      -28.4647136
+      -65.7323894,
+      -28.4734357
      ],
      [
-      -65.7306987,
-      -28.4654196
+      -65.733132,
+      -28.4731585
      ],
      [
-      -65.7309421,
-      -28.4656894
+      -65.7315774,
+      -28.4697024
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-72",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7317921,
+      -28.4732106
      ],
      [
-      -65.7311582,
-      -28.465773
+      -65.7304097,
+      -28.470701
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-73",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7280329,
+      -28.4654486
      ],
      [
-      -65.7317913,
-      -28.4656436
+      -65.7283173,
+      -28.4654231
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-74",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7327484,
+      -28.4723129
      ],
      [
-      -65.7320763,
-      -28.4656162
+      -65.7315532,
+      -28.4727567
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-75",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7303064,
+      -28.4726679
      ],
      [
-      -65.7322763,
-      -28.4656868
+      -65.7318291,
+      -28.4774785
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-76",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.731552,
+      -28.4766131
+     ],
+     [
+      -65.7300209,
+      -28.4769218
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-77",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7296067,
+      -28.4747629
+     ],
+     [
+      -65.7308216,
+      -28.4742943
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-78",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7309822,
+      -28.4747913
+     ],
+     [
+      -65.732979,
+      -28.4739884
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-79",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7329747,
+      -28.4739886
+     ],
+     [
+      -65.732632,
+      -28.4733423
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "camino-80",
+    "tipo": "camino",
+    "nombre": "Camino interno"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.730788,
+      -28.4741954
+     ],
+     [
+      -65.7323802,
+      -28.4734371
      ]
     ]
    }
