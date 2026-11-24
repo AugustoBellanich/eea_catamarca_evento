@@ -41,7 +41,11 @@
 
   // ---------- Proyección ----------
   const sectores = GEO.filter((f) => f.properties.tipo === "predio");
-  const todos = sectores.flatMap((f) => f.geometry.coordinates[0]);
+  // Encuadre: el Sector 1 (donde se concentra la jornada) más el lote de algodón (estación 12) y todas las estaciones.
+  // Lo que queda fuera de ese recuadro se corta con el marco.
+  const foco = [...sectores.filter((f) => f.properties.nombre === "Sector 1"), ...GEO.filter((f) => f.properties.cultivo === "algodon"),
+    ...GEO.filter((f) => f.properties.tipo === "estacion")];
+  const todos = foco.flatMap((f) => f.geometry.type === "Point" ? [f.geometry.coordinates] : f.geometry.coordinates[0]);
   const lat0 = todos.reduce((t, p) => t + p[1], 0) / todos.length, k = 111320 * Math.cos(lat0 * Math.PI / 180), M = 110540;
   const lngs = todos.map((p) => p[0]), lats = todos.map((p) => p[1]);
   const xm = (lng) => (lng - Math.min(...lngs)) * k, ym = (lat) => (Math.max(...lats) - lat) * M;
@@ -49,9 +53,11 @@
   // caja del mapa: columna izquierda; a la derecha va la leyenda
   const caja = { x: 34, y: F.cab + 8, w: W - F.leyenda - 34 - 18, h: H - F.cab - F.pie - 16 };
   const esc = Math.min(caja.w / (anchoM * 1.08), caja.h / (altoM * 1.05)); // px por metro
-  { const h = Math.min(caja.h, altoM * esc * 1.07); caja.y += (caja.h - h) / 2; caja.h = h; } // el marco abraza al mapa
+  const libreAbajo = caja.h - Math.min(caja.h, altoM * esc * 1.07);
+  { const h = caja.h - libreAbajo; if (F.H < 1500) caja.y += libreAbajo / 2; caja.h = h; } // el marco abraza al mapa (en la historia, arriba)
   const ox = caja.x + (caja.w - anchoM * esc) / 2, oy = caja.y + (caja.h - altoM * esc) / 2;
   const P = ([lng, lat]) => [ox + xm(lng) * esc, oy + ym(lat) * esc];
+  const T = Math.max(1, Math.sqrt(esc / .67)); // con más acercamiento, árboles y surcos un poco más grandes
   const anillo = (f) => f.geometry.coordinates[0].slice(0, -1).map(P);
 
   // ---------- Geometría ----------
@@ -171,7 +177,7 @@
     if (ed) return; // los edificios van después, encima de todo
     acuarela(pts, LAVADO[cult] || "#e4e0bc", .5, 3, 1.6);
     const arboles = { olivo: [10, 10, 3.1], naranja: [9.5, 9.5, 3.2], lima: [9.5, 9.5, 3.1], nogal: [13, 13, 4.5], pecan: [13, 13, 4.5],
-      almendra: [10, 10, 3.3], higo: [10, 10, 3.4], frutal: [10, 10, 3.4] }[cult];
+      almendra: [10, 10, 3.3], higo: [10, 10, 3.4], frutal: [10, 10, 3.4] }[cult]?.map((v) => v * T);
     if (arboles) {
       const copa = COPA[cult], frutos = cult === "naranja" ? "#e8962e" : cult === "lima" ? "#c6d34a" : null;
       grilla(pts, arboles[0], arboles[1], arboles[2] * .9, (x, y) => arbol(x, y, arboles[2] * entre(.85, 1.1), cult === "frutal" ? [COPA.naranja, COPA.almendra, COPA.higo][Math.floor(azar() * 3)] : copa, { frutos }));
@@ -288,11 +294,11 @@
     rc.polygon([[x - r * .9, y], [x, y - r * .2], [x + r * .9, y], [x, y + r * .2]], { stroke: TINTA, strokeWidth: .7, fill: "#e8dcc0", fillStyle: "solid", roughness: .8, seed: sem() });
     c.font = "26px 'Caveat Brush'"; c.fillStyle = TINTA; c.textAlign = "center"; c.fillText("N", x, y - r * 1.25 - 14);
   })(...esquina(0, 70, 80), 26);
-  (function escala() {
-    const m = 100, l = m * esc, [ex, ey] = esquina(1, l + 40, 40), x = ex - l / 2, y = ey + 6;
+  function escala(x, y) {
+    const m = 100, l = m * esc;
     for (let i = 0; i < 4; i++) rc.rectangle(x + i * l / 4, y, l / 4, 6, { stroke: TINTA, strokeWidth: .8, roughness: .7, fill: i % 2 ? PAPEL : TINTA, fillStyle: "solid", seed: sem() });
     c.font = "19px Caveat"; c.fillStyle = TINTA; c.textAlign = "center"; c.fillText("0", x, y - 9); c.fillText(m + " m", x + l, y - 9);
-  })();
+  }
   c.restore(); // fin del recorte del mapa
   // marco del mapa: doble línea temblada
   rc.rectangle(caja.x, caja.y, caja.w, caja.h, { stroke: TINTA, strokeWidth: 1.4, roughness: 1, seed: sem() });
@@ -338,6 +344,15 @@
     c.fillStyle = z.color; c.beginPath(); c.arc(x + 8, y, 7, 0, 6.283); c.fill();
     c.font = "21px Caveat"; c.fillStyle = "#4d4030"; c.fillText(z.nombre, x + 22, y + 1); });
 
+  escala(lx0 + 4, yz + Math.ceil(Object.keys(C.zonas).length / colZ) * 30 + 34);
+  // historia: invitación en el espacio de abajo
+  if (F.H > 1500 && libreAbajo > 120) {
+    const y = caja.y + caja.h + (H - F.pie - caja.y - caja.h) / 2;
+    c.textAlign = "center"; c.textBaseline = "middle"; c.font = "60px 'Caveat Brush'"; c.fillStyle = GRIS;
+    c.fillText("Recorré las " + EST.length + " estaciones", W / 2, y - 26);
+    c.font = "700 38px Caveat"; c.fillStyle = MARCA; c.fillText("y completá tu pasaporte de sellos", W / 2, y + 30);
+    lineaMano([[W / 2 - 230, y + 62], [W / 2 + 230, y + 58]], ROJO, 2, .9, .8);
+  }
   // ---------- Pie ----------
   c.textBaseline = "alphabetic"; c.textAlign = "left"; c.font = "700 30px Caveat"; c.fillStyle = MARCA;
   c.fillText(C.instagram, 36, H - F.pie / 2 + 4);

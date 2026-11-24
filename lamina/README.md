@@ -8,6 +8,9 @@ logo, Instagram). Si cambia el KML o una ficha, se vuelve a exportar y la lámin
   `lamina/salida/eea-catamarca-historia.jpg` (1080×1920, historia), ambas al doble de resolución (2160 px de ancho), en JPG para redes. El PNG sin pérdida queda al lado y no se sube.
 - Para verla en el navegador: `python -m http.server` en la raíz y abrir `http://localhost:8000/lamina/?formato=feed`.
 
+Encuadre: el Sector 1, donde se concentra la jornada, más el lote de algodón (estación 12) y todas las estaciones; lo demás
+queda cortado por el marco (`foco` en `lamina.js`). La historia suma abajo la invitación a recorrer las estaciones.
+
 Qué es real y qué es dibujo: lotes, edificios, caminos, rutas, techos y estaciones son los del KML. Las plantas son
 simbólicas (más espaciadas que en el campo para que se lean). La escala gráfica es la del dibujo.
 
