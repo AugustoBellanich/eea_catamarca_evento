@@ -48,7 +48,7 @@ window.CONFIG = {
   // Sectores con un solo ingreso abierto el día del evento: "Cómo llegar" entra y sale solo por ahí.
   accesos: { "Sector 2": "Ingreso sector 2" },
 
-  // Estación donde se dibujan las podadoras trabajando (su ficha: poda mecánica en los lotes del ingreso).
+  // Estación donde se dibujan las podadoras trabajando (su ficha: poda mecánica): van en el lote donde está su marcador.
   podaMecanica: "e3",
 
   // Pasaporte: la estación se sella al abrir su QR o al pasar a menos de esta distancia (m).

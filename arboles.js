@@ -356,8 +356,9 @@
       const enPredio = (lng, lat) => predios.some((pr) => dentro(lng, lat, pr.geometry.coordinates[0]));
       const mover = ([lat, lng], este, norte) => [lat + norte / M_LAT, lng + este / k];
       this.maquinas = [];
-      // Podadoras: en el lote de la estación de poda mecánica (config.js, podaMecanica), entre hileras.
-      this.lotes.filter(({ f, pl }) => this.opciones.poda && f.properties.estacion === this.opciones.poda && pl.plantas.length && pl.fila).forEach(({ f, pl }) => {
+      // Podadoras: en el lote donde está el marcador de la estación de poda mecánica (config.js, podaMecanica), entre hileras.
+      const poda = this.opciones.poda; // L.LatLng del marcador o null
+      this.lotes.filter(({ f, pl }) => poda && f.geometry.type === "Polygon" && dentro(poda.lng, poda.lat, f.geometry.coordinates[0]) && pl.plantas.length && pl.fila).forEach(({ f, pl }) => {
         const anillo = f.geometry.coordinates[0];
         const cLat = pl.plantas.reduce((t, q) => t + q.ll[0], 0) / pl.plantas.length, cLng = pl.plantas.reduce((t, q) => t + q.ll[1], 0) / pl.plantas.length;
         const base = pl.plantas.reduce((m, q) => (Math.hypot(q.ll[0] - cLat, q.ll[1] - cLng) < Math.hypot(m.ll[0] - cLat, m.ll[1] - cLng) ? q : m));

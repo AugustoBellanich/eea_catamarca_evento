@@ -51,7 +51,8 @@
   // ---------- Datos del mapa ----------
   const estacion = (id) => estaciones.find((e) => e.id === id);
   const zona = (e) => C.zonas[e.zona] || { nombre: "", color: "#0a5aa8" };
-  // Un lote pertenece a una estación por properties.estacion (o, en datos viejos, por tener el id de la estación).
+  // Las estaciones son marcadores del KML (tipo "estacion", con properties.estacion); los lotes son solo cultivo.
+  // Datos viejos: un lote con properties.estacion (o con el id de la estación) también cuenta.
   const estDe = (f) => f.properties.estacion || (estacion(f.properties.id) ? f.properties.id : null);
   const esEstacion = (f) => !!estDe(f);
   const esServicio = (f) => f.properties.tipo === "servicio";
@@ -433,7 +434,7 @@
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
     // (un lote provisorio entra si dice su cultivo: por ejemplo, el de olivos que se tomó para la estación de poda)
     if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !(f.properties.provisorio && !f.properties.cultivo)),
-      { visible: () => calcularNivel() !== "lejos", predios: geo.features.filter(esPredio), poda: C.podaMecanica,
+      { visible: () => calcularNivel() !== "lejos", predios: geo.features.filter(esPredio), poda: centroEstacion(C.podaMecanica),
         ingresos: geo.features.filter((f) => esServicio(f) && f.properties.servicio === "ingreso").map((f) => f.geometry.coordinates),
         lineas: geo.features.filter((f) => esCamino(f) && f.geometry.type === "LineString") }).addTo(capaFondo);
     ponerPatrones();
