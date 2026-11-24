@@ -190,7 +190,8 @@
   const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C" };
 
   // Edificios con volumen: paredes hacia abajo a la derecha y techo claro.
-  // techo: "vidrio" (invernadero) o "tejas" (a dos aguas, terracota); sin dato, techo plano claro.
+  // techo: "vidrio" (invernadero), "tejas" (a dos aguas, terracota), "chapa" (galpón: dos aguas bajas, metálico y ondulado);
+  // "losa" o sin dato, techo plano claro.
   function edificio(c, pts, alto, techo) {
     const vidrio = techo === "vidrio";
     if (vidrio) alto *= .75;
@@ -201,10 +202,10 @@
     c.beginPath(); pts.forEach(([x, y], i) => (i ? c.lineTo(x + alto * .8, y + alto * .5) : c.moveTo(x + alto * .8, y + alto * .5))); c.fill();
     for (let i = 0; i < pts.length; i++) { // paredes
       const a = pts[i], b = pts[(i + 1) % pts.length];
-      poli([a, b, [b[0], b[1] - alto], [a[0], a[1] - alto]], vidrio ? "rgba(196,222,222,.75)" : techo === "tejas" ? "#D8C8A8" : "#B9A98A");
+      poli([a, b, [b[0], b[1] - alto], [a[0], a[1] - alto]], vidrio ? "rgba(196,222,222,.75)" : techo === "tejas" ? "#D8C8A8" : techo === "chapa" ? "#B4B2A6" : "#B9A98A");
     }
     c.lineWidth = 1;
-    if (pts.length !== 4 || !techo) { poli(top, "#E4D8C0", "#A99878"); return; }
+    if (pts.length !== 4 || !techo || techo === "losa") { poli(top, techo === "chapa" ? "#C4CACD" : "#E4D8C0", techo === "chapa" ? "#8E979C" : "#A99878"); return; }
     // lado largo del techo: las cumbreras y las naves van a lo largo
     const largo = (i) => Math.hypot(top[(i + 1) % 4][0] - top[i][0], top[(i + 1) % 4][1] - top[i][1]);
     const s0 = largo(0) >= largo(1) ? 0 : 1;
@@ -223,6 +224,22 @@
       const arcos = Math.max(3, Math.round(largo(s0) / 6)); // arcos de la estructura
       c.strokeStyle = "rgba(255,255,255,.75)";
       for (let k = 1; k < arcos; k++) { c.beginPath(); c.moveTo(...mix(a, b, k / arcos)); c.lineTo(...mix(e, d, k / arcos)); c.stroke(); }
+      return;
+    }
+    if (techo === "chapa") { // galpón: dos aguas con poca pendiente, chapa gris con ondas que bajan de la cumbrera al alero
+      const sube = alto * .3, r1 = mix(b, d, .5), r2 = mix(e, a, .5);
+      const c1 = [r1[0], r1[1] - sube], c2 = [r2[0], r2[1] - sube];
+      poli([b, c1, d], "#B9BDB8"); poli([e, c2, a], "#B9BDB8");
+      const f1 = [a, b, c1, c2], f2 = [d, e, c2, c1];
+      const yMedio = (q) => q.reduce((t, p) => t + p[1], 0) / q.length;
+      const [arriba, abajo] = yMedio(f1) < yMedio(f2) ? [f1, f2] : [f2, f1];
+      poli(arriba, "#D3D8DB", "#8E979C"); poli(abajo, "#B3BBC0", "#848D92");
+      [arriba, abajo].forEach(([p, q, r, s2]) => { // ondas: perpendiculares a la cumbrera
+        const ondas = Math.max(6, Math.min(90, Math.round(Math.hypot(q[0] - p[0], q[1] - p[1]) / 2.2)));
+        c.strokeStyle = "rgba(90,100,105,.35)"; c.lineWidth = .7;
+        for (let k = 1; k < ondas; k++) { c.beginPath(); c.moveTo(...mix(p, q, k / ondas)); c.lineTo(...mix(s2, r, k / ondas)); c.stroke(); }
+      });
+      c.strokeStyle = "#7E878C"; c.lineWidth = 1.2; c.beginPath(); c.moveTo(...c1); c.lineTo(...c2); c.stroke(); c.lineWidth = 1; // cumbrera
       return;
     }
     // tejas a dos aguas: cumbrera elevada en el medio, dos faldones y hastiales

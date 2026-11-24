@@ -122,6 +122,10 @@ window.ICONOS = (function () {
       <path d="M22 10l14-4M22 10l12 8" stroke="#546e7a" stroke-width="2.4"/>
       <circle cx="36" cy="6" r="3" fill="#29a3e8" ${O}/><circle cx="34" cy="18" r="3" fill="#29a3e8" ${O}/>
       <circle cx="12" cy="18" r="6" fill="#fbc02d" ${O}/><path d="M12 8v2M12 26v2M2 18h2M20 18h2" stroke="#f57f17" stroke-width="2"/>`),
+    pozo: svg(`
+      <rect x="10" y="30" width="28" height="10" rx="2" fill="#90a4ae" ${O}/>
+      <path d="M20 30V14h8v16" fill="#b0bec5" ${O}/><path d="M16 14h16" stroke="#546e7a" stroke-width="3" stroke-linecap="round"/>
+      <path d="M24 4c-3 4-5 6-5 8.5a5 5 0 0 0 10 0C29 10 27 8 24 4z" fill="#29a3e8" ${O}/>`),
     ingreso: svg(`
       <path d="M8 42V14h6v28M34 42V14h6v28" fill="#90a4ae" ${O}/>
       <path d="M14 18h20M14 26h20" stroke="#6d4c41" stroke-width="3"/>
