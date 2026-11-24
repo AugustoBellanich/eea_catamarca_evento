@@ -325,6 +325,24 @@
     return out;
   }
 
+  // Sellos: cada planta se dibuja una sola vez por tipo, tamaño (de a 1/4 px) y variante (8), y después se estampa.
+  // Con miles de plantas por cuadro, estampar es mucho más rápido que trazar sus círculos uno por uno.
+  const sellos = new Map();
+  function estampar(c, tipo, dib, x, y, r, s, dpr) {
+    const rq = Math.round(r * 4) / 4, sq = (Math.floor(s * 8) + .5) / 8, clave = tipo + "|" + rq + "|" + sq;
+    let img = sellos.get(clave);
+    if (!img) {
+      const m = Math.ceil(rq * 2 + 6); // lugar para la sombra, los lóbulos y el pasto
+      img = document.createElement("canvas"); img.width = img.height = 2 * m * dpr; img.m = m;
+      const g = img.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); dib(g, m, m, rq, sq);
+      if (sellos.size > 4000) sellos.clear();
+      sellos.set(clave, img);
+    }
+    c.drawImage(img, x - img.m, y - img.m, 2 * img.m, 2 * img.m);
+  }
+
+  // Margen del lienzo fuera de la pantalla, por lado (0,5 = media pantalla). Igual al de los lienzos SVG de app.js.
+  const MARGEN = .5;
   const Capa = L.Layer.extend({
     initialize(features, opciones) {
       this.opciones = opciones || {};
@@ -397,17 +415,22 @@
       this.map = map;
       const pane = map.getPane("arboleda") || map.createPane("arboleda");
       pane.style.zIndex = 410; pane.style.pointerEvents = "none";
-      this.canvas = L.DomUtil.create("canvas", "arboleda leaflet-zoom-hide", pane);
+      // Lienzo más grande que la pantalla (MARGEN por lado), así al arrastrar con el dedo no aparecen huecos;
+      // al acercar o alejar se estira con el mapa en lugar de ocultarse (como los lienzos de Leaflet).
+      this.canvas = L.DomUtil.create("canvas", "arboleda leaflet-zoom-animated", pane);
       // las máquinas van en un lienzo aparte, que se redibuja solo para moverlas
       this.lienzoMaq = L.DomUtil.create("canvas", "arboleda leaflet-zoom-hide", pane);
       map.on("moveend zoomend resize", this.dibujar, this);
+      map.on("zoomanim", this.estirar, this);
+      map.on("zoom", this.estirarAlPellizcar, this);
       this.dibujar();
       const quieto = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
       const paso = (t) => { if (!this.map) return; if (!document.hidden) this.dibujarMaquinas(quieto ? 0 : t); this.cuadro = requestAnimationFrame(paso); };
       if (this.maquinas.length) this.cuadro = requestAnimationFrame(paso);
     },
     onRemove(map) {
-      map.off("moveend zoomend resize", this.dibujar, this); cancelAnimationFrame(this.cuadro); this.map = null;
+      map.off("moveend zoomend resize", this.dibujar, this); map.off("zoomanim", this.estirar, this); map.off("zoom", this.estirarAlPellizcar, this);
+      cancelAnimationFrame(this.cuadro); this.map = null;
       L.DomUtil.remove(this.canvas); L.DomUtil.remove(this.lienzoMaq);
     },
     // Podadoras que avanzan y retroceden despacio por la hilera (unos 6 m para cada lado, ciclo de ~14 s).
@@ -426,14 +449,28 @@
         vehiculo(c, p.x, p.y, -m.ang, esc, m.clase);
       });
     },
+    // Mientras dura la animación de zoom, el lienzo se escala desde el centro nuevo (mismo cálculo que L.Renderer).
+    estirar(e) { this.transformar(e.center, e.zoom); },
+    estirarAlPellizcar() { if (!this.map._animatingZoom) this.transformar(this.map.getCenter(), this.map.getZoom()); },
+    transformar(centro, zoom) {
+      const map = this.map; if (!map || this.zoomDibujo === undefined) return;
+      const escala = map.getZoomScale(zoom, this.zoomDibujo);
+      const mitad = map.getSize().multiplyBy(.5 + MARGEN);
+      const arriba = mitad.multiplyBy(-escala).add(map.project(this.centroDibujo, zoom)).subtract(map._getNewPixelOrigin(centro, zoom));
+      L.DomUtil.setTransform(this.canvas, arriba, escala);
+    },
     dibujar() {
-      const map = this.map, size = map.getSize(), dpr = window.devicePixelRatio || 1, cv = this.canvas;
+      const map = this.map, vista = map.getSize(), cv = this.canvas;
+      // con margen el lienzo es ~4 veces la pantalla: se limita la resolución para no pasar el tope de memoria de los teléfonos
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const borde = vista.multiplyBy(MARGEN).round(), size = vista.add(borde.multiplyBy(2));
       cv.width = size.x * dpr; cv.height = size.y * dpr; cv.style.width = size.x + "px"; cv.style.height = size.y + "px";
-      const origen = map.containerPointToLayerPoint([0, 0]); L.DomUtil.setPosition(cv, origen);
+      const origen = map.containerPointToLayerPoint(borde.multiplyBy(-1)); L.DomUtil.setPosition(cv, origen);
+      this.centroDibujo = map.getCenter(); this.zoomDibujo = map.getZoom();
       const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, size.x, size.y);
       if (this.opciones.visible && !this.opciones.visible()) return;
-      const z = map.getZoom(), lim = map.getBounds().pad(.1);
-      const pt = (ll) => map.latLngToContainerPoint(ll);
+      const z = map.getZoom(), lim = map.getBounds().pad(MARGEN + .1);
+      const pt = (ll) => map.latLngToContainerPoint(ll).add(borde);
       // pasto: manchones siempre (muy tenues); matitas, arbustos y flores solo de cerca
       const mppP = 40075016.686 * Math.cos(-28.47 * Math.PI / 180) / 2 ** (z + 8), escP = 1 / mppP;
       this.tierra.forEach((m) => { // manchones de suelo desnudo del monte, de borde irregular
@@ -479,9 +516,9 @@
         pl.plantas.forEach((t) => {
           if (!lim.contains(t.ll)) return;
           const p = pt(t.ll), r = t.r * esc;
-          if (pl.tipo === "pradera") return dib(c, p.x, p.y, r, t.s);
+          if (pl.tipo === "pradera") return estampar(c, pl.tipo, dib, p.x, p.y, r, t.s, dpr);
           if (r < 1.6) { circ(c, p.x, p.y, Math.max(.9, r), pl.tipo === "olivo" ? "#8A9B74" : pl.tipo === "citrico" ? "#5C874A" : "#7D9A58"); return; }
-          dib(c, p.x, p.y, r, t.s);
+          estampar(c, pl.tipo, dib, p.x, p.y, r, t.s, dpr);
         });
       });
       // árboles sueltos (borde de los sectores y monte abierto) y matas bajas
