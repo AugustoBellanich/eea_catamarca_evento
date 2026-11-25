@@ -4434,6 +4434,28 @@
     "type": "LineString",
     "coordinates": [
      [
+      -65.7284578,
+      -28.4695736
+     ],
+     [
+      -65.7285726,
+      -28.4710823
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-126",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -65.7268506,
       -28.4685893
      ],
@@ -4539,7 +4561,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-126",
+    "id": "canal-127",
     "tipo": "canal",
     "nombre": "Canal abierto",
     "clase": "canal"
@@ -4617,7 +4639,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-127",
+    "id": "canal-128",
     "tipo": "canal",
     "nombre": "Canal abierto",
     "clase": "canal"
@@ -4663,7 +4685,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-128",
+    "id": "canal-129",
     "tipo": "canal",
     "nombre": "Canal abierto",
     "clase": "canal"
@@ -4697,7 +4719,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-129",
+    "id": "canal-130",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4727,7 +4749,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-130",
+    "id": "canal-131",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4757,7 +4779,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-131",
+    "id": "canal-132",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4783,7 +4805,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-132",
+    "id": "canal-133",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4821,7 +4843,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-133",
+    "id": "canal-134",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4855,7 +4877,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-134",
+    "id": "canal-135",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4877,7 +4899,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-135",
+    "id": "canal-136",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4899,7 +4921,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-136",
+    "id": "canal-137",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4921,7 +4943,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-137",
+    "id": "canal-138",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4943,7 +4965,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-138",
+    "id": "canal-139",
     "tipo": "canal",
     "nombre": "Acequia",
     "clase": "acequia"
@@ -4965,7 +4987,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-139",
+    "id": "canal-140",
     "tipo": "canal",
     "nombre": "Canal abierto",
     "clase": "canal"
@@ -4987,7 +5009,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-140",
+    "id": "canal-141",
     "tipo": "canal",
     "nombre": "Cañería subterránea",
     "clase": "caneria"
@@ -5017,7 +5039,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-141",
+    "id": "canal-142",
     "tipo": "canal",
     "nombre": "Cañería subterránea",
     "clase": "caneria"
@@ -5055,7 +5077,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-142",
+    "id": "canal-143",
     "tipo": "canal",
     "nombre": "Cañería subterránea",
     "clase": "caneria"
@@ -5077,7 +5099,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "canal-143",
+    "id": "canal-144",
     "tipo": "canal",
     "nombre": "Cañería subterránea",
     "clase": "caneria"
@@ -5099,7 +5121,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k144",
+    "id": "k145",
     "tipo": "riego",
     "nombre": "Tanque australiano",
     "servicio": "tanque"
@@ -5115,7 +5137,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k145",
+    "id": "k146",
     "tipo": "riego",
     "nombre": "Pozo de agua",
     "servicio": "pozo"
@@ -5131,7 +5153,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k146",
+    "id": "k147",
     "tipo": "riego",
     "nombre": "Pozo de agua",
     "servicio": "pozo"
@@ -5147,7 +5169,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k147",
+    "id": "k148",
     "tipo": "riego",
     "nombre": "Chimenea de riego",
     "servicio": "chimenea"
@@ -5163,7 +5185,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k148",
+    "id": "k149",
     "tipo": "riego",
     "nombre": "Chimenea de riego",
     "servicio": "chimenea"
@@ -5179,7 +5201,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k149",
+    "id": "k150",
     "tipo": "riego",
     "nombre": "Chimenea de riego",
     "servicio": "chimenea"
@@ -5195,7 +5217,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k150",
+    "id": "k151",
     "tipo": "lote",
     "nombre": "Estanque",
     "cultivo": "estanque",
