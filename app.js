@@ -333,7 +333,7 @@
   // ---------- Dibujo suave (parque) ----------
   // Solo cambia cómo se dibuja; los datos del KML quedan como están (el GPS, los sellos y los anclajes usan los originales).
   // 1) Las puntas de rutas, calles y caminos que quedan a menos de 20 m de otra línea se enganchan a ella.
-  // 2) Esquinas redondeadas (Chaikin, 2 pasadas) en lotes, predio y líneas.
+  // 2) Esquinas redondeadas (Chaikin) en el predio y las líneas; en las líneas cada esquina se recorta como mucho 5 m.
   const M_LAT = 110540, mLng = (lat) => 111320 * Math.cos(lat * Math.PI / 180);
   function proyectar(p, a, b) { // punto de [a,b] más cercano a p, y su distancia en metros
     const k = mLng(p[1]);
@@ -342,13 +342,17 @@
     const x = ax + t * dx, y = ay + t * dy;
     return { q: [x / k, y / M_LAT], d: Math.hypot(px - x, py - y) };
   }
-  function chaikin(pts, cerrado, vueltas = 2, q = .25) {
+  // "corte": cuánto se acorta como máximo cada esquina, en metros (si no, en un tramo largo la curva se come decenas
+  // de metros y el camino dibujado pasa por arriba de los lotes vecinos).
+  function chaikin(pts, cerrado, vueltas = 2, q = .25, corte = Infinity) {
     for (let v = 0; v < vueltas; v++) {
       const n = pts.length, out = cerrado ? [] : [pts[0]];
       const tope = cerrado ? n : n - 1;
       for (let i = 0; i < tope; i++) {
         const a = pts[i], b = pts[(i + 1) % n];
-        out.push([a[0] * (1 - q) + b[0] * q, a[1] * (1 - q) + b[1] * q], [a[0] * q + b[0] * (1 - q), a[1] * q + b[1] * (1 - q)]);
+        const largo = Math.hypot((b[0] - a[0]) * mLng(a[1]), (b[1] - a[1]) * M_LAT) || 1;
+        const t = Math.min(q, corte / largo);
+        out.push([a[0] * (1 - t) + b[0] * t, a[1] * (1 - t) + b[1] * t], [a[0] * t + b[0] * (1 - t), a[1] * t + b[1] * (1 - t)]);
       }
       if (!cerrado) { out.splice(1, 1); out.splice(out.length - 1, 1); out.push(pts[n - 1]); }
       pts = out;
@@ -376,7 +380,7 @@
       geo.features.forEach((g) => {
         const t = g.geometry.type;
         let geom = g.geometry;
-        if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false, 3) };
+        if (t === "LineString") geom = { type: t, coordinates: chaikin(enganchadas.get(g) || g.geometry.coordinates, false, 3, .25, 5) };
         else if (t === "Polygon" && esPredio(g)) // solo el contorno del predio se suaviza; los lotes quedan como en el KML
           geom = { type: t, coordinates: g.geometry.coordinates.map((anillo) => { const a = chaikin(anillo.slice(0, -1), true, 2, .15); return a.concat([a[0]]); }) };
         suaves.set(g, { type: "Feature", properties: g.properties, geometry: geom });
