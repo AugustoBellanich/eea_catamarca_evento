@@ -61,6 +61,41 @@ window.CONFIG = {
   instagram: "@intacatamarca",          // cuenta oficial de la EEA Catamarca (Augusto, 24/11/2026)
   hashtag: "#INTA70Catamarca",
 
+  // Métricas de uso anónimas (metricas.js → functions/api/eventos.js). Sin nombre, contacto ni ubicación.
+  metricas: { activo: true },
+
+  // Encuesta breve, voluntaria y anónima (functions/api/encuesta.js). Se ofrece en el pasaporte y, una vez, al llegar
+  // a "ofrecerConSellos" estaciones selladas. "id" de pregunta y de opción: minúsculas y guion bajo (así se guardan).
+  // "varias": se pueden marcar varias opciones. Todas las preguntas son optativas.
+  encuesta: {
+    activa: true,
+    ofrecerConSellos: 4,
+    preguntas: [
+      { id: "procedencia", texto: "¿Desde dónde venís?", opciones: [
+        ["valle_viejo", "Valle Viejo"], ["capital", "San Fernando del V. de Catamarca"], ["otro_depto", "Otro departamento de Catamarca"],
+        ["otra_provincia", "Otra provincia"] ] },
+      { id: "perfil", texto: "¿Cómo te describís?", opciones: [
+        ["productor", "Productor/a agropecuario/a"], ["estudiante_secundario", "Estudiante secundario/a"],
+        ["estudiante_superior", "Estudiante terciario/universitario"], ["docente", "Docente"],
+        ["tecnico", "Técnico/a o profesional del agro"], ["empresa", "Empresa o cooperativa"],
+        ["organismo", "Organismo público o institución"], ["publico", "Público en general"] ] },
+      { id: "edad", texto: "Edad", opciones: [
+        ["menos_18", "Menos de 18"], ["18_29", "18 a 29"], ["30_44", "30 a 44"], ["45_59", "45 a 59"], ["60_mas", "60 o más"] ] },
+      { id: "primera_vez", texto: "¿Es tu primera visita a la EEA Catamarca?", opciones: [["si", "Sí"], ["no", "No, ya vine antes"]] },
+      { id: "como_se_entero", texto: "¿Cómo te enteraste de la jornada?", varias: true, opciones: [
+        ["redes_inta", "Redes de INTA"], ["escuela", "Escuela o institución"], ["medios", "Radio, TV o diario"],
+        ["conocidos", "Por conocidos"], ["trabajo", "Por mi trabajo"], ["otro", "Otro"] ] },
+      { id: "interes", texto: "¿Qué te interesó más?", varias: true, opciones: [
+        ["frutales", "Frutales"], ["laboratorios", "Laboratorios"], ["cultivos", "Cultivos y huerta"],
+        ["ganaderia", "Producción animal"], ["charlas", "Charlas"], ["riego", "Riego y agua"] ] },
+      { id: "vinculo", texto: "¿Te interesa que INTA te acompañe con capacitación o asistencia técnica?", opciones: [
+        ["si", "Sí"], ["ya_trabajo", "Ya trabajo con INTA"], ["no", "Por ahora no"] ] },
+      { id: "valoracion", texto: "¿Qué te pareció la jornada?", opciones: [
+        ["5", "Excelente"], ["4", "Muy buena"], ["3", "Buena"], ["2", "Regular"], ["1", "Mala"] ] },
+      { id: "mapa", texto: "¿Te sirvió este mapa?", opciones: [["mucho", "Sí, mucho"], ["algo", "Algo"], ["poco", "Poco"]] },
+    ],
+  },
+
   // Concurso de fotos: queda apagado hasta que la organización apruebe las bases.
   concurso: {
     activo: false,

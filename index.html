@@ -119,6 +119,22 @@
     <button type="button" id="btn-llevar" class="boton-ancho">Llevar mi pasaporte a otro navegador</button>
     <p id="llevar-url" class="texto-sugerido" hidden></p>
   </div>
+  <div class="pasaporte-encuesta" id="pasaporte-encuesta" hidden>
+    <p><b>Encuesta de 1 minuto</b>: anónima y de opciones. Nos ayuda a mejorar las próximas jornadas.</p>
+    <button type="button" id="btn-encuesta" class="boton-ancho destacado">Responder la encuesta</button>
+  </div>
+  <p class="nota nota-privacidad">El sitio cuenta de forma anónima cómo se usa el mapa (sin nombre, contacto ni ubicación)
+    para que la EEA sepa cómo se vivió la jornada.</p>
+</section>
+
+<!-- Encuesta anónima -->
+<section class="hoja hoja-alta" id="encuesta" hidden>
+  <button class="cerrar" type="button" data-cerrar aria-label="Cerrar">×</button>
+  <h2>Encuesta</h2>
+  <p class="nota">Anónima: no pedimos nombre ni contacto. Todas las preguntas son optativas.</p>
+  <form id="encuesta-form"></form>
+  <button type="button" id="encuesta-enviar" class="boton-ancho destacado">Enviar respuestas</button>
+  <p class="nota" id="encuesta-estado" role="status"></p>
 </section>
 
 <!-- Modo foto -->
@@ -169,6 +185,7 @@
 <script src="datos/mapa.js"></script>
 <script src="datos/provisorios.js"></script>
 <script src="datos/agenda.js"></script>
+<script src="metricas.js"></script>
 <script src="arboles.js"></script>
 <script src="app.js"></script>
 </body>
