@@ -25,6 +25,9 @@
     ganado:   { fila: 6,   planta: 6,   copa: 0.6, tipo: "corral", corral: true },
     comino:   { fila: 1.2, planta: 0.7, copa: 0.3, tipo: "cultivo", hilera: true },
     arado:    { fila: 1.4, planta: 1.0, copa: 0.25, tipo: "arado", hilera: true, surcos: true }, // solo surcos, sin plantas
+    estiercol: { fila: 3.6, planta: 1.5, copa: 0.85, tipo: "estiercol", hilera: true },  // compostaje: pilas largas de estiércol
+    generadores: { fila: 13, planta: 8, copa: 2.2, tipo: "generador" },                  // grupos electrógenos sobre ripio
+    observatorio: { fila: 6, planta: 6, copa: 0.6, tipo: "instrumento", cerco: true },   // parcela de césped cercada con instrumentos
   };
   // Monte nativo y desmonte: sin marco de plantación; árboles nativos, matas y claros sueltos (ver Capa.initialize).
   const SILVESTRE = {
@@ -37,6 +40,7 @@
     higo: "#DADDB8", frutal: "#E1DBB4", tuna: "#E4DAB2", vid: "#E6D8AE", algodon: "#E8DAAC", girasol: "#E6D8AA",
     vivero: "#E5D8AE", pastura: "#C8D49B", ganado: "#E2CFA2",
     arado: "#DCC69C", comino: "#E4D8AC", monte: "#D3D6A8", desmonte: "#E6D3A6",
+    estiercol: "#D6C49A", generadores: "#D8D5C6", suelo_desnudo: "#E3CC9C", observatorio: "#C9D59C",
   };
   const claveCultivo = (p) => (p.cultivo === "naranja" && p.patron === "surcos" ? "vivero" : p.cultivo);
 
@@ -103,7 +107,7 @@
       return { tipo: "corral", plantas: [], hileras: [], animales, anillo: ll.map(([lng, lat]) => [lat, lng]), copa: 0, lat: lat0, ang };
     }
     if (m.surcos) plantas.length = 0; // lote arado: quedan las franjas de los surcos
-    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng, anillo: ll.map(([lng, lat]) => [lat, lng]) };
+    return { tipo: m.tipo, plantas, hileras, copa: m.copa, lat: lat0, ang, fila: m.fila, aLatLng, anillo: ll.map(([lng, lat]) => [lat, lng]), cerco: !!m.cerco };
   }
 
   // ---------- Dibujos vistos desde arriba ----------
@@ -177,6 +181,31 @@
     cultivo(c, x, y, r) { circ(c, x, y, r, "#9DB26E"); },
     girasol(c, x, y, r) { circ(c, x, y, r, "#94AC63"); if (r > 1.6) circ(c, x, y, r * .45, "#E2B93B"); },
     plantin(c, x, y, r) { circ(c, x, y, r, "#6E9852"); },
+    // estiércol en pilas: terrones marrones con algo de paja
+    estiercol(c, x, y, r, s) {
+      c.fillStyle = "rgba(70,50,30,.28)"; c.beginPath(); c.ellipse(x + r * .3, y + r * .35, r * 1.1, r * .8, 0, 0, 6.2832); c.fill();
+      lobulos(c, x, y, r, 4, .55, .38, "#7A5636", s * 6); circ(c, x, y, r * .5, "#8B6542");
+      if (r > 2) { circ(c, x - r * .3, y - r * .3, r * .2, "#A07A52"); c.strokeStyle = "#CDB77E"; c.lineWidth = Math.max(.6, r * .08);
+        c.beginPath(); c.moveTo(x - r * .5, y + r * .1); c.lineTo(x - r * .1, y - r * .1); c.moveTo(x + r * .2, y + r * .4); c.lineTo(x + r * .55, y + r * .2); c.stroke(); }
+    },
+    // grupo electrógeno visto desde arriba: gabinete con rejillas de ventilación y caño de escape
+    generador(c, x, y, r, s) {
+      const w = r * 1.9, h = r * 1.05, x0 = x - w / 2, y0 = y - h / 2;
+      c.fillStyle = "rgba(60,60,40,.3)"; c.fillRect(x0 + r * .25, y0 + r * .3, w, h);                     // sombra
+      c.fillStyle = "#5F7A68"; c.fillRect(x0, y0, w, h);                                                  // gabinete
+      c.fillStyle = "#7C9684"; c.fillRect(x0 + w * .04, y0 + h * .08, w * .92, h * .3);                   // brillo del techo
+      if (r > 2.5) { c.strokeStyle = "#3F5546"; c.lineWidth = Math.max(.5, r * .06);                     // rejillas
+        for (let i = 0; i < 5; i++) { const xx = x0 + w * (.1 + i * .07); c.beginPath(); c.moveTo(xx, y0 + h * .5); c.lineTo(xx, y0 + h * .88); c.stroke(); } }
+      c.fillStyle = "#E1B53A"; c.fillRect(x0 + w * .55, y0 + h * .55, w * .3, h * .3);                    // tablero
+      circ(c, x0 + w * .86, y0 + h * .25, Math.max(.8, r * .14), "#3A3A36");                             // escape
+    },
+    // instrumentos del observatorio: abrigo meteorológico blanco y pluviómetro
+    instrumento(c, x, y, r, s) {
+      const a = Math.max(1.4, r * 1.3);
+      c.fillStyle = "rgba(60,60,40,.25)"; c.fillRect(x - a / 2 + a * .2, y - a / 2 + a * .25, a, a);
+      if (s < .5) { c.fillStyle = "#F4F2EA"; c.fillRect(x - a / 2, y - a / 2, a, a); c.strokeStyle = "#B9B6A8"; c.lineWidth = Math.max(.5, a * .08); c.strokeRect(x - a / 2, y - a / 2, a, a); }
+      else { circ(c, x, y, a * .45, "#C9CED1"); circ(c, x, y, a * .28, "#8FA7B3"); }
+    },
     mata(c, x, y, r) { c.strokeStyle = "#8EA466"; c.lineWidth = Math.max(.8, r * .35); c.lineCap = "round"; c.beginPath();
       c.moveTo(x - r, y + r * .6); c.lineTo(x - r * .3, y - r); c.moveTo(x, y + r * .6); c.lineTo(x + r * .1, y - r * 1.1);
       c.moveTo(x + r, y + r * .6); c.lineTo(x + r * .4, y - r * .9); c.stroke(); },
@@ -196,7 +225,7 @@
     copas.forEach(({ x, y, r }) => circ(c, x - r * .38, y - r * .42, r * .26, "#9DB674"));
   }
   // Color de la franja de cada hilera (debajo de las plantas).
-  const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C", arado: "rgba(150,116,74,.5)" };
+  const FRANJA = { vid: "#B5BF86", cultivo: "#C9C695", girasol: "#C6C291", plantin: "#C2BE8C", arado: "rgba(150,116,74,.5)", estiercol: "#8E6C49" };
 
   // Quita los vértices casi alineados (menos de ~5°), así un edificio dibujado con un punto de más sigue teniendo 4
   // esquinas y lleva su techo a dos aguas.
@@ -587,12 +616,12 @@
         if (r < 1.6) circ(c, p.x, p.y, Math.max(.9, r), "#6F8048"); else DIBUJO.nativo(c, p.x, p.y, r, t.s); });
       // corrales: cerco de madera y animales
       this.lotes.forEach(({ pl }) => {
-        if (pl.tipo !== "corral") return;
+        if (pl.tipo !== "corral" && !pl.cerco) return;
         const pts = pl.anillo.map((ll) => pt(ll));
         c.lineJoin = "round"; c.strokeStyle = "#8C6B46"; c.lineWidth = Math.max(1.6, .3 * escP); c.setLineDash([]);
         c.beginPath(); pts.forEach((q, i) => (i ? c.lineTo(q.x, q.y) : c.moveTo(q.x, q.y))); c.closePath(); c.stroke();
         c.strokeStyle = "#C9A878"; c.lineWidth = Math.max(.8, .12 * escP); c.setLineDash([Math.max(3, 1.6 * escP), Math.max(2, 1 * escP)]); c.stroke(); c.setLineDash([]);
-        if (z >= 16.5) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
+        if (z >= 16.5 && pl.animales) pl.animales.forEach((a) => { const p = pt(a.ll); animal(c, p.x, p.y, -a.rumbo, escP, a.clase, a.s); });
       });
       const altoEd = Math.max(2, Math.min(9, 2 ** (z - 16) * 2.2));
       this.edificios.forEach((f) => edificio(c, sinAlineados(f.geometry.coordinates[0].slice(0, -1).map(([lng, lat]) => { const p = pt([lat, lng]); return [p.x, p.y]; })), altoEd, f.properties.techo));
