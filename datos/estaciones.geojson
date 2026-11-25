@@ -1,6 +1,6 @@
 {
  "type": "FeatureCollection",
- "_fuente": "fuentes/predio-2026-11-24e.kml",
+ "_fuente": "fuentes/predio-2026-11-25b.kml",
  "features": [
   {
    "type": "Feature",
@@ -441,14 +441,16 @@
    "properties": {
     "id": "est-e11",
     "tipo": "estacion",
-    "nombre": "Estación 11 · Centro Regional",
-    "estacion": "e11"
+    "nombre": "Estación 11 · Centro Regional (provisoria)",
+    "estacion": "e11",
+    "provisorio": true,
+    "nota": "Planilla: galería del SUM"
    },
    "geometry": {
     "type": "Point",
     "coordinates": [
-     -65.727785,
-     -28.468335
+     -65.7278742,
+     -28.4681791
     ]
    }
   },
@@ -473,7 +475,7 @@
    "properties": {
     "id": "est-girasol-romero",
     "tipo": "estacion",
-    "nombre": "Estación 13 · Girasol y romero",
+    "nombre": "Estación · Girasol y romero",
     "estacion": "girasol-romero"
    },
    "geometry": {
@@ -488,71 +490,6 @@
    "type": "Feature",
    "properties": {
     "id": "k17",
-    "tipo": "lote",
-    "nombre": "Estanque",
-    "cultivo": "estanque",
-    "patron": "agua"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7291828,
-       -28.4646751
-      ],
-      [
-       -65.7290812,
-       -28.4650236
-      ],
-      [
-       -65.7288863,
-       -28.4651073
-      ],
-      [
-       -65.7288546,
-       -28.4651758
-      ],
-      [
-       -65.728719,
-       -28.4652027
-      ],
-      [
-       -65.7284553,
-       -28.4650861
-      ],
-      [
-       -65.7283668,
-       -28.4649092
-      ],
-      [
-       -65.7286712,
-       -28.4647235
-      ],
-      [
-       -65.7288904,
-       -28.4646763
-      ],
-      [
-       -65.7289909,
-       -28.4647478
-      ],
-      [
-       -65.7290412,
-       -28.4646864
-      ],
-      [
-       -65.7291828,
-       -28.4646751
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k18",
     "tipo": "lote",
     "nombre": "Algodón",
     "cultivo": "algodon",
@@ -585,7 +522,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k19",
+    "id": "k18",
     "tipo": "lote",
     "nombre": "Almendros",
     "cultivo": "almendra",
@@ -626,7 +563,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k20",
+    "id": "k19",
     "tipo": "lote",
     "nombre": "Almendro",
     "cultivo": "almendra",
@@ -663,7 +600,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k21",
+    "id": "k20",
     "tipo": "lote",
     "nombre": "Comino",
     "cultivo": "comino",
@@ -692,6 +629,43 @@
       [
        -65.7293379,
        -28.4686142
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k21",
+    "tipo": "lote",
+    "nombre": "Compostaje (estiércol)",
+    "cultivo": "estiercol",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7306839,
+       -28.4722561
+      ],
+      [
+       -65.7306971,
+       -28.4723632
+      ],
+      [
+       -65.7302285,
+       -28.4723973
+      ],
+      [
+       -65.7302151,
+       -28.4722948
+      ],
+      [
+       -65.7306839,
+       -28.4722561
       ]
      ]
     ]
@@ -960,6 +934,96 @@
    "properties": {
     "id": "k28",
     "tipo": "lote",
+    "nombre": "Desmonte",
+    "cultivo": "desmonte",
+    "patron": "pasto"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.731319,
+       -28.4738738
+      ],
+      [
+       -65.7308031,
+       -28.4741246
+      ],
+      [
+       -65.7303726,
+       -28.4727611
+      ],
+      [
+       -65.7309979,
+       -28.4730148
+      ],
+      [
+       -65.7309758,
+       -28.4732002
+      ],
+      [
+       -65.7311423,
+       -28.4732815
+      ],
+      [
+       -65.7310978,
+       -28.4735352
+      ],
+      [
+       -65.731319,
+       -28.4738738
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k29",
+    "tipo": "lote",
+    "nombre": "Desmonte",
+    "cultivo": "desmonte",
+    "patron": "pasto"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7302677,
+       -28.4728203
+      ],
+      [
+       -65.7307123,
+       -28.4742398
+      ],
+      [
+       -65.7298646,
+       -28.474576
+      ],
+      [
+       -65.7297544,
+       -28.473757
+      ],
+      [
+       -65.7300289,
+       -28.4737056
+      ],
+      [
+       -65.7302677,
+       -28.4728203
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k30",
+    "tipo": "lote",
     "nombre": "Frutal mixto",
     "cultivo": "frutal",
     "patron": "arboles"
@@ -995,7 +1059,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k29",
+    "id": "k31",
     "tipo": "lote",
     "nombre": "Monte frutal",
     "cultivo": "frutal",
@@ -1032,7 +1096,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k30",
+    "id": "k32",
     "tipo": "lote",
     "nombre": "Monte frutal",
     "cultivo": "frutal",
@@ -1069,7 +1133,44 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k31",
+    "id": "k33",
+    "tipo": "lote",
+    "nombre": "Generadores eléctricos ESAPEN",
+    "cultivo": "generadores",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7279065,
+       -28.4732284
+      ],
+      [
+       -65.7278521,
+       -28.4739025
+      ],
+      [
+       -65.7273131,
+       -28.4738723
+      ],
+      [
+       -65.7273696,
+       -28.4731801
+      ],
+      [
+       -65.7279065,
+       -28.4732284
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k34",
     "tipo": "lote",
     "nombre": "Girasol perenne",
     "cultivo": "girasol",
@@ -1106,7 +1207,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k32",
+    "id": "k35",
     "tipo": "lote",
     "nombre": "Higuera",
     "cultivo": "higo",
@@ -1143,7 +1244,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k33",
+    "id": "k36",
     "tipo": "lote",
     "nombre": "Higueras",
     "cultivo": "higo",
@@ -1180,7 +1281,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k34",
+    "id": "k37",
     "tipo": "lote",
     "nombre": "Higuera",
     "cultivo": "higo",
@@ -1217,7 +1318,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k35",
+    "id": "k38",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1254,7 +1355,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k36",
+    "id": "k39",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1291,7 +1392,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k37",
+    "id": "k40",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1332,7 +1433,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k38",
+    "id": "k41",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1373,7 +1474,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k39",
+    "id": "k42",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1410,7 +1511,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k40",
+    "id": "k43",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1447,7 +1548,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k41",
+    "id": "k44",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1484,7 +1585,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k42",
+    "id": "k45",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1517,7 +1618,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k43",
+    "id": "k46",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1554,7 +1655,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k44",
+    "id": "k47",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1591,7 +1692,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k45",
+    "id": "k48",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1636,7 +1737,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k46",
+    "id": "k49",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1673,7 +1774,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k47",
+    "id": "k50",
     "tipo": "lote",
     "nombre": "Lote arado",
     "cultivo": "arado",
@@ -1710,7 +1811,114 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k48",
+    "id": "k51",
+    "tipo": "lote",
+    "nombre": "Lote arado",
+    "cultivo": "arado",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7325017,
+       -28.4691053
+      ],
+      [
+       -65.7327236,
+       -28.4695759
+      ],
+      [
+       -65.7317161,
+       -28.4695913
+      ],
+      [
+       -65.7325017,
+       -28.4691053
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k52",
+    "tipo": "lote",
+    "nombre": "Lote arado",
+    "cultivo": "arado",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7312965,
+       -28.476099
+      ],
+      [
+       -65.7309754,
+       -28.4761652
+      ],
+      [
+       -65.7305785,
+       -28.4744522
+      ],
+      [
+       -65.7307796,
+       -28.4743697
+      ],
+      [
+       -65.7312965,
+       -28.476099
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k53",
+    "tipo": "lote",
+    "nombre": "Lote arado",
+    "cultivo": "arado",
+    "patron": "surcos"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7323503,
+       -28.4728756
+      ],
+      [
+       -65.7325071,
+       -28.4732425
+      ],
+      [
+       -65.7323895,
+       -28.4733
+      ],
+      [
+       -65.7318795,
+       -28.4731133
+      ],
+      [
+       -65.7323503,
+       -28.4728756
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k54",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1751,7 +1959,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k49",
+    "id": "k55",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1796,7 +2004,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k50",
+    "id": "k56",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1837,7 +2045,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k51",
+    "id": "k57",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1918,7 +2126,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k52",
+    "id": "k58",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1955,7 +2163,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k53",
+    "id": "k59",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -1996,7 +2204,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k54",
+    "id": "k60",
     "tipo": "lote",
     "nombre": "Monte nativo",
     "cultivo": "monte",
@@ -2033,7 +2241,89 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k55",
+    "id": "k61",
+    "tipo": "lote",
+    "nombre": "Monte nativo",
+    "cultivo": "monte",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7320003,
+       -28.4743136
+      ],
+      [
+       -65.7317051,
+       -28.4738184
+      ],
+      [
+       -65.7326075,
+       -28.4734091
+      ],
+      [
+       -65.7329038,
+       -28.4739717
+      ],
+      [
+       -65.7320003,
+       -28.4743136
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k62",
+    "tipo": "lote",
+    "nombre": "Monte nativo",
+    "cultivo": "monte",
+    "patron": "arboles"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7311857,
+       -28.4730667
+      ],
+      [
+       -65.7322891,
+       -28.4734408
+      ],
+      [
+       -65.7313795,
+       -28.4738597
+      ],
+      [
+       -65.7311504,
+       -28.4735211
+      ],
+      [
+       -65.7317496,
+       -28.473534
+      ],
+      [
+       -65.7317467,
+       -28.473361
+      ],
+      [
+       -65.7311857,
+       -28.4730667
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k63",
     "tipo": "lote",
     "nombre": "Nogal",
     "cultivo": "nogal",
@@ -2070,7 +2360,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k56",
+    "id": "k64",
     "tipo": "lote",
     "nombre": "Nogal",
     "cultivo": "nogal",
@@ -2111,7 +2401,44 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k57",
+    "id": "k65",
+    "tipo": "lote",
+    "nombre": "Observatorio climático",
+    "cultivo": "observatorio",
+    "patron": "pasto"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7324156,
+       -28.4721239
+      ],
+      [
+       -65.7325204,
+       -28.472337
+      ],
+      [
+       -65.7322628,
+       -28.4724342
+      ],
+      [
+       -65.7321642,
+       -28.4722187
+      ],
+      [
+       -65.7324156,
+       -28.4721239
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k66",
     "tipo": "lote",
     "nombre": "Olivos",
     "cultivo": "olivo",
@@ -2148,7 +2475,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k58",
+    "id": "k67",
     "tipo": "lote",
     "nombre": "Olivos",
     "cultivo": "olivo",
@@ -2185,7 +2512,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k59",
+    "id": "k68",
     "tipo": "lote",
     "nombre": "Olivos",
     "cultivo": "olivo",
@@ -2222,7 +2549,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k60",
+    "id": "k69",
     "tipo": "lote",
     "nombre": "Olivos",
     "cultivo": "olivo",
@@ -2259,7 +2586,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k61",
+    "id": "k70",
     "tipo": "lote",
     "nombre": "Olivos",
     "cultivo": "olivo",
@@ -2296,7 +2623,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k62",
+    "id": "k71",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2341,7 +2668,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k63",
+    "id": "k72",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2382,7 +2709,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k64",
+    "id": "k73",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2419,7 +2746,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k65",
+    "id": "k74",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2456,7 +2783,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k66",
+    "id": "k75",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2493,7 +2820,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k67",
+    "id": "k76",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2530,7 +2857,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k68",
+    "id": "k77",
     "tipo": "lote",
     "nombre": "Olivo",
     "cultivo": "olivo",
@@ -2567,7 +2894,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k69",
+    "id": "k78",
     "tipo": "lote",
     "nombre": "Pasturas nativas",
     "cultivo": "pastura",
@@ -2604,7 +2931,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k70",
+    "id": "k79",
     "tipo": "lote",
     "nombre": "Pecanes",
     "cultivo": "pecan",
@@ -2615,8 +2942,8 @@
     "coordinates": [
      [
       [
-       -65.7292092,
-       -28.4703774
+       -65.7291712,
+       -28.4701454
       ],
       [
        -65.7292493,
@@ -2627,12 +2954,12 @@
        -28.4711463
       ],
       [
-       -65.7285653,
-       -28.4704039
+       -65.7285592,
+       -28.4701895
       ],
       [
-       -65.7292092,
-       -28.4703774
+       -65.7291712,
+       -28.4701454
       ]
      ]
     ]
@@ -2641,7 +2968,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k71",
+    "id": "k80",
     "tipo": "lote",
     "nombre": "Pecanes jóvenes",
     "cultivo": "pecan_joven",
@@ -2682,7 +3009,89 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k72",
+    "id": "k81",
+    "tipo": "lote",
+    "nombre": "Suelo desnudo",
+    "cultivo": "suelo_desnudo",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7327214,
+       -28.4723602
+      ],
+      [
+       -65.7328228,
+       -28.4726128
+      ],
+      [
+       -65.7322107,
+       -28.4728564
+      ],
+      [
+       -65.7321508,
+       -28.4727437
+      ],
+      [
+       -65.731793,
+       -28.4729115
+      ],
+      [
+       -65.7317214,
+       -28.4727436
+      ],
+      [
+       -65.7327214,
+       -28.4723602
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k82",
+    "tipo": "lote",
+    "nombre": "Suelo desnudo",
+    "cultivo": "suelo_desnudo",
+    "patron": "liso"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7320917,
+       -28.4721849
+      ],
+      [
+       -65.7322232,
+       -28.4724582
+      ],
+      [
+       -65.7316376,
+       -28.4726755
+      ],
+      [
+       -65.7314854,
+       -28.4723896
+      ],
+      [
+       -65.7320917,
+       -28.4721849
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k83",
     "tipo": "lote",
     "nombre": "Tuna",
     "cultivo": "tuna",
@@ -2719,7 +3128,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k73",
+    "id": "k84",
     "tipo": "lote",
     "nombre": "Vid",
     "cultivo": "vid",
@@ -2760,79 +3169,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k74",
-    "tipo": "lote",
-    "nombre": "Generadores ESAPEN",
-    "patron": "liso"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7279065,
-       -28.4732284
-      ],
-      [
-       -65.7278521,
-       -28.4739025
-      ],
-      [
-       -65.7273131,
-       -28.4738723
-      ],
-      [
-       -65.7273696,
-       -28.4731801
-      ],
-      [
-       -65.7279065,
-       -28.4732284
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k75",
-    "tipo": "lote",
-    "nombre": "Compostaje",
-    "patron": "liso"
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -65.7306839,
-       -28.4722561
-      ],
-      [
-       -65.7306971,
-       -28.4723632
-      ],
-      [
-       -65.7302285,
-       -28.4723973
-      ],
-      [
-       -65.7302151,
-       -28.4722948
-      ],
-      [
-       -65.7306839,
-       -28.4722561
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k76",
+    "id": "k85",
     "tipo": "lote",
     "nombre": "Invernadero de cítricos",
     "cultivo": "naranja",
@@ -2870,7 +3207,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k77",
+    "id": "k86",
     "tipo": "lote",
     "nombre": "Secadero",
     "cultivo": "edificio",
@@ -2908,7 +3245,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k78",
+    "id": "k87",
     "tipo": "lote",
     "nombre": "Invernadero",
     "cultivo": "sanidad",
@@ -2946,7 +3283,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k79",
+    "id": "k88",
     "tipo": "lote",
     "nombre": "Laboratorio de aceite",
     "cultivo": "aceite",
@@ -2984,12 +3321,12 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k80",
+    "id": "k89",
     "tipo": "lote",
     "nombre": "SUM",
     "cultivo": "charla",
     "patron": "edificio",
-    "techo": "tejas"
+    "techo": "losa"
    },
    "geometry": {
     "type": "Polygon",
@@ -3026,7 +3363,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k81",
+    "id": "k90",
     "tipo": "lote",
     "nombre": "Edificio EEA",
     "cultivo": "edificio",
@@ -3064,7 +3401,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k82",
+    "id": "k91",
     "tipo": "lote",
     "nombre": "Laboratorio Suelo",
     "cultivo": "suelo",
@@ -3102,7 +3439,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k83",
+    "id": "k92",
     "tipo": "lote",
     "nombre": "Centro Regional",
     "cultivo": "edificio",
@@ -3140,7 +3477,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k84",
+    "id": "k93",
     "tipo": "lote",
     "nombre": "Depósito",
     "cultivo": "edificio",
@@ -3178,7 +3515,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k85",
+    "id": "k94",
     "tipo": "lote",
     "nombre": "Edificio de frutales",
     "cultivo": "edificio",
@@ -3216,7 +3553,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k86",
+    "id": "k95",
     "tipo": "lote",
     "nombre": "Edificio MIP",
     "cultivo": "edificio",
@@ -3254,7 +3591,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k87",
+    "id": "k96",
     "tipo": "lote",
     "nombre": "Galpón maquinarias",
     "cultivo": "edificio",
@@ -3292,7 +3629,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k88",
+    "id": "k97",
     "tipo": "lote",
     "nombre": "Invernadero",
     "cultivo": "sanidad",
@@ -3330,7 +3667,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k89",
+    "id": "k98",
     "tipo": "lote",
     "nombre": "Invernadero",
     "cultivo": "sanidad",
@@ -3368,7 +3705,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k90",
+    "id": "k99",
     "tipo": "lote",
     "nombre": "Edificio APINTA",
     "cultivo": "edificio",
@@ -3406,7 +3743,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k91",
+    "id": "k100",
     "tipo": "lote",
     "nombre": "Residuos agroquímicos",
     "cultivo": "edificio",
@@ -3444,7 +3781,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k92",
+    "id": "k101",
     "tipo": "lote",
     "nombre": "Galpón deposito",
     "cultivo": "edificio",
@@ -3482,39 +3819,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k93",
-    "tipo": "servicio",
-    "nombre": "Pozo de agua",
-    "servicio": "pozo"
-   },
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.726795,
-     -28.4681685
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k94",
-    "tipo": "servicio",
-    "nombre": "Pozo de agua",
-    "servicio": "pozo"
-   },
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -65.7291674,
-     -28.4648993
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "k95",
+    "id": "k102",
     "tipo": "servicio",
     "nombre": "Ingreso principal",
     "servicio": "ingreso"
@@ -3530,7 +3835,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k96",
+    "id": "k103",
     "tipo": "servicio",
     "nombre": "Ingreso secundario",
     "servicio": "ingreso"
@@ -3546,7 +3851,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k97",
+    "id": "k104",
     "tipo": "servicio",
     "nombre": "Estación meteorológica",
     "servicio": "clima"
@@ -3562,7 +3867,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "k98",
+    "id": "k105",
     "tipo": "servicio",
     "nombre": "Ingreso sector 2",
     "servicio": "ingreso"
@@ -3578,7 +3883,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "ruta-99",
+    "id": "ruta-106",
     "tipo": "ruta",
     "nombre": "RP N° 33"
    },
@@ -3623,7 +3928,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "ruta-100",
+    "id": "ruta-107",
     "tipo": "ruta",
     "nombre": "RP N° 41"
    },
@@ -3684,7 +3989,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "calle-101",
+    "id": "calle-108",
     "tipo": "calle",
     "nombre": "Calle Manuel Soria",
     "superficie": "asfalto"
@@ -3722,7 +4027,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "calle-102",
+    "id": "calle-109",
     "tipo": "calle",
     "nombre": "Calle America",
     "superficie": "tierra"
@@ -3772,7 +4077,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "calle-103",
+    "id": "calle-110",
     "tipo": "calle",
     "nombre": "Calle Cristobal Colon",
     "superficie": "asfalto"
@@ -3818,7 +4123,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-104",
+    "id": "camino-111",
     "tipo": "camino",
     "nombre": "Camino interno principal"
    },
@@ -3839,7 +4144,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-105",
+    "id": "camino-112",
     "tipo": "camino",
     "nombre": "camino interno"
    },
@@ -3860,7 +4165,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-106",
+    "id": "camino-113",
     "tipo": "camino",
     "nombre": "camino inerno"
    },
@@ -3881,7 +4186,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-107",
+    "id": "camino-114",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -3902,7 +4207,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-108",
+    "id": "camino-115",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -3931,7 +4236,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-109",
+    "id": "camino-116",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -3952,7 +4257,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-110",
+    "id": "camino-117",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -3973,7 +4278,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-111",
+    "id": "camino-118",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -3994,7 +4299,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-112",
+    "id": "camino-119",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4015,7 +4320,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-113",
+    "id": "camino-120",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4036,7 +4341,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-114",
+    "id": "camino-121",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4057,7 +4362,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-115",
+    "id": "camino-122",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4078,7 +4383,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-116",
+    "id": "camino-123",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4099,7 +4404,7 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "camino-117",
+    "id": "camino-124",
     "tipo": "camino",
     "nombre": "Camino interno"
    },
@@ -4113,6 +4418,862 @@
      [
       -65.7323802,
       -28.4734371
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "paseo-125",
+    "tipo": "paseo",
+    "nombre": "sendero"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7297806,
+      -28.4724655
+     ],
+     [
+      -65.7301047,
+      -28.472255
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-126",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7268506,
+      -28.4685893
+     ],
+     [
+      -65.7267258,
+      -28.4687745
+     ],
+     [
+      -65.7266349,
+      -28.4689137
+     ],
+     [
+      -65.7265623,
+      -28.4690027
+     ],
+     [
+      -65.7265073,
+      -28.4692171
+     ],
+     [
+      -65.7265147,
+      -28.4695121
+     ],
+     [
+      -65.7265245,
+      -28.4698017
+     ],
+     [
+      -65.7265945,
+      -28.4700472
+     ],
+     [
+      -65.7268165,
+      -28.4706274
+     ],
+     [
+      -65.7269344,
+      -28.4708697
+     ],
+     [
+      -65.7270103,
+      -28.4710538
+     ],
+     [
+      -65.7270416,
+      -28.4711896
+     ],
+     [
+      -65.7270813,
+      -28.4715629
+     ],
+     [
+      -65.7271961,
+      -28.4720663
+     ],
+     [
+      -65.7272701,
+      -28.4726383
+     ],
+     [
+      -65.7276682,
+      -28.4727005
+     ],
+     [
+      -65.728338,
+      -28.4727983
+     ],
+     [
+      -65.7286544,
+      -28.4728428
+     ],
+     [
+      -65.7292538,
+      -28.472716
+     ],
+     [
+      -65.7297169,
+      -28.4725388
+     ],
+     [
+      -65.730277,
+      -28.4727306
+     ],
+     [
+      -65.732314,
+      -28.4734629
+     ],
+     [
+      -65.7325752,
+      -28.4735913
+     ],
+     [
+      -65.7328194,
+      -28.4740449
+     ],
+     [
+      -65.7321365,
+      -28.4743351
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-127",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7285586,
+      -28.4651731
+     ],
+     [
+      -65.7284412,
+      -28.4652248
+     ],
+     [
+      -65.7282674,
+      -28.4652889
+     ],
+     [
+      -65.7280793,
+      -28.4653481
+     ],
+     [
+      -65.7278339,
+      -28.4653846
+     ],
+     [
+      -65.727555,
+      -28.4654238
+     ],
+     [
+      -65.7274436,
+      -28.4655293
+     ],
+     [
+      -65.7273033,
+      -28.4658558
+     ],
+     [
+      -65.7271125,
+      -28.466384
+     ],
+     [
+      -65.7270652,
+      -28.4665682
+     ],
+     [
+      -65.7270428,
+      -28.4667723
+     ],
+     [
+      -65.7270483,
+      -28.4670425
+     ],
+     [
+      -65.7270396,
+      -28.4672517
+     ],
+     [
+      -65.7270616,
+      -28.4675688
+     ],
+     [
+      -65.7269967,
+      -28.4681266
+     ],
+     [
+      -65.7268509,
+      -28.4685894
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-128",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7277232,
+      -28.4686028
+     ],
+     [
+      -65.7283862,
+      -28.4685266
+     ],
+     [
+      -65.7284578,
+      -28.4695736
+     ],
+     [
+      -65.7297992,
+      -28.4694828
+     ],
+     [
+      -65.7302088,
+      -28.4705304
+     ],
+     [
+      -65.7304348,
+      -28.4706648
+     ],
+     [
+      -65.7317585,
+      -28.4730899
+     ],
+     [
+      -65.7328136,
+      -28.4726235
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-129",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7304368,
+      -28.4706615
+     ],
+     [
+      -65.7306995,
+      -28.4703038
+     ],
+     [
+      -65.7310434,
+      -28.4699777
+     ],
+     [
+      -65.7314311,
+      -28.4697103
+     ],
+     [
+      -65.7316688,
+      -28.4695979
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-130",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7316678,
+      -28.4695997
+     ],
+     [
+      -65.7318507,
+      -28.4699624
+     ],
+     [
+      -65.7321084,
+      -28.4705427
+     ],
+     [
+      -65.7324692,
+      -28.471315
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-131",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7304361,
+      -28.4706659
+     ],
+     [
+      -65.7302865,
+      -28.4708907
+     ],
+     [
+      -65.7300929,
+      -28.4713504
+     ],
+     [
+      -65.7297282,
+      -28.4722507
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-132",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7328206,
+      -28.4740452
+     ],
+     [
+      -65.7331244,
+      -28.4739869
+     ],
+     [
+      -65.7333581,
+      -28.4743559
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-133",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7297167,
+      -28.4725389
+     ],
+     [
+      -65.7294614,
+      -28.4734117
+     ],
+     [
+      -65.729397,
+      -28.4738671
+     ],
+     [
+      -65.7294609,
+      -28.4745575
+     ],
+     [
+      -65.729469,
+      -28.4749299
+     ],
+     [
+      -65.7305483,
+      -28.4744818
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-134",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7294665,
+      -28.4749301
+     ],
+     [
+      -65.7296522,
+      -28.4757353
+     ],
+     [
+      -65.7298089,
+      -28.4763955
+     ],
+     [
+      -65.7299485,
+      -28.4769422
+     ],
+     [
+      -65.7315477,
+      -28.4766498
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-135",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7310675,
+      -28.4740587
+     ],
+     [
+      -65.7324413,
+      -28.4735336
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-136",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7270115,
+      -28.4679851
+     ],
+     [
+      -65.7276747,
+      -28.4679826
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-137",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7265032,
+      -28.4692867
+     ],
+     [
+      -65.7282112,
+      -28.4691752
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-138",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7277527,
+      -28.4711207
+     ],
+     [
+      -65.7270408,
+      -28.4711823
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-139",
+    "tipo": "canal",
+    "nombre": "Acequia",
+    "clase": "acequia"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7292039,
+      -28.4695261
+     ],
+     [
+      -65.7293439,
+      -28.4712954
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-140",
+    "tipo": "canal",
+    "nombre": "Canal abierto",
+    "clase": "canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7285726,
+      -28.4710823
+     ],
+     [
+      -65.7286768,
+      -28.4721193
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-141",
+    "tipo": "canal",
+    "nombre": "Cañería subterránea",
+    "clase": "caneria"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7268276,
+      -28.4686154
+     ],
+     [
+      -65.7273551,
+      -28.4685524
+     ],
+     [
+      -65.727543,
+      -28.4685539
+     ],
+     [
+      -65.7277232,
+      -28.4686033
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-142",
+    "tipo": "canal",
+    "nombre": "Cañería subterránea",
+    "clase": "caneria"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7280596,
+      -28.4653505
+     ],
+     [
+      -65.7282012,
+      -28.4665226
+     ],
+     [
+      -65.7282301,
+      -28.4674398
+     ],
+     [
+      -65.7283623,
+      -28.4685442
+     ],
+     [
+      -65.7285736,
+      -28.4710824
+     ],
+     [
+      -65.7278535,
+      -28.4710895
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-143",
+    "tipo": "canal",
+    "nombre": "Cañería subterránea",
+    "clase": "caneria"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7289409,
+      -28.4668298
+     ],
+     [
+      -65.7282121,
+      -28.4668913
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "canal-144",
+    "tipo": "canal",
+    "nombre": "Cañería subterránea",
+    "clase": "caneria"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -65.7282145,
+      -28.4669593
+     ],
+     [
+      -65.7273876,
+      -28.4670067
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k145",
+    "tipo": "riego",
+    "nombre": "Tanque australiano",
+    "servicio": "tanque"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7311034,
+     -28.473139
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k146",
+    "tipo": "riego",
+    "nombre": "Pozo de agua",
+    "servicio": "pozo"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.726795,
+     -28.4681685
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k147",
+    "tipo": "riego",
+    "nombre": "Pozo de agua",
+    "servicio": "pozo"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7291674,
+     -28.4648993
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k148",
+    "tipo": "riego",
+    "nombre": "Chimenea de riego",
+    "servicio": "chimenea"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7286702,
+     -28.4668472
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k149",
+    "tipo": "riego",
+    "nombre": "Chimenea de riego",
+    "servicio": "chimenea"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7277236,
+     -28.4669805
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k150",
+    "tipo": "riego",
+    "nombre": "Chimenea de riego",
+    "servicio": "chimenea"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -65.7280118,
+     -28.4711111
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "k151",
+    "tipo": "lote",
+    "nombre": "Estanque",
+    "cultivo": "estanque",
+    "patron": "agua"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.7291828,
+       -28.4646751
+      ],
+      [
+       -65.7290812,
+       -28.4650236
+      ],
+      [
+       -65.7288863,
+       -28.4651073
+      ],
+      [
+       -65.7288546,
+       -28.4651758
+      ],
+      [
+       -65.728719,
+       -28.4652027
+      ],
+      [
+       -65.7284553,
+       -28.4650861
+      ],
+      [
+       -65.7283668,
+       -28.4649092
+      ],
+      [
+       -65.7286712,
+       -28.4647235
+      ],
+      [
+       -65.7288904,
+       -28.4646763
+      ],
+      [
+       -65.7289909,
+       -28.4647478
+      ],
+      [
+       -65.7290412,
+       -28.4646864
+      ],
+      [
+       -65.7291828,
+       -28.4646751
+      ]
      ]
     ]
    }
