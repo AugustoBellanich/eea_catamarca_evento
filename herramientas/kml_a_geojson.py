@@ -55,13 +55,15 @@ NOMBRES = {
     "secadero":              {"cultivo": "edificio", "patron": "edificio", "techo": "chapa"},
     "invernadero citricos":  {"cultivo": "naranja", "patron": "edificio", "nombre": "Invernadero de cítricos", "techo": "vidrio"},
     "monte frutal":          {"cultivo": "frutal", "patron": "arboles"},
-    "compostaje":            {"patron": "liso"},
+    "compostaje":            {"cultivo": "estiercol", "patron": "liso", "nombre": "Compostaje (estiércol)"},  # pilas de estiércol
     "lote vacio":            {"cultivo": "arado", "patron": "surcos", "nombre": "Lote arado"},  # arado, listo para sembrar
     "monte":                 {"cultivo": "monte", "patron": "arboles", "nombre": "Monte nativo"},  # árboles nativos, arbustos y claros
     "desmonte":              {"cultivo": "desmonte", "patron": "pasto"},  # sobre todo tierra desnuda, algunos árboles
     "comino":                {"cultivo": "comino", "patron": "surcos"},
-    # A CONFIRMAR: predio de generadores (unos 50 × 75 m); por ahora se dibuja como lote liso, no como edificio.
-    "generadores esapen":    {"patron": "liso", "nombre": "Generadores ESAPEN"},
+    # Predio de generadores eléctricos (unos 50 × 75 m): grupos electrógenos sobre ripio, no un edificio.
+    "generadores esapen":    {"cultivo": "generadores", "patron": "liso", "nombre": "Generadores eléctricos ESAPEN"},
+    "suelo desnudo":         {"cultivo": "suelo_desnudo", "patron": "liso"},
+    "observatorio climatico": {"cultivo": "observatorio", "patron": "pasto", "nombre": "Observatorio climático"},  # parcela cercada con instrumentos
     "centro regional catamarca - la rioja": {"cultivo": "edificio", "patron": "edificio", "nombre": "Centro Regional"},
     "eea catamarca (edificio)": {"cultivo": "edificio", "patron": "edificio", "nombre": "Edificio EEA", "techo": "tejas"},
     # Servicios
@@ -71,7 +73,9 @@ NOMBRES = {
     "ingreso secundario":    {"tipo": "servicio", "servicio": "ingreso"},
     "ingreso zona 2":        {"tipo": "servicio", "servicio": "ingreso", "nombre": "Ingreso sector 2"},
     "estacion meteorologica inta": {"tipo": "servicio", "servicio": "clima", "nombre": "Estación meteorológica"},
-    "pozo de agua":          {"tipo": "servicio", "servicio": "pozo", "nombre": "Pozo de agua"},
+    # Riego y agua (capa "Riego y agua" del sitio)
+    "pozo de agua":          {"tipo": "riego", "servicio": "pozo", "nombre": "Pozo de agua"},
+    "tanque australiano":    {"tipo": "riego", "servicio": "tanque", "nombre": "Tanque australiano"},
 }
 
 # Correcciones de ubicación indicadas por Augusto sobre el mapa (se aplican después de leer el KML).
@@ -136,8 +140,14 @@ def reconocer(nombre):
         info = {"tipo": "calle", "superficie": m.group(1), "nombre": ("Calle " + calle.title()) if calle else "Calle"}
     if info is None and (k.startswith("paseo") or k.startswith("sendero")):  # paseo peatonal del recorrido
         info = {"tipo": "paseo"}
-    if info is None and (k.startswith("canal") or k.startswith("acequia")):  # "Canal…", "Acequia…": riego
-        info = {"tipo": "canal"}
+    if info is None and (k.startswith("canal") or k.startswith("acequia")):  # "Canal…", "Acequia…": riego a cielo abierto
+        info = {"tipo": "canal", "clase": "acequia" if k.startswith("acequia") else "canal"}
+    if info is None and re.match(r"(caneria|tuberia)", k):  # "Cañería subterránea…": riego entubado (va bajo tierra)
+        info = {"tipo": "canal", "clase": "caneria", "nombre": "Cañería subterránea"}
+    if info is None and k.startswith("chimenea"):  # "Chimenea de riego": salida de la cañería
+        info = {"tipo": "riego", "servicio": "chimenea", "nombre": "Chimenea de riego"}
+    if info is None and k.startswith("tanque"):  # "Tanque australiano", "Tanque…"
+        info = {"tipo": "riego", "servicio": "tanque"}
     if info is None and re.match(r"galpon\b", k):  # "Galpón maquinarias", "Galpón depósito": techo de chapa
         info = {"cultivo": "edificio", "patron": "edificio", "techo": "chapa", "nombre": re.sub(r"(?i)^galp[oó]n", "Galpón", nombre.strip())}
     if info is None and re.match(r"pozo de agua", k):  # "Pozo de agua 1", "Pozo de agua 2"
@@ -196,7 +206,9 @@ def convertir(ruta):
         tipo = info.get("tipo", "lote")
         props = {"id": {"estacion": "est-%s" % info.get("estacion"), "predio": "predio", "camino": "camino-%d" % n, "ruta": "ruta-%d" % n, "paseo": "paseo-%d" % n, "calle": "calle-%d" % n, "canal": "canal-%d" % n}.get(tipo, "k%d" % n), "tipo": tipo}
         props["nombre"] = info.get("nombre", re.sub(r"(?i)^edificio:?\s*", "", nombre))
-        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "provisorio") if c in info})
+        props.update({c: info[c] for c in ("cultivo", "patron", "estacion", "servicio", "superficie", "paisaje", "techo", "revisar", "provisorio", "clase") if c in info})
+        if tipo == "canal" and "nombre" not in info:  # "acequia" -> "Acequia"
+            props["nombre"] = props["nombre"][:1].upper() + props["nombre"][1:]
         if tipo == "estacion":
             props["nombre"] = nombre
             nota = re.sub(r"\s+", " ", desc).strip()

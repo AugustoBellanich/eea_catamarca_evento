@@ -38,6 +38,7 @@ ESTILOS = {
     "camino":   ("#e6d3a8", 3, None),
     "paseo":    ("#faf8f5", 3, None),
     "canal":    ("#2f9fd8", 3, None),
+    "caneria":  ("#1565c0", 2, None),
 }
 for z, col in ZONAS.items():
     ESTILOS["est-" + z] = (col, 3, (col, "66"))
@@ -45,6 +46,7 @@ for z, col in ZONAS.items():
 ICONOS = {  # id: (ícono, color o None)
     "ingreso": ("http://maps.google.com/mapfiles/kml/shapes/arrow.png", None),
     "servicio": ("http://maps.google.com/mapfiles/kml/shapes/info-i.png", None),
+    "riego":    ("http://maps.google.com/mapfiles/kml/shapes/water.png", None),
 }
 for z, col in ZONAS.items():
     ICONOS["parada-" + z] = ("http://maps.google.com/mapfiles/kml/paddle/wht-blank.png", col)
@@ -52,8 +54,9 @@ for z, col in ZONAS.items():
 # Nombre de cada cultivo para las subcarpetas de lotes.
 CULTIVOS = {"almendra": "Almendros", "nogal": "Nogales", "pecan": "Pecanes", "pecan_joven": "Pecanes jóvenes", "olivo": "Olivos",
             "naranja": "Cítricos", "lima": "Cítricos", "higo": "Higueras", "frutal": "Frutal mixto", "tuna": "Tuna", "vid": "Vid",
-            "algodon": "Algodón", "girasol": "Girasol", "pastura": "Pasturas", "ganado": "Corrales", "estanque": "Agua",
-            "arado": "Lotes arados", "monte": "Monte nativo", "desmonte": "Desmonte", "comino": "Comino"}
+            "algodon": "Algodón", "girasol": "Girasol", "pastura": "Pasturas", "ganado": "Corrales",
+            "arado": "Lotes arados", "monte": "Monte nativo", "desmonte": "Desmonte", "comino": "Comino",
+            "estiercol": "Compostaje", "generadores": "Generadores", "suelo_desnudo": "Suelo desnudo", "observatorio": "Observatorio climático"}
 
 AYUDA = """Mapa del evento de la EEA Catamarca, para seguir dibujando en Google Earth.
 
@@ -74,7 +77,10 @@ Nombres que se reconocen solos:
 - Canal dibujado como polígono: se toma como superficie de agua.
 - Edificios: "Galpón …" lleva techo de chapa. Para cambiar el techo de cualquier edificio, escribir en su descripción
   "Techo: chapa", "Techo: tejas", "Techo: vidrio" (invernadero) o "Techo: losa" (plano).
-- "Pozo de agua …" (marcador): se muestra como servicio.
+- Riego y agua (capa "Riego y agua" del sitio, carpeta del mismo nombre):
+  líneas "Canal …" o "Acequia …" (a cielo abierto) y "Cañería …" (subterránea, se dibuja punteada);
+  marcadores "Pozo de agua …", "Chimenea de riego …" y "Tanque …"; polígono "Estanque".
+  Los canales y cañerías se dibujan por debajo de calles, rutas y caminos.
 
 Cuando termines: clic derecho en la carpeta principal → Guardar lugar como → KML o KMZ, guardarlo en fuentes/
 y correr: python herramientas/kml_a_geojson.py fuentes/archivo.kml"""
@@ -115,7 +121,7 @@ def estilos():
 def main(ruta, salida="fuentes/predio-editable.kml"):
     feats, originales, _ = convertir(ruta)
     ests = {e["id"]: e for e in json.load(open(os.path.join(AQUI, "datos/estaciones.json"), encoding="utf-8"))["estaciones"]}
-    grupos = {g: [] for g in ("predio", "estaciones", "edificios", "servicios", "rutas", "calles", "caminos", "paseos", "canales", "revisar")}
+    grupos = {g: [] for g in ("predio", "estaciones", "edificios", "servicios", "rutas", "calles", "caminos", "paseos", "canales", "canerias", "riego", "agua", "revisar")}
     lotes = {}
     for f, nombre in zip(feats, originales):
         p, g = f["properties"], f["geometry"]
@@ -130,6 +136,10 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
         elif tipo == "estacion":  # la descripción es la nota que muestra la ficha: se conserva tal cual
             zona = ests.get(p["estacion"], {}).get("zona", "frutales")
             grupos["estaciones"].append((ests.get(p["estacion"], {}).get("numero") or 99, placemark(nombre, "parada-" + zona, g, p.get("nota", ""))))
+        elif tipo == "riego":
+            grupos["riego"].append(placemark(nombre, "riego", g, desc))
+        elif tipo == "canal" and p.get("clase") == "caneria":
+            grupos["canerias"].append(placemark(nombre, "caneria", g, desc))
         elif tipo == "servicio":
             grupos["servicios"].append(placemark(nombre, "ingreso" if p.get("servicio") == "ingreso" else "servicio", g, desc))
         elif tipo in ("ruta", "calle", "camino", "paseo", "canal"):
@@ -137,6 +147,8 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
             grupos[{"ruta": "rutas", "calle": "calles", "camino": "caminos", "paseo": "paseos", "canal": "canales"}[tipo]].append(placemark(nombre, estilo, g, desc))
         elif p.get("revisar"):
             grupos["revisar"].append(placemark(nombre, "revisar", g, "Nombre sin reconocer: sumarlo a NOMBRES en kml_a_geojson.py"))
+        elif p.get("patron") == "agua":
+            grupos["agua"].append(placemark(nombre, "agua", g, desc))
         elif p.get("patron") == "edificio":
             grupos["edificios"].append(placemark(nombre, "edificio", g, desc))
         else:
@@ -149,6 +161,9 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
     canales_desc = ('Dibujar cada canal o acequia como RUTA (línea) siguiendo su traza, con un nombre que empiece con "Canal" '
                     'o "Acequia" (por ejemplo "Canal principal", "Canal secundario lote olivos", "Acequia norte"). '
                     "El nombre completo aparece al tocarlo en el mapa.")
+    riego_desc = ("Todo lo de riego y agua va en la capa \"Riego y agua\" del sitio (se puede ocultar). Se reconoce por el nombre: "
+                  "\"Canal…\", \"Acequia…\", \"Cañería…\" (líneas), \"Pozo de agua…\", \"Chimenea de riego…\", \"Tanque…\" (marcadores) "
+                  "y \"Estanque\" (polígono).")
     cuerpo = [
         carpeta("Predio (sectores)", grupos["predio"]),
         carpeta("Estaciones del recorrido", estaciones_kml, "Un marcador por estación, del color de su zona (config.js).", abierta=True),
@@ -157,7 +172,10 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
         carpeta("Ingresos y servicios", grupos["servicios"]),
         carpeta("Vías", [carpeta("Rutas", grupos["rutas"]), carpeta("Calles", grupos["calles"]),
                          carpeta("Caminos internos", grupos["caminos"]), carpeta("Paseos y senderos", grupos["paseos"])]),
-        carpeta("Canales de riego", grupos["canales"], canales_desc, abierta=True),
+        carpeta("Riego y agua", [carpeta("Canales y acequias", grupos["canales"], canales_desc),
+                                 carpeta("Cañerías subterráneas", grupos["canerias"], 'Líneas "Cañería …": se dibujan punteadas.'),
+                                 carpeta("Pozos, chimeneas y tanques", grupos["riego"]),
+                                 carpeta("Estanques", grupos["agua"])], riego_desc, abierta=True),
     ]
     if grupos["revisar"]:
         cuerpo.append(carpeta("Sin reconocer", grupos["revisar"], "Nombres que el sitio no reconoce todavía."))
