@@ -513,6 +513,10 @@ body { background: #eee5c8; }
 .serv-pq { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.8); display: grid; place-items: center;
   box-shadow: 0 1px 3px rgba(50,60,30,.2); cursor: pointer; }
 .serv-pq svg { width: 18px; height: 18px; filter: grayscale(1) sepia(.3) contrast(.9); opacity: .7; }
+/* capa "Riego y agua": pozos, tanques y chimeneas, en celeste para leerse junto a los canales */
+.serv-pq.riego { width: 24px; height: 24px; background: rgba(234,246,249,.92); box-shadow: 0 0 0 1.5px #7FAFBF; }
+.serv-pq.riego svg { width: 17px; height: 17px; filter: none; opacity: .9; }
+.serv-pq.riego-chimenea { transform: scale(.8); }
 
 /* Cartelito al tocar un lote: píldora oliva oscura */
 #cartelito { position: fixed; left: 50%; bottom: calc(var(--alto-acciones, 64px) + 14px); z-index: 1200;

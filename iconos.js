@@ -132,6 +132,14 @@ window.ICONOS = (function () {
       <rect x="10" y="30" width="28" height="10" rx="2" fill="#90a4ae" ${O}/>
       <path d="M20 30V14h8v16" fill="#b0bec5" ${O}/><path d="M16 14h16" stroke="#546e7a" stroke-width="3" stroke-linecap="round"/>
       <path d="M24 4c-3 4-5 6-5 8.5a5 5 0 0 0 10 0C29 10 27 8 24 4z" fill="#29a3e8" ${O}/>`),
+    // tanque australiano: cilindro bajo de chapa visto desde arriba, con agua
+    tanque: svg(`
+      <circle cx="24" cy="25" r="17" fill="#90a4ae" ${O}/><circle cx="24" cy="25" r="13" fill="#29a3e8"/>
+      <path d="M15 25q4.5-3 9 0t9 0" stroke="#e1f5fe" stroke-width="2" fill="none" stroke-linecap="round"/>`),
+    // chimenea de riego: caño vertical de la cañería con su compuerta
+    chimenea: svg(`
+      <rect x="17" y="10" width="14" height="30" rx="3" fill="#b0bec5" ${O}/><rect x="13" y="8" width="22" height="6" rx="2" fill="#78909c" ${O}/>
+      <path d="M24 22c-3 4-4 6-4 8a4 4 0 0 0 8 0c0-2-1-4-4-8z" fill="#29a3e8"/>`),
     ingreso: svg(`
       <path d="M8 42V14h6v28M34 42V14h6v28" fill="#90a4ae" ${O}/>
       <path d="M14 18h20M14 26h20" stroke="#6d4c41" stroke-width="3"/>

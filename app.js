@@ -26,6 +26,7 @@
   // "cultivos": símbolo de cada cultivo sobre su lote (apagado de entrada; las plantas se ven siempre).
   const capas = Object.assign({ estaciones: true, servicios: true }, leer("pa70-capas", {}), { lotes: true });
   if (capas.cultivos === undefined) capas.cultivos = false;
+  if (capas.riego === undefined) capas.riego = true; // canales, acequias, cañerías, pozos, chimeneas y tanques
 
   function leer(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch (_) { return def; } }
   function escribir(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { /* sin almacenamiento */ } }
@@ -56,12 +57,13 @@
   const estDe = (f) => f.properties.estacion || (estacion(f.properties.id) ? f.properties.id : null);
   const esEstacion = (f) => !!estDe(f);
   const esServicio = (f) => f.properties.tipo === "servicio";
+  const esRiego = (f) => f.properties.tipo === "riego"; // pozos, chimeneas y tanques (marcadores de la capa "Riego y agua")
   const esPredio = (f) => f.properties.tipo === "predio" || f.properties.id === "predio";
   const esCamino = (f) => /^(camino|ruta|paseo|calle)/.test(f.properties.id);
   const tipoLinea = (f) => { const t = (f.properties.id.match(/^(camino|ruta|paseo|calle)/) || [])[1];
     return t === "calle" ? "calle-" + (f.properties.superficie || "tierra") : t; };
   const esCanal = (f) => f.properties.tipo === "canal" && f.geometry.type === "LineString";
-  const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f) && !esCanal(f);
+  const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f) && !esCanal(f) && !esRiego(f);
   const lotesDe = (id) => geo.features.filter((f) => estDe(f) === id);
   const ubicadas = () => estaciones.filter((e) => lotesDe(e.id).length);
 
@@ -167,6 +169,7 @@
           <label><input type="checkbox" data-capa="estaciones"> Estaciones</label>
           <label><input type="checkbox" data-capa="cultivos"> Símbolos de cultivos</label>
           <label><input type="checkbox" data-capa="servicios"> Ingresos y servicios</label>
+          <label><input type="checkbox" data-capa="riego"> Riego y agua</label>
         </div>`;
       L.DomEvent.disableClickPropagation(caja); L.DomEvent.disableScrollPropagation(caja);
       const boton = caja.querySelector(".boton-modo"), panel = caja.querySelector(".capas-panel");
@@ -304,21 +307,50 @@
     capa(rutas, { ...r, color: "#8C9295", weight: 10 });
     capa(rutas, { ...r, color: "#F4F1E6", weight: 1.2, opacity: .7, dashArray: "8 10" });
   }
-  // Canales y acequias de riego (KML: líneas "Canal…" o "Acequia…"): encima de las plantas y debajo de caminos y rutas.
-  // Se tocan para ver el nombre; una línea invisible más ancha hace fácil tocarlos con el dedo.
+  // Capa "Riego y agua": canales y acequias (KML: líneas "Canal…" o "Acequia…") y cañerías subterráneas ("Cañería…",
+  // punteadas). Van encima de las plantas y POR DEBAJO de calles, rutas y caminos: donde se cruzan, el canal se corta
+  // (pasa por abajo, en alcantarilla). El corte es una máscara SVG hecha con las mismas vías, un poco más anchas, así
+  // acompaña el zoom sin recalcular nada. Se tocan para ver el nombre (una línea invisible más ancha ayuda al dedo).
   let canalesPq = [];
   mapa.on("zoomend", () => canalesPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
-  function dibujarCanales(lineas, sat) {
+  // ancho de corte de cada vía (px a zoom 16,5): el de su dibujo más un margen
+  const CORTE = { ruta: 17, "calle-asfalto": 12, "calle-tierra": 10, camino: 9, paseo: 8 };
+  function dibujarCanales(lineas, sat, vias) {
     canalesPq = [];
-    if (!lineas.length) return;
+    if (!lineas.length || !capas.riego) return;
     if (!mapa.getPane("canales")) mapa.createPane("canales").style.zIndex = 415;
     const lienzo = dibujarCanales.lienzo || (dibujarCanales.lienzo = L.svg({ pane: "canales", padding: MARGEN }));
-    const fc = { type: "FeatureCollection", features: lineas };
-    const trazo = (st) => { const c = L.geoJSON(fc, { style: { lineCap: "round", lineJoin: "round", className: "canal", ...st, weight: st.weight * anchoZoom() },
-      interactive: false, renderer: lienzo }).addTo(capaFondo); canalesPq.push({ c, w: st.weight }); };
-    if (sat) trazo({ color: "#8fd8ff", weight: 2, opacity: .9 });
-    else { trazo({ color: "#7FAFBF", weight: 4.6, opacity: .75 }); trazo({ color: "#BFE0E6", weight: 2.2, opacity: 1 }); }
-    L.geoJSON(fc, { style: { weight: 18, opacity: 0, className: "canal" }, renderer: lienzo,
+    const reg = (c, w) => { c.addTo(capaFondo); canalesPq.push({ c, w }); return c; };
+    // 1) máscara: blanco en todo el lienzo y las vías en negro (lo negro no se dibuja)
+    if (!lienzo._map) mapa.addLayer(lienzo);
+    const svg = lienzo._container;
+    let mascara = svg.querySelector("#corte-vias");
+    if (!mascara) {
+      mascara = document.createElementNS("http://www.w3.org/2000/svg", "mask");
+      mascara.id = "corte-vias";
+      [["maskUnits", "userSpaceOnUse"], ["x", -1e6], ["y", -1e6], ["width", 2e6], ["height", 2e6]].forEach(([k, v]) => mascara.setAttribute(k, v));
+      mascara.innerHTML = '<rect x="-1000000" y="-1000000" width="2000000" height="2000000" fill="#fff"/>';
+      svg.insertBefore(mascara, svg.firstChild);
+    }
+    Object.keys(CORTE).forEach((t) => {
+      const fs = vias.filter((f) => tipoLinea(f) === t);
+      if (!fs.length) return;
+      const c = reg(L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { color: "#000", opacity: 1, lineCap: "butt", lineJoin: "round",
+        weight: CORTE[t] * anchoZoom() }, interactive: false, renderer: lienzo }), CORTE[t]);
+      c.eachLayer((l) => l._path && mascara.appendChild(l._path)); // Leaflet sigue actualizando el trazo aunque esté en la máscara
+    });
+    const conCorte = (c) => { c.eachLayer((l) => l._path && l._path.setAttribute("mask", "url(#corte-vias)")); return c; };
+    // 2) trazos
+    const abiertos = lineas.filter((f) => f.properties.clase !== "caneria"), entubados = lineas.filter((f) => f.properties.clase === "caneria");
+    const trazo = (fs, st) => { if (!fs.length) return;
+      conCorte(reg(L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { lineCap: "round", lineJoin: "round", className: "canal", ...st, weight: st.weight * anchoZoom() },
+        interactive: false, renderer: lienzo }), st.weight)); };
+    if (sat) { trazo(abiertos, { color: "#8fd8ff", weight: 2, opacity: .9 }); trazo(entubados, { color: "#8fd8ff", weight: 1.6, opacity: .9, dashArray: "3 5", lineCap: "butt" }); }
+    else {
+      trazo(abiertos, { color: "#7FAFBF", weight: 4.6, opacity: .75 }); trazo(abiertos, { color: "#BFE0E6", weight: 2.2, opacity: 1 });
+      trazo(entubados, { color: "#5E93A6", weight: 1.8, opacity: .8, dashArray: "4 5", lineCap: "butt" });
+    }
+    L.geoJSON({ type: "FeatureCollection", features: lineas }, { style: { weight: 18, opacity: 0, className: "canal" }, renderer: lienzo,
       onEachFeature: (f, capa) => capa.on("click", (ev) => { L.DomEvent.stop(ev); cartelito("💧 " + f.properties.nombre); }) }).addTo(capaFondo);
   }
   const EMOJI = { arboles: "🌳", hileras: "🍇", surcos: "🌱", pasto: "🌾", agua: "💧", edificio: "🏠" };
@@ -434,7 +466,7 @@
       },
     }).addTo(capaFondo);
     if (parque) dibujarLineasParque(dibujo.filter(esCamino)); // encima del predio y de los bordes de los lotes
-    dibujarCanales(geo.features.filter(esCanal), sat);
+    dibujarCanales(geo.features.filter(esCanal), sat, dibujo.filter(esCamino));
     // plantas de cada lote y edificios con volumen (lienzo aparte, debajo de las paradas)
     // (un lote provisorio entra si dice su cultivo: por ejemplo, el de olivos que se tomó para la estación de poda)
     if (parque && window.Arboleda) Arboleda.capa(geo.features.filter((f) => !esCamino(f) && !esPredio(f) && !(f.properties.provisorio && !f.properties.cultivo)),
@@ -525,7 +557,15 @@
   function dibujarServicios() {
     if (capaServicios) capaServicios.remove();
     capaServicios = L.layerGroup();
-    if (nivel === "lejos" || !capas.servicios) return;
+    if (nivel === "lejos") return;
+    // capa "Riego y agua": pozos y tanques desde el nivel medio; las chimeneas de riego, solo de cerca
+    const riego = capas.riego ? geo.features.filter((f) => esRiego(f) && f.geometry.type === "Point" && (nivel === "cerca" || f.properties.servicio !== "chimenea")) : [];
+    riego.forEach((f) => {
+      L.marker(centro(f), { keyboard: false, icon: L.divIcon({ className: "icono-libre", iconSize: [24, 24], iconAnchor: [12, 12],
+        html: `<div class="serv-pq riego riego-${esc(f.properties.servicio)}" title="${esc(f.properties.nombre)}">${ICON[f.properties.servicio] || ""}</div>` }) })
+        .on("click", () => cartelito("💧 " + f.properties.nombre)).addTo(capaServicios);
+    });
+    if (!capas.servicios) { capaServicios.addTo(mapa); return; }
     if (PARQUE) { // símbolos chicos y de bajo contraste, sin texto
       geo.features.filter((f) => esServicio(f) && f.geometry.type === "Point").forEach((f) => {
         L.marker(centro(f), { keyboard: false, icon: L.divIcon({ className: "icono-libre", iconSize: [26, 26], iconAnchor: [13, 13],
