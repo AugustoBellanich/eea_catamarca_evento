@@ -65,6 +65,9 @@
   const esCamino = (f) => /^(camino|ruta|paseo|calle)/.test(f.properties.id);
   const tipoLinea = (f) => { const t = (f.properties.id.match(/^(camino|ruta|paseo|calle)/) || [])[1];
     return t === "calle" ? "calle-" + (f.properties.superficie || "tierra") : t; };
+  // Vías principales: rutas, calles y el camino interno principal. Los canales pasan por debajo de ellas y por encima del
+  // resto de los caminos internos y de los senderos.
+  const esViaPrincipal = (f) => { const t = tipoLinea(f); return t === "ruta" || /^calle/.test(t || "") || (t === "camino" && /principal/i.test(f.properties.nombre || "")); };
   const esCanal = (f) => f.properties.tipo === "canal" && f.geometry.type === "LineString";
   const esContexto = (f) => !esEstacion(f) && !esServicio(f) && !esPredio(f) && !esCamino(f) && !esCanal(f) && !esRiego(f);
   const lotesDe = (id) => geo.features.filter((f) => estDe(f) === id);
@@ -290,8 +293,13 @@
     // las vías van en una capa propia, encima de la arboleda y del pasto
     if (!mapa.getPane("vias")) { const pv = mapa.createPane("vias"); pv.style.zIndex = 420; pv.style.pointerEvents = "none"; }
     const lienzo = dibujarLineasParque.lienzo || (dibujarLineasParque.lienzo = L.svg({ pane: "vias", padding: MARGEN }));
-    const capa = (fs, st) => { const c = L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false, renderer: lienzo }).addTo(capaFondo);
-      lineasPq.push({ c, w: st.weight }); };
+    // caminos internos secundarios y senderos: en una capa más baja, debajo de los canales (415)
+    if (!mapa.getPane("vias-bajas")) { const pb = mapa.createPane("vias-bajas"); pb.style.zIndex = 412; pb.style.pointerEvents = "none"; }
+    const bajo = dibujarLineasParque.bajo || (dibujarLineasParque.bajo = L.svg({ pane: "vias-bajas", padding: MARGEN }));
+    const capa = (fs, st) => { if (!fs.length) return;
+      [[fs.filter(esViaPrincipal), lienzo], [fs.filter((f) => !esViaPrincipal(f)), bajo]].forEach(([grupo, rend]) => { if (!grupo.length) return;
+        const c = L.geoJSON({ type: "FeatureCollection", features: grupo }, { style: { ...st, weight: st.weight * anchoZoom() }, interactive: false, renderer: rend }).addTo(capaFondo);
+        lineasPq.push({ c, w: st.weight }); }); };
     const de = (t) => lineas.filter((f) => tipoLinea(f) === t);
     const r = { lineCap: "round", lineJoin: "round", className: "camino" };
     // Jerarquía de abajo hacia arriba: caminos internos, paseos, calles de tierra, calles de asfalto y rutas. Cada tipo
@@ -311,13 +319,14 @@
     capa(rutas, { ...r, color: "#F4F1E6", weight: 1.2, opacity: .7, dashArray: "8 10" });
   }
   // Capa "Riego y agua": canales y acequias (KML: líneas "Canal…" o "Acequia…") y cañerías subterráneas ("Cañería…",
-  // punteadas). Van encima de las plantas y POR DEBAJO de calles, rutas y caminos: donde se cruzan, el canal se corta
+  // línea azul oscuro continua). Van encima de las plantas y de los caminos internos secundarios, y POR DEBAJO de rutas,
+  // calles y el camino interno principal (esViaPrincipal): donde se cruzan con esas, el canal se corta
   // (pasa por abajo, en alcantarilla). El corte es una máscara SVG hecha con las mismas vías, un poco más anchas, así
   // acompaña el zoom sin recalcular nada. Se tocan para ver el nombre (una línea invisible más ancha ayuda al dedo).
   let canalesPq = [];
   mapa.on("zoomend", () => canalesPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
   // ancho de corte de cada vía (px a zoom 16,5): el de su dibujo más un margen
-  const CORTE = { ruta: 17, "calle-asfalto": 12, "calle-tierra": 10, camino: 9, paseo: 8 };
+  const CORTE = { ruta: 17, "calle-asfalto": 12, "calle-tierra": 10, camino: 9 }; // camino: solo el principal
   function dibujarCanales(lineas, sat, vias) {
     canalesPq = [];
     if (!lineas.length || !capas.riego) return;
@@ -336,7 +345,7 @@
       svg.insertBefore(mascara, svg.firstChild);
     }
     Object.keys(CORTE).forEach((t) => {
-      const fs = vias.filter((f) => tipoLinea(f) === t);
+      const fs = vias.filter((f) => tipoLinea(f) === t && esViaPrincipal(f));
       if (!fs.length) return;
       const c = reg(L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { color: "#000", opacity: 1, lineCap: "butt", lineJoin: "round",
         weight: CORTE[t] * anchoZoom() }, interactive: false, renderer: lienzo }), CORTE[t]);
@@ -344,14 +353,22 @@
     });
     const conCorte = (c) => { c.eachLayer((l) => l._path && l._path.setAttribute("mask", "url(#corte-vias)")); return c; };
     // 2) trazos
-    const abiertos = lineas.filter((f) => f.properties.clase !== "caneria"), entubados = lineas.filter((f) => f.properties.clase === "caneria");
+    const clase = (c) => lineas.filter((f) => (f.properties.clase || "canal") === c);
+    const canales = clase("canal"), acequias = clase("acequia"), entubados = clase("caneria");
     const trazo = (fs, st) => { if (!fs.length) return;
       conCorte(reg(L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { lineCap: "round", lineJoin: "round", className: "canal", ...st, weight: st.weight * anchoZoom() },
         interactive: false, renderer: lienzo }), st.weight)); };
-    if (sat) { trazo(abiertos, { color: "#8fd8ff", weight: 2, opacity: .9 }); trazo(entubados, { color: "#8fd8ff", weight: 1.6, opacity: .9, dashArray: "3 5", lineCap: "butt" }); }
-    else {
-      trazo(abiertos, { color: "#7FAFBF", weight: 4.6, opacity: .75 }); trazo(abiertos, { color: "#BFE0E6", weight: 2.2, opacity: 1 });
-      trazo(entubados, { color: "#5E93A6", weight: 1.8, opacity: .8, dashArray: "4 5", lineCap: "butt" });
+    // cañería: azul oscuro continuo con un borde claro fino; acequia: más fina y suave que el canal
+    if (sat) {
+      trazo(entubados, { color: "#ffffff", weight: 3.2, opacity: .45 }); trazo(entubados, { color: "#1F5FBF", weight: 1.8, opacity: 1 });
+      trazo(acequias, { color: "#8fd8ff", weight: 1.6, opacity: .85 });
+      trazo(canales, { color: "#0E5E85", weight: 4, opacity: .6 }); trazo(canales, { color: "#8fd8ff", weight: 2.6, opacity: 1 });
+    } else {
+      trazo(entubados, { color: "#F4F2E4", weight: 3.6, opacity: .8 }); trazo(entubados, { color: "#1F4E8C", weight: 1.9, opacity: .95 });
+      trazo(acequias, { color: "#86B4C2", weight: 3.2, opacity: .8 }); trazo(acequias, { color: "#CBE7EE", weight: 1.6, opacity: 1 });
+      // canal: bordo, agua y un brillo central
+      trazo(canales, { color: "#4F8396", weight: 6.4, opacity: .9 }); trazo(canales, { color: "#9FD2E3", weight: 4, opacity: 1 });
+      trazo(canales, { color: "#E8F6FA", weight: 1, opacity: .85 });
     }
     L.geoJSON({ type: "FeatureCollection", features: lineas }, { style: { weight: 18, opacity: 0, className: "canal" }, renderer: lienzo,
       onEachFeature: (f, capa) => capa.on("click", (ev) => { L.DomEvent.stop(ev); cartelito("💧 " + f.properties.nombre); }) }).addTo(capaFondo);
