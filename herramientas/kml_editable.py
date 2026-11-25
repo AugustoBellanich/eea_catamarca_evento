@@ -78,9 +78,9 @@ Nombres que se reconocen solos:
 - Edificios: "Galpón …" lleva techo de chapa. Para cambiar el techo de cualquier edificio, escribir en su descripción
   "Techo: chapa", "Techo: tejas", "Techo: vidrio" (invernadero) o "Techo: losa" (plano).
 - Riego y agua (capa "Riego y agua" del sitio, carpeta del mismo nombre):
-  líneas "Canal …" o "Acequia …" (a cielo abierto) y "Cañería …" (subterránea, se dibuja punteada);
+  líneas "Canal …" o "Acequia …" (a cielo abierto) y "Cañería …" (subterránea, línea azul oscuro);
   marcadores "Pozo de agua …", "Chimenea de riego …" y "Tanque …"; polígono "Estanque".
-  Los canales y cañerías se dibujan por debajo de calles, rutas y caminos.
+  Los canales y cañerías pasan por debajo de rutas, calles y el "Camino interno principal", y por encima del resto.
 
 Cuando termines: clic derecho en la carpeta principal → Guardar lugar como → KML o KMZ, guardarlo en fuentes/
 y correr: python herramientas/kml_a_geojson.py fuentes/archivo.kml"""
@@ -173,7 +173,7 @@ def main(ruta, salida="fuentes/predio-editable.kml"):
         carpeta("Vías", [carpeta("Rutas", grupos["rutas"]), carpeta("Calles", grupos["calles"]),
                          carpeta("Caminos internos", grupos["caminos"]), carpeta("Paseos y senderos", grupos["paseos"])]),
         carpeta("Riego y agua", [carpeta("Canales y acequias", grupos["canales"], canales_desc),
-                                 carpeta("Cañerías subterráneas", grupos["canerias"], 'Líneas "Cañería …": se dibujan punteadas.'),
+                                 carpeta("Cañerías subterráneas", grupos["canerias"], 'Líneas "Cañería …": se dibujan en azul oscuro.'),
                                  carpeta("Pozos, chimeneas y tanques", grupos["riego"]),
                                  carpeta("Estanques", grupos["agua"])], riego_desc, abierta=True),
     ]

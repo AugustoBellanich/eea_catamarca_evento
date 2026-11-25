@@ -102,9 +102,10 @@ cantidad y el tamaño son ilustrativos); "Observatorio climático" como parcela 
 
 ## Riego y agua
 
-Capa propia (Capas → "Riego y agua", encendida de entrada): canales y acequias, cañerías subterráneas (punteadas), pozos de
-agua, chimeneas de riego (solo de cerca) y tanques. Los canales y cañerías pasan **por debajo** de rutas, calles, caminos y
-paseos: el dibujo se corta en cada cruce (`app.js`, `CORTE`). En el KML van en la carpeta "Riego y agua"; se reconocen por el
+Capa propia (Capas → "Riego y agua", encendida de entrada): canales y acequias, cañerías subterráneas (azul oscuro), pozos de
+agua, chimeneas de riego (solo de cerca) y tanques. Los canales y cañerías pasan **por debajo** de rutas, calles y el "Camino interno
+principal" (el dibujo se corta en cada cruce; `app.js`, `CORTE` y `esViaPrincipal`) y por encima de los demás caminos
+internos y senderos. En el KML van en la carpeta "Riego y agua"; se reconocen por el
 nombre: "Canal…", "Acequia…", "Cañería…" (líneas), "Pozo de agua…", "Chimenea de riego…", "Tanque…" (marcadores) y
 "Estanque" (polígono, se dibuja siempre como agua).
 
@@ -127,8 +128,8 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 | "Calle tierra" | Calle de tierra del barrio | Arena fina |
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
-| "Canal" o "Acequia" | Canal de riego (capa "Riego y agua") | Agua celeste con borde (celeste fino en satelital), cortado donde pasa por debajo de una vía; se toca para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
-| "Cañería" | Cañería de riego subterránea (capa "Riego y agua") | Línea celeste punteada, también por debajo de las vías |
+| "Canal" o "Acequia" | Canal de riego (capa "Riego y agua") | Canal: bordo, agua celeste y brillo; acequia: más fina y suave. Pasan por debajo de rutas, calles y el "Camino interno principal" (cortados en el cruce) y por encima de los demás caminos y senderos; se tocan para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
+| "Cañería" | Cañería de riego subterránea (capa "Riego y agua") | Línea azul oscuro continua, con el mismo criterio de cruces que los canales |
 
 Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino.
 
@@ -194,7 +195,7 @@ solo el número; después número e ícono; de cerca, también el nombre). Los c
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
-El KML vigente es `fuentes/predio-2026-11-25b.kml` (el `25` es el que exportó Augusto con canales, acequias y cañerías, tal cual; los `24…` son versiones anteriores): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
+El KML vigente es `fuentes/predio-2026-11-25c.kml` (el `25` es el que exportó Augusto con canales, acequias y cañerías, tal cual; el `25b` es ese reordenado; el `25c` saca el sendero del algodón y pone la estación 12 en el punto de encuentro, junto al ingreso del Sector 2): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
 vías, canales), los colores de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en
 Google Earth, agregar lo nuevo y exportar la carpeta completa. Para reordenar en carpetas un KML exportado:
 `python herramientas/kml_editable.py fuentes/archivo.kml fuentes/salida.kml`. El conversor saltea toda carpeta cuyo nombre
