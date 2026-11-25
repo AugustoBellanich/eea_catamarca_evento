@@ -40,6 +40,8 @@ Sitio estático: HTML, CSS y JS con Leaflet, sin compilar y sin servidor propio.
 | `datos/estaciones.geojson` | Ubicación de cada estación (sale del modo editor) |
 | `estilos.css` | Colores (el verde es provisorio hasta tener los oficiales de la campaña) |
 | `app.js`, `sw.js` | Código; no hace falta tocarlo para cargar contenido |
+| `metricas.js`, `functions/api/` | Métricas anónimas y encuesta (ver "Métricas y encuesta") |
+| `herramientas/metricas.sql` | Tablas de la base D1 de métricas y consultas de ejemplo |
 
 ## Agenda y avisos
 
@@ -144,6 +146,37 @@ conversor o, para un edificio puntual, escribiendo en su descripción de Google 
 que manda sobre la tabla.
 Los "Pecanes jóvenes" de la estación 5 se dibujan como plantines recién implantados (tazón de riego y tutor). Más adelante, con los
 caminos cargados, "Cómo llegar" puede seguirlos en lugar de ir en línea recta.
+
+## Métricas y encuesta (anónimas)
+
+Para que la EEA sepa cómo se vivió la jornada, sin juntar datos personales (ni nombre, ni contacto, ni ubicación, ni IP).
+Cada teléfono lleva un número al azar para contar visitantes distintos. Si el navegador pide no ser rastreado (Do Not
+Track / GPC), no se mandan métricas. El aviso está al pie del pasaporte.
+
+1. **Visitas** (Cloudflare Web Analytics): en Cloudflare → el proyecto de Pages → Metrics → Web Analytics → Enable. No
+   requiere código: da visitas, páginas, dispositivos, países y de dónde llegan.
+2. **Uso del mapa** (`metricas.js` → `functions/api/eventos.js`): fichas abiertas, QR, sellos (por QR o GPS), recorrido
+   completo, "Cómo llegar", lista, agenda, pasaporte, capas, foto (armada, compartida, descargada), Instagram. Los eventos
+   se juntan en el teléfono y se mandan de a tandas; sin señal se guardan y se mandan después.
+3. **Encuesta** (`config.js`, `encuesta` → `functions/api/encuesta.js`): 9 preguntas de opciones, todas optativas
+   (procedencia, perfil, edad, primera visita, cómo se enteró, qué interesó, interés en capacitación o asistencia,
+   valoración de la jornada y del mapa). Está en el pasaporte y se ofrece una vez al llegar a 4 estaciones selladas.
+   Las preguntas se cambian en `config.js` (los `id` se guardan tal cual: no cambiarlos durante la jornada).
+
+Puesta en marcha (una vez, en Cloudflare, con la cuenta del proyecto de Pages):
+
+1. Workers & Pages → D1 → Create database → nombre `pa70-metricas`.
+2. En la consola de la base, pegar y ejecutar `herramientas/metricas.sql`.
+3. Proyecto de Pages → Settings → Bindings → Add → D1 database: nombre de variable `DB`, base `pa70-metricas`
+   (en Production; también en Preview si se quiere probar en las ramas).
+4. Settings → Variables and secrets → Add → `CLAVE_METRICAS`, tipo Secret, con una clave larga (no va en el repo).
+5. Volver a publicar (o esperar al próximo cambio en `main`).
+
+Resultados: `https://inta70-catamarca.pages.dev/api/resumen?clave=CLAVE` devuelve los totales (visitantes, eventos,
+fichas más vistas, sellos por QR o GPS, personas por hora y la encuesta contada por opción). Para cruces más finos, las
+consultas de ejemplo al pie de `herramientas/metricas.sql` se pegan en la consola de D1.
+Sin la base enlazada el sitio funciona igual: los eventos quedan guardados en cada teléfono hasta que la base exista.
+Plan gratuito: 100.000 escrituras por día en D1 y 100.000 pedidos por día a las funciones; alcanza de sobra para la jornada.
 
 ## Logo y colores oficiales
 
