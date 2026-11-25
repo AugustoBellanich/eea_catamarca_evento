@@ -91,13 +91,25 @@ y los servicios más chicos. Los recorridos y los avisos de cruce se ven igual.
 ## Lotes sin cultivo
 
 "Lote vacío" se dibuja como lote arado (surcos de tierra, listo para sembrar); "Monte", como monte nativo (árboles nativos,
-matas y claros); "Desmonte", casi todo tierra desnuda con algunos árboles. La densidad de cada uno está en `arboles.js`
-(`SILVESTRE` y `MARCO.arado`).
+matas y claros); "Desmonte", casi todo tierra desnuda con algunos árboles; "Suelo desnudo", tierra sin plantas. La densidad
+de cada uno está en `arboles.js` (`SILVESTRE` y `MARCO.arado`).
+
+Otros predios: "Compostaje" con pilas largas de estiércol; "Generadores ESAPEN" como grupos electrógenos sobre ripio (la
+cantidad y el tamaño son ilustrativos); "Observatorio climático" como parcela de césped cercada con instrumentos
+(`arboles.js`, `MARCO.estiercol`, `MARCO.generadores`, `MARCO.observatorio`).
+
+## Riego y agua
+
+Capa propia (Capas → "Riego y agua", encendida de entrada): canales y acequias, cañerías subterráneas (punteadas), pozos de
+agua, chimeneas de riego (solo de cerca) y tanques. Los canales y cañerías pasan **por debajo** de rutas, calles, caminos y
+paseos: el dibujo se corta en cada cruce (`app.js`, `CORTE`). En el KML van en la carpeta "Riego y agua"; se reconocen por el
+nombre: "Canal…", "Acequia…", "Cañería…" (líneas), "Pozo de agua…", "Chimenea de riego…", "Tanque…" (marcadores) y
+"Estanque" (polígono, se dibuja siempre como agua).
 
 ## Capas
 
 El botón "Capas" (arriba a la derecha) cambia entre ilustrado y satelital y muestra u oculta las estaciones, los ingresos
-y servicios, y los **símbolos de cultivos**: un disco blanco con el dibujo del cultivo sobre cada lote que no es parada
+y servicios, el riego y agua, y los **símbolos de cultivos**: un disco blanco con el dibujo del cultivo sobre cada lote que no es parada
 (apagado de entrada; las plantas se ven siempre). Va en todos los lotes cultivados, no en edificios ni en lotes arados, de
 monte o desmonte; si en el centro del lote hay una gota, se corre a un lugar libre del mismo lote. Tocar un símbolo muestra
 el nombre del lote.
@@ -113,7 +125,8 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 | "Calle tierra" | Calle de tierra del barrio | Arena fina |
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
-| "Canal" o "Acequia" | Canal de riego | Agua celeste con borde (celeste fino en satelital); se toca para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
+| "Canal" o "Acequia" | Canal de riego (capa "Riego y agua") | Agua celeste con borde (celeste fino en satelital), cortado donde pasa por debajo de una vía; se toca para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
+| "Cañería" | Cañería de riego subterránea (capa "Riego y agua") | Línea celeste punteada, también por debajo de las vías |
 
 Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino.
 
@@ -148,7 +161,7 @@ solo el número; después número e ícono; de cerca, también el nombre). Los c
 
 ## Ubicar las estaciones desde Google Earth (recomendado)
 
-El KML vigente es `fuentes/predio-2026-11-24e.kml` (los `24b` y `24d` son los que exportó Augusto, tal cual): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
+El KML vigente es `fuentes/predio-2026-11-25b.kml` (el `25` es el que exportó Augusto con canales, acequias y cañerías, tal cual; los `24…` son versiones anteriores): carpetas (predio, estaciones, lotes por cultivo, edificios, servicios,
 vías, canales), los colores de cada zona, las correcciones ya aplicadas y, en cada elemento, qué entiende el sitio. Abrirlo en
 Google Earth, agregar lo nuevo y exportar la carpeta completa. Para reordenar en carpetas un KML exportado:
 `python herramientas/kml_editable.py fuentes/archivo.kml fuentes/salida.kml`. El conversor saltea toda carpeta cuyo nombre
