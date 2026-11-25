@@ -9,6 +9,7 @@
   const params = new URLSearchParams(location.search);
   const EDITOR = params.has("editar");
   const DEMO = params.has("demo");
+  const KE = { respuestas: "pa70-encuesta", enviada: "pa70-encuesta-enviada", pendiente: "pa70-encuesta-pendiente", ofrecida: "pa70-encuesta-ofrecida" };
   const K = { borrador: "pa70-geojson-borrador", sellos: "pa70-sellos", leidos: "pa70-avisos-leidos", agenda: "pa70-agenda-cache" };
 
   let estaciones = [];
@@ -28,6 +29,8 @@
   if (capas.cultivos === undefined) capas.cultivos = false;
   if (capas.riego === undefined) capas.riego = true; // canales, acequias, cañerías, pozos, chimeneas y tanques
 
+  // Métricas anónimas de uso (metricas.js): qué se abre y qué se usa, sin datos personales ni ubicación.
+  const medir = (evento, detalle) => { if (window.Metricas) Metricas.evento(evento, detalle); };
   function leer(k, def) { try { return JSON.parse(localStorage.getItem(k)) || def; } catch (_) { return def; } }
   function escribir(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) { /* sin almacenamiento */ } }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
@@ -174,10 +177,10 @@
       L.DomEvent.disableClickPropagation(caja); L.DomEvent.disableScrollPropagation(caja);
       const boton = caja.querySelector(".boton-modo"), panel = caja.querySelector(".capas-panel");
       boton.onclick = () => { panel.hidden = !panel.hidden; boton.setAttribute("aria-expanded", String(!panel.hidden)); };
-      caja.querySelectorAll("[data-modo]").forEach((b) => (b.onclick = () => ponerModo(b.dataset.modo)));
+      caja.querySelectorAll("[data-modo]").forEach((b) => (b.onclick = () => { ponerModo(b.dataset.modo); medir("modo", b.dataset.modo); }));
       caja.querySelectorAll("[data-capa]").forEach((c) => {
         c.checked = capas[c.dataset.capa];
-        c.onchange = () => { capas[c.dataset.capa] = c.checked; escribir("pa70-capas", capas); dibujarFondo(); actualizarNivel(true); };
+        c.onchange = () => { medir("capa", c.dataset.capa + "|" + (c.checked ? "si" : "no")); capas[c.dataset.capa] = c.checked; escribir("pa70-capas", capas); dibujarFondo(); actualizarNivel(true); };
       });
       this.caja = caja; return caja;
     },
@@ -734,7 +737,7 @@
     const ct = $("#cartelito"); if (ct) ct.classList.remove("visible");
     document.querySelectorAll(".hoja").forEach((h) => (h.hidden = true));
     if (sel) $(sel).hidden = false;
-    const pest = { "#agenda": "agenda", "#pasaporte": "pasaporte", "#foto": "foto" }[sel] || "mapa";
+    const pest = { "#agenda": "agenda", "#pasaporte": "pasaporte", "#encuesta": "pasaporte", "#foto": "foto" }[sel] || "mapa";
     document.querySelectorAll(".pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.pestana === pest));
   }
   document.querySelectorAll("[data-cerrar]").forEach((b) =>
@@ -745,8 +748,8 @@
   document.querySelectorAll(".pestanas button").forEach((b) => b.addEventListener("click", () => {
     const p = b.dataset.pestana;
     if (p === "mapa") mostrar(null);
-    if (p === "agenda") { armarAgenda(); mostrar("#agenda"); }
-    if (p === "pasaporte") { armarPasaporte(); mostrar("#pasaporte"); }
+    if (p === "agenda") { armarAgenda(); mostrar("#agenda"); medir("agenda"); }
+    if (p === "pasaporte") { armarPasaporte(); mostrar("#pasaporte"); medir("pasaporte"); }
     if (p === "foto") abrirFoto();
   }));
 
@@ -754,6 +757,7 @@
   function abrirFicha(id, centrar = true) {
     const e = estacion(id);
     if (!e) return;
+    medir("ficha", id);
     const z = zona(e);
     const filas = [
       ["Qué se muestra", e.resumen], ["Objetivo del trabajo", e.objetivo], ["Responsables", e.responsables],
@@ -803,7 +807,7 @@
     $("#lista-estaciones").querySelectorAll("button[data-id]").forEach((b) =>
       b.addEventListener("click", () => abrirFicha(b.dataset.id)));
   }
-  $("#btn-lista").addEventListener("click", () => { armarLista(); mostrar("#lista"); });
+  $("#btn-lista").addEventListener("click", () => { armarLista(); mostrar("#lista"); medir("lista"); });
 
   // ---------- Agenda ----------
   const ahoraMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
@@ -862,7 +866,7 @@
     }
   }
   function marcarLeidos(ids) { leidos = Array.from(new Set(leidos.concat(ids))); escribir(K.leidos, leidos); actualizarCampana(); }
-  $("#btn-avisos").addEventListener("click", () => { armarAvisos(); mostrar("#avisos"); marcarLeidos(avisos.map(idAviso)); });
+  $("#btn-avisos").addEventListener("click", () => { medir("avisos"); armarAvisos(); mostrar("#avisos"); marcarLeidos(avisos.map(idAviso)); });
   $("#cartel-abrir").addEventListener("click", () => { armarAvisos(); mostrar("#avisos"); marcarLeidos(avisos.map(idAviso)); });
   $("#cartel-cerrar").addEventListener("click", () => marcarLeidos([$("#cartel-aviso").dataset.id]));
 
@@ -996,6 +1000,7 @@
     return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [p1[0] + t * (p2[0] - p1[0]), p1[1] + t * (p2[1] - p1[1])] : null;
   }
   function comoLlegar(id) {
+    medir("como_llegar", id);
     const destino = centroEstacion(id), e = estacion(id);
     const ingreso = geo.features.find((f) => esServicio(f) && /principal/i.test(f.properties.nombre || "")) || geo.features.find(esServicio);
     const origen = miPosicion || (ingreso ? centro(ingreso) : null);
@@ -1070,14 +1075,18 @@
     $("#bienvenida-empezar").addEventListener("click", () => {
       $("#bienvenida").classList.add("saliendo");
       setTimeout(() => ($("#bienvenida").hidden = true), 350);
-      escribir("pa70-bienvenida", true);
+      escribir("pa70-bienvenida", true); medir("bienvenida");
     });
   }
 
   // ---------- Pasaporte ----------
-  function sellar(id, silencioso) {
+  // modo: "qr" (abrió el QR de la estación) o "gps" (pasó cerca con la ubicación activada); solo para las métricas
+  function sellar(id, silencioso, modo = "qr") {
     if (sellos.includes(id) || !estacion(id)) return;
     sellos.push(id); escribir(K.sellos, sellos);
+    medir("sello", id + "|" + modo);
+    if (sellos.length === estaciones.length) medir("recorrido_completo");
+    ofrecerEncuesta();
     dibujarParadas();
     festejar(sellos.length === estaciones.length ? 90 : 36);
     if (!silencioso) avisar(`Sellaste: ${estacion(id).corto || estacion(id).nombre} (${sellos.length} de ${estaciones.length})`);
@@ -1096,6 +1105,7 @@
     return true;
   }
   $("#btn-llevar").addEventListener("click", async () => {
+    medir("llevar_pasaporte");
     const url = location.href.split("#")[0] + "#" + codigoPasaporte();
     try { await navigator.clipboard.writeText(url); avisar("Enlace copiado: abrilo en el otro navegador."); }
     catch (_) { $("#llevar-url").hidden = false; $("#llevar-url").textContent = url; }
@@ -1110,7 +1120,70 @@
         <span class="mini-disco">${ICON[e.icono] || ""}</span><span>${esc(e.corto || e.nombre)}</span></button>`;
     }).join("");
     $("#pasaporte-sellos").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => abrirFicha(b.dataset.id)));
+    const enc = C.encuesta && C.encuesta.activa;
+    $("#pasaporte-encuesta").hidden = !enc;
+    if (enc) $("#btn-encuesta").textContent = leer(KE.enviada, false) ? "Cambiar mis respuestas" : "Responder la encuesta";
   }
+
+  // ---------- Encuesta (config.js, "encuesta") ----------
+  // Voluntaria y anónima: opciones múltiples, sin nombre ni contacto. Se manda con el mismo número al azar del teléfono
+  // que usan las métricas (una respuesta por teléfono; si la cambia, vale la última). Sin señal, queda guardada y se
+  // manda sola cuando vuelve la conexión.
+  function ofrecerEncuesta() {
+    const E = C.encuesta;
+    if (!E || !E.activa || leer(KE.enviada, false) || leer(KE.ofrecida, false)) return;
+    if (sellos.length < (E.ofrecerConSellos || 4) && sellos.length !== estaciones.length) return;
+    escribir(KE.ofrecida, true);
+    setTimeout(() => avisar("Encuesta anónima de 1 minuto: está en el Pasaporte.", 6000), 4000);
+  }
+  function armarEncuesta() {
+    const previas = leer(KE.respuestas, {});
+    $("#encuesta-form").innerHTML = C.encuesta.preguntas.map((q) => `<fieldset class="pregunta">
+      <legend>${esc(q.texto)}${q.varias ? ' <span class="nota">(podés marcar varias)</span>' : ""}</legend>
+      <div class="opciones">${q.opciones.map(([v, t]) => {
+        const marcada = Array.isArray(previas[q.id]) ? previas[q.id].includes(v) : previas[q.id] === v;
+        return `<label class="opcion"><input type="${q.varias ? "checkbox" : "radio"}" name="${esc(q.id)}" value="${esc(v)}"${marcada ? " checked" : ""}><span>${esc(t)}</span></label>`;
+      }).join("")}</div></fieldset>`).join("");
+    // un radio marcado se puede desmarcar tocándolo otra vez (todas las preguntas son optativas)
+    $("#encuesta-form").querySelectorAll('input[type="radio"]').forEach((i) => {
+      i.addEventListener("pointerdown", () => (i.dataset.estaba = i.checked ? "1" : ""));
+      i.addEventListener("click", () => { if (i.dataset.estaba) { i.checked = false; i.dataset.estaba = ""; } });
+    });
+    $("#encuesta-estado").textContent = "";
+  }
+  function leerEncuesta() {
+    const r = {};
+    C.encuesta.preguntas.forEach((q) => {
+      const vals = [...$("#encuesta-form").querySelectorAll(`input[name="${q.id}"]:checked`)].map((i) => i.value);
+      if (vals.length) r[q.id] = q.varias ? vals : vals[0];
+    });
+    return r;
+  }
+  async function mandarEncuesta() {
+    const r = leer(KE.pendiente, null);
+    if (!r || !window.Metricas || location.protocol === "file:") return false;
+    try {
+      const resp = await fetch((C.metricas && C.metricas.encuesta) || "api/encuesta", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ d: Metricas.dispositivo(), r }) });
+      if (!resp.ok) return false;
+      escribir(KE.pendiente, null); return true;
+    } catch (_) { return false; }
+  }
+  $("#btn-encuesta").addEventListener("click", () => { armarEncuesta(); mostrar("#encuesta"); medir("encuesta_abrir"); });
+  $("#encuesta-enviar").addEventListener("click", async () => {
+    const r = leerEncuesta();
+    if (!Object.keys(r).length) { $("#encuesta-estado").textContent = "Marcá al menos una respuesta."; return; }
+    escribir(KE.respuestas, r); escribir(KE.pendiente, r); escribir(KE.enviada, true);
+    medir("encuesta_enviada", String(Object.keys(r).length));
+    $("#encuesta-enviar").disabled = true;
+    const ok = await mandarEncuesta();
+    $("#encuesta-enviar").disabled = false;
+    $("#encuesta-estado").textContent = "";
+    avisar(ok ? "¡Gracias! Respuestas enviadas." : "¡Gracias! Se van a enviar cuando haya señal.", 4500);
+    armarPasaporte(); mostrar("#pasaporte");
+  });
+  addEventListener("online", mandarEncuesta);
+  setTimeout(mandarEncuesta, 5000); // pendiente de una visita anterior sin señal
 
   // ---------- Ubicación ----------
   function cercana(pos) {
@@ -1121,7 +1194,7 @@
   function iniciarGPS(centrar) {
     if (!("geolocation" in navigator)) { avisar("Este teléfono no permite ubicación."); return; }
     if (seguimiento !== null) { if (centrar && miPosicion) mapa.flyTo(miPosicion, C.zoomLotes); return; }
-    avisar("Buscando tu ubicación…");
+    avisar("Buscando tu ubicación…"); medir("ubicacion");
     let primera = true;
     seguimiento = navigator.geolocation.watchPosition((p) => {
       const pos = L.latLng(p.coords.latitude, p.coords.longitude);
@@ -1143,7 +1216,7 @@
       } else { marcaYo.setLatLng(miPosicion); circuloYo.setLatLng(miPosicion).setRadius(r); }
       if (primera && centrar) { mapa.flyTo(miPosicion, C.zoomLotes); primera = false; }
       const c = cercana(miPosicion);
-      if (c.id && r <= 40 && c.dist <= C.radioSello) sellar(c.id); // sello automático, solo con buena precisión
+      if (c.id && r <= 40 && c.dist <= C.radioSello) sellar(c.id, false, "gps"); // sello automático, solo con buena precisión
     }, (err) => {
       seguimiento = null;
       avisar(err.code === 1 ? "Sin permiso de ubicación. El mapa y las fichas funcionan igual." : "No se pudo obtener la ubicación.");
@@ -1151,6 +1224,7 @@
   }
   $("#btn-ubicacion").addEventListener("click", () => iniciarGPS(true));
   $("#btn-cercana").addEventListener("click", () => {
+    medir("cercana");
     if (!miPosicion) { iniciarGPS(false); avisar("Activá la ubicación y volvé a tocar «Ir a la más cercana»."); return; }
     const c = cercana(miPosicion);
     if (!c.id) { avisar("Todavía no hay estaciones ubicadas en el mapa."); return; }
@@ -1167,7 +1241,10 @@
   $("#ig-hashtag").textContent = "Ver las fotos de " + C.hashtag;
   $("#ig-cuenta").href = "https://www.instagram.com/" + encodeURIComponent(cuenta) + "/";
   $("#ig-cuenta").textContent = "Seguir a " + C.instagram;
+  $("#ig-hashtag").addEventListener("click", () => medir("instagram", "hashtag"));
+  $("#ig-cuenta").addEventListener("click", () => medir("instagram", "cuenta"));
   function abrirFoto() {
+    medir("foto_abrir");
     if (C.concurso.activo) {
       $("#concurso").hidden = false;
       $("#concurso").innerHTML = `<strong>Concurso de fotos</strong><p>${esc(C.concurso.texto)}</p>` +
@@ -1216,10 +1293,12 @@
       c.fillText("RECORRIDO", cx, cy - r * 0.18); c.fillText("COMPLETO", cx, cy + r * 0.22); c.textAlign = "start";
     }
     lienzo.hidden = false; $("#foto-acciones").hidden = false;
+    medir("foto_armada", estaciones.length && sellos.length === estaciones.length ? "con_insignia" : "sin_insignia");
   }
   function aBlob() { return new Promise((ok) => lienzo.toBlob(ok, "image/jpeg", 0.9)); }
   async function copiarTexto() { try { await navigator.clipboard.writeText(textoFoto); } catch (_) { /* sin permiso */ } }
   $("#foto-compartir").addEventListener("click", async () => {
+    medir("foto_compartir");
     const blob = await aBlob();
     const archivo = new File([blob], "inta-70-anios.jpg", { type: "image/jpeg" });
     await copiarTexto();
@@ -1228,7 +1307,7 @@
       catch (e) { if (e.name !== "AbortError") avisar("No se pudo compartir; probá con Descargar."); }
     } else { descargar(blob); avisar("Tu navegador no comparte archivos: se descargó la foto."); }
   });
-  $("#foto-descargar").addEventListener("click", async () => descargar(await aBlob()));
+  $("#foto-descargar").addEventListener("click", async () => { medir("foto_descargar"); descargar(await aBlob()); });
   function descargar(blob) {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = "inta-70-anios.jpg"; a.click();
@@ -1335,12 +1414,12 @@
     setInterval(() => { if (!$("#agenda").hidden) armarAgenda(); }, 60000); // "Ahora" y "Próximo" avanzan solos
     const id = idEstacion(decodeURIComponent(location.hash.slice(1))) || decodeURIComponent(location.hash.slice(1));
     if (recuperarPasaporte(id)) { armarPasaporte(); mostrar("#pasaporte"); }
-    else if (id && estacion(id)) { sellar(id, true); abrirFicha(id); } // llegó por el QR de la estación
+    else if (id && estacion(id)) { medir("qr", id); sellar(id, true); abrirFicha(id); } // llegó por el QR de la estación
     // QR escaneado con el sitio ya abierto: algunos navegadores reutilizan la pestaña y solo cambian el #.
     addEventListener("hashchange", () => {
       const h = idEstacion(decodeURIComponent(location.hash.slice(1))) || decodeURIComponent(location.hash.slice(1));
       if (recuperarPasaporte(h)) { armarPasaporte(); mostrar("#pasaporte"); }
-      else if (h && estacion(h)) { sellar(h); abrirFicha(h); }
+      else if (h && estacion(h)) { medir("qr", h); sellar(h); abrirFicha(h); }
     });
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); // que el navegador no lo borre
   }
