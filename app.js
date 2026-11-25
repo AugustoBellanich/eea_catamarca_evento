@@ -327,6 +327,41 @@
   mapa.on("zoomend", () => canalesPq.forEach(({ c, w }) => c.setStyle({ weight: w * anchoZoom() })));
   // ancho de corte de cada vía (px a zoom 16,5): el de su dibujo más un margen
   const CORTE = { ruta: 17, "calle-asfalto": 12, "calle-tierra": 10, camino: 9 }; // camino: solo el principal
+  // Donde una cañería corre pegada y paralela a un canal o acequia (en el KML van por el mismo lugar), se dibuja corrida
+  // unos metros hacia un costado para que se vean las dos. Solo cambia el dibujo; los datos quedan como en el KML.
+  // Los cruces y empalmes en ángulo no se tocan.
+  const SEPARAR_M = 4.5;
+  function separarCanerias(canerias, abiertos) {
+    const lat0 = C.centro[0], kx = mLng(lat0), xy = ([lng, lat]) => [lng * kx, lat * M_LAT], ll = ([x, y]) => [x / kx, y / M_LAT];
+    const segs = abiertos.flatMap((f) => f.geometry.coordinates.slice(1).map((b, i) => [xy(f.geometry.coordinates[i]), xy(b)]));
+    if (!segs.length) return canerias;
+    const masCercano = (p) => segs.reduce((m, [a, b]) => {
+      const dx = b[0] - a[0], dy = b[1] - a[1], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1e-9)));
+      const q = [a[0] + t * dx, a[1] + t * dy], d = Math.hypot(p[0] - q[0], p[1] - q[1]);
+      return d < m.d ? { d, q, dir: [dx, dy] } : m; }, { d: Infinity });
+    return canerias.map((f) => {
+      const pts = f.geometry.coordinates.map(xy), out = [];
+      let lado = 0, venia = false; // venia: el punto anterior quedó corrido
+      for (let i = 0; i < pts.length - 1; i++) {
+        const [a, b] = [pts[i], pts[i + 1]], L2 = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1e-9, n = Math.max(1, Math.ceil(L2 / 3));
+        const u = [(b[0] - a[0]) / L2, (b[1] - a[1]) / L2], nor = [-u[1], u[0]];
+        for (let k = i ? 1 : 0; k <= n; k++) {
+          const p = [a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n], c = masCercano(p);
+          const paralelo = c.dir && Math.abs(u[0] * c.dir[0] + u[1] * c.dir[1]) / (Math.hypot(c.dir[0], c.dir[1]) || 1) > .9; // menos de ~25°
+          let corrimiento = 0;
+          if (venia && !paralelo && c.d < SEPARAR_M) continue; // codo al salir de un tramo corrido: sin volver al canal
+          venia = paralelo && c.d < SEPARAR_M;
+          if (venia) {
+            const s = (p[0] - c.q[0]) * nor[0] + (p[1] - c.q[1]) * nor[1];
+            if (!lado) lado = Math.abs(s) > .3 ? Math.sign(s) : 1; // un mismo costado para toda la cañería
+            corrimiento = lado * SEPARAR_M - s; // queda a SEPARAR_M del canal, siempre del mismo costado
+          }
+          out.push(ll([p[0] + nor[0] * corrimiento, p[1] + nor[1] * corrimiento]));
+        }
+      }
+      return { ...f, geometry: { type: "LineString", coordinates: out } };
+    });
+  }
   function dibujarCanales(lineas, sat, vias) {
     canalesPq = [];
     if (!lineas.length || !capas.riego) return;
@@ -354,7 +389,7 @@
     const conCorte = (c) => { c.eachLayer((l) => l._path && l._path.setAttribute("mask", "url(#corte-vias)")); return c; };
     // 2) trazos
     const clase = (c) => lineas.filter((f) => (f.properties.clase || "canal") === c);
-    const canales = clase("canal"), acequias = clase("acequia"), entubados = clase("caneria");
+    const canales = clase("canal"), acequias = clase("acequia"), entubados = separarCanerias(clase("caneria"), lineas.filter((f) => f.properties.clase !== "caneria"));
     const trazo = (fs, st) => { if (!fs.length) return;
       conCorte(reg(L.geoJSON({ type: "FeatureCollection", features: fs }, { style: { lineCap: "round", lineJoin: "round", className: "canal", ...st, weight: st.weight * anchoZoom() },
         interactive: false, renderer: lienzo }), st.weight)); };

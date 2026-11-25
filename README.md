@@ -129,7 +129,7 @@ En Google Earth, dibujar cada camino como **ruta** (línea). El nombre dice qué
 | "Camino" | Camino de tierra interno | Arena con borde sutil y línea central punteada |
 | "Paseo" o "Sendero" | Paseo peatonal del recorrido | Blanco hueso |
 | "Canal" o "Acequia" | Canal de riego (capa "Riego y agua") | Canal: bordo, agua celeste y brillo; acequia: más fina y suave. Pasan por debajo de rutas, calles y el "Camino interno principal" (cortados en el cruce) y por encima de los demás caminos y senderos; se tocan para ver el nombre. No lo usa "Cómo llegar". Dibujado como polígono, entra como superficie de agua |
-| "Cañería" | Cañería de riego subterránea (capa "Riego y agua") | Línea azul oscuro continua, con el mismo criterio de cruces que los canales |
+| "Cañería" | Cañería de riego subterránea (capa "Riego y agua") | Línea azul oscuro continua, con el mismo criterio de cruces que los canales. Donde corre pegada y paralela a un canal, se dibuja corrida 4,5 m hacia un costado para que se vean las dos (`app.js`, `SEPARAR_M`; los datos no cambian) |
 
 Sin caminos dibujados, la tierra clara del predio que queda entre los lotes ya se lee como camino.
 
